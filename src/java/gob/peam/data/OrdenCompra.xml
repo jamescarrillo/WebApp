@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="OrdenCompra">
+    <resultMap id="OrdenCompraMap" type="OrdenCompra">
+        <result property="id" column="id" />
+        <result property="mes" column="mes" />
+        <result property="anho" column="anho" />
+        <result property="nro" column="orden_compra" />
+        <result property="fecha" column="fecha_compra"  />
+        <result property="fuenteFinanciamiento" column="fuente_financiamiento" />    
+        <result property="proveedor" column="proveedor" />    
+        <result property="monto" column="monto" /> 
+        <result property="financiamiento" column="financiamiento" />   
+        
+        <result property="estado" column="estado"/>     
+        <result property="nroSiaf" column="nro_siaf"/>     
+    </resultMap>
+    <resultMap id="AnhosMap" type="java.lang.String">
+        <result property="anho" column="anho" />  
+    </resultMap>
+    <resultMap id="MesMap" type="java.lang.String">
+        <result property="mes" column="mes" />
+    </resultMap>
+    <select id="getListMesForWeb" parameterType="String"  resultMap="MesMap">
+        select distinct mes  from web.f00007 where(anho=#{anho}) order by mes desc
+    </select>
+    
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="OrdenCompraMap">
+        select * from web.f00007 where (orden_compra ILIKE #{query} or proveedor ILIKE  #{query} and estado = true)  and  anho=#{anio} and mes=#{mes} order by id ${order} limit ${limit} offset ${start} 
+    </select>
+    <select id="getListAnioForWeb"  resultMap="AnhosMap">
+        select distinct(anho) as anho from web.f00007  order by anho desc 
+    </select>
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="OrdenCompraMap">
+        select * from web.f00007 where (orden_compra ILIKE #{query} or proveedor ILIKE  #{query} and estado = true ) and  anho=#{anio} and mes=#{mes} order by id ${order}
+    </select>
+    <select id="getTotalListForAdmin" parameterType="java.util.HashMap"  resultMap="OrdenCompraMap">
+        select * from web.f00007 where (orden_compra ILIKE #{query} or proveedor ILIKE  #{query}) and  anho=#{anio} order by id ${order}
+    </select>
+    <select id="getRepetidoOrdenCompra" parameterType="java.util.HashMap"  resultMap="OrdenCompraMap">
+        select id from web.f00007 where (orden_compra =#{nro} and anho = #{anho})
+    </select>
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="OrdenCompraMap">
+        select * from web.f00007 where (orden_compra ILIKE #{query} or proveedor ILIKE  #{query})  and  anho=#{anio} order by id ${order} limit ${limit} offset ${start} 
+    </select>
+    <update id="createTableTemp">
+        CREATE TEMP TABLE temp(
+        id integer NOT NULL,
+        mes character(2) NOT NULL,
+        anho character varying(4) NOT NULL,
+        orden_compra character varying(20),
+        fecha_compra date,
+        fuente_financiamiento character varying(150),
+        proveedor text,
+        monto numeric(15,2),
+        financiamiento character varying(20),
+        estado boolean,
+        nro_siaf character varying(20),
+        CONSTRAINT peam_temp_pk PRIMARY KEY (id)
+        ) ON COMMIT DROP 
+    </update>
+    <insert id="insertTemp" parameterType="OrdenCompra">
+        INSERT INTO temp(
+        id, mes, anho, orden_compra, fecha_compra, fuente_financiamiento,
+        proveedor, monto, financiamiento, estado, nro_siaf)
+        VALUES (#{id}, #{mes}, #{anho}, #{nro}, cast(#{fecha} as date), #{fuenteFinanciamiento},
+        #{proveedor}, #{monto}, #{financiamiento}, #{estado}, #{nroSiaf});
+    </insert>
+    <delete id="deleteTemporalOrden" parameterType="Integer">
+        DELETE FROM temp
+        WHERE id = #{id}
+    </delete>
+    <select id="getListTempForWeb" parameterType="java.util.HashMap"  resultMap="OrdenCompraMap">
+        select * from temp 
+    </select>
+    <insert id="addItemOdenCompra"  parameterType="java.util.HashMap" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select cast((max(id)+1) as integer) from web.f00007
+        </selectKey>
+        INSERT INTO web.f00007(
+        id, mes, anho, orden_compra, fecha_compra, fuente_financiamiento,
+        proveedor, monto, financiamiento, estado, nro_siaf)
+        VALUES (#{id}, #{mes}, #{anho}, #{nro}, cast(#{fecha} as date), #{fuenteFinanciamiento},
+        #{proveedor}, #{monto}, #{financiamiento}, 'true', #{nroSiaf});
+    </insert>
+    
+    <delete id="deleteOrdenCompra" parameterType="Integer">
+        DELETE FROM web.f00007
+        WHERE id = #{id}
+    </delete>
+</mapper>

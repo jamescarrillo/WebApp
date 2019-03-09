@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Vehiculo">
+    <resultMap id="VehiculoMap" type="Vehiculo">
+        <result property="id" column="id" />        
+        <result property="anho" column="anho" />
+        <result property="mes" column="mes" />
+        <result property="tipoClase" column="tipo_clase" />
+        <result property="claseVehiculo" column="clase_vehiculo" />
+        <result property="asignadoA" column="asignado_a"  />
+        <result property="cargoActividad" column="cargo_actividad" />    
+        <result property="tipoCombustible" column="tipo_combustible" />       
+        <result property="recorridoKm" column="recorrido_km"/>     
+        <result property="costoCombustible" column="costo_combustible"/>     
+        <result property="soatFechaVencimiento" column="soat_fecha_vencimiento"/>     
+        <result property="placa" column="placa"/>     
+        <result property="observaciones" column="observaciones"/>     
+        <result property="estado" column="estado"/>     
+    </resultMap>
+    <resultMap id="AnhosMap" type="java.lang.String">
+        <result property="anho" column="anho" />  
+    </resultMap>
+    <resultMap id="MesMap" type="java.lang.String">
+        <result property="mes" column="mes" />
+    </resultMap>
+    <select id="getListMesForWeb" parameterType="String"  resultMap="MesMap">
+        select distinct mes  from web.f00014 where(anho=#{anho}) order by mes desc
+    </select>    
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="VehiculoMap">
+        select * from web.f00014 where (asignado_a  ILIKE  #{query} or placa ILIKE #{query})  and  anho=#{anio} and  mes=#{mes} order by id ${order} limit ${limit} offset ${start} 
+    </select>
+    <select id="getListAnioForWeb"  resultMap="AnhosMap">
+        select distinct(anho) as anho from web.f00014  order by anho desc 
+    </select>
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="VehiculoMap">
+        select * from web.f00014 where (asignado_a  ILIKE  #{query} or placa ILIKE #{query}) and  anho=#{anio} and  mes=#{mes} order by id ${order}
+    </select>
+    
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="VehiculoMap">
+        select * from web.f00014 where (asignado_a  ILIKE  #{query} or placa ILIKE #{query})  and  anho=#{anio}  order by id ${order} limit ${limit} offset ${start} 
+    </select>
+    <select id="getTotalListForAdmin" parameterType="java.util.HashMap"  resultMap="VehiculoMap">
+        select * from web.f00014 where (asignado_a  ILIKE  #{query} or placa ILIKE #{query}) and  anho=#{anio} order by id ${order}
+    </select>
+    <update id="createTableTemp">
+        CREATE  TEMP TABLE temp
+        (
+        id integer NOT NULL,
+        anho character varying(4) NOT NULL,
+        mes character(2) NOT NULL,
+        tipo_clase character varying(40),
+        clase_vehiculo character varying(60),
+        asignado_a character varying(80),
+        cargo_actividad character varying(100),
+        tipo_combustible character varying(60),
+        recorrido_km numeric(15,2) DEFAULT 0.00,
+        costo_combustible numeric(15,2),
+        soat_fecha_vencimiento character varying(20),
+        placa character varying(40),
+        observaciones text,
+        estado boolean,
+        CONSTRAINT peam_id_pk PRIMARY KEY (id )
+        ) ON COMMIT DROP 
+    </update>
+    
+    <insert id="insertTemp" parameterType="Vehiculo">
+        INSERT INTO temp(
+        id, anho, mes, tipo_clase, clase_vehiculo, asignado_a, cargo_actividad, 
+        tipo_combustible, recorrido_km, costo_combustible, soat_fecha_vencimiento, 
+        placa, observaciones, estado)
+        VALUES (#{id}, #{anho}, #{mes}, #{tipoClase}, #{claseVehiculo}, #{asignadoA}, #{cargoActividad}, 
+        #{tipoCombustible}, #{recorridoKm}, #{costoCombustible}, #{soatFechaVencimiento}, 
+        #{placa}, #{observaciones}, #{estado});
+    </insert>
+    
+    <delete id="deleteTemporalVehiculo" parameterType="Integer">
+        DELETE FROM temp
+        WHERE id = #{id}
+    </delete>
+
+    <select id="getListTempForWeb" parameterType="java.util.HashMap"  resultMap="VehiculoMap">
+        select * from temp 
+    </select>
+    
+    <insert id="addItemVehiculo"  parameterType="java.util.HashMap" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select cast((max(id)+1) as integer) from web.f00014
+        </selectKey>
+        INSERT INTO web.f00014(
+        id, anho, mes, tipo_clase, clase_vehiculo, asignado_a, cargo_actividad, 
+        tipo_combustible, recorrido_km, costo_combustible, soat_fecha_vencimiento, 
+        placa, observaciones, estado)
+        VALUES (#{id}, #{anho}, #{mes}, #{tipoClase}, #{claseVehiculo}, #{asignadoA}, #{cargoActividad}, 
+        #{tipoCombustible}, #{recorridoKm}, #{costoCombustible}, cast (#{soatFechaVencimiento} as  date), 
+        #{placa}, #{observaciones}, 'true');
+    </insert>
+    
+    <select id="getRepetidoVehiculo" parameterType="java.util.HashMap"  resultMap="VehiculoMap">
+        select id from web.f00014 where (anho =#{anho} and mes = #{mes} and tipo_clase = #{tipoClase} and clase_vehiculo = #{claseVehiculo}
+        and asignado_a = #{asignadoA} and cargo_actividad = #{cargoActividad} and tipo_combustible = #{tipoCombustible}  and recorrido_km = #{recorridoKm}
+        and costo_combustible = #{costoCombustible} and soat_fecha_vencimiento =  cast (#{soatFechaVencimiento} as date) and placa = #{placa} and observaciones = #{observaciones})
+    </select>
+    
+    <delete id="deleteVehiculo" parameterType="Integer">
+        DELETE FROM web.f00014
+        WHERE id = #{id}
+    </delete>
+</mapper>

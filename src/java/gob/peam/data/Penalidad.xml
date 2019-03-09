@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Penalidad">
+    <resultMap id="PenalidadMap" type="Penalidad">
+        <id property="id" column="id" />
+        <result property="anho" column="anho" />
+        <result property="montoContrato" column="monto_contrato" />
+        <result property="contratista" column="contratista" />
+        <result property="objeto" column="objeto" />
+        <result property="nroProceso" column="nro_proceso" />
+        <result property="nroContrato" column="nro_contrato" />
+        <result property="tipo" column="tipo" />
+        <result property="montoPenalidad" column="monto_penalidad" />
+    </resultMap>
+    <resultMap id="AnhoMap" type="Anho">
+        <id property="anho" column="anho" />
+    </resultMap>
+    
+    <select id="getList" parameterType="java.util.HashMap" resultMap="PenalidadMap">
+        select *
+        from web.penalidad where (objeto ILIKE #{c} ) ${anho} order by id desc
+    </select>
+    
+    <select id="getAnho" resultMap="AnhoMap" >
+        select distinct(anho) anho from web.penalidad order by anho desc
+    </select>
+    
+    <select id="get" parameterType="Integer" resultMap="PenalidadMap">
+        select * from web.penalidad where id = #{id}
+    </select>
+    
+    <insert id="insert" parameterType="Penalidad">
+        <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
+            select case when max(id) is null then 1 else (max(id)+1) end id 
+            from web.penalidad
+        </selectKey>
+        INSERT INTO web.penalidad(
+        id, anho, contratista, ruc, objeto, nro_proceso, nro_contrato, 
+        tipo, monto_contrato, monto_penalidad)
+        VALUES (#{id}, #{anho}, #{contratista}, #{ruc}, #{objeto}, #{nroProceso}, #{nroContrato}, 
+        #{tipo}, #{montoContrato}, #{montoPenalidad});
+    </insert>
+    
+    <update id="update" parameterType="Penalidad">
+        UPDATE web.penalidad
+        SET anho=#{anho}, contratista=#{contratista}, ruc=#{ruc}, objeto=#{objeto}, nro_proceso=#{nroProceso}, 
+        nro_contrato=#{nroContrato}, tipo=#{tipo}, monto_contrato=#{montoContrato}, monto_penalidad=#{montoPenalidad}
+        WHERE id = #{id}
+    </update>
+    
+    <delete id="delete"  parameterType="Integer">
+        DELETE FROM web.penalidad where id = #{id}
+    </delete>
+    
+    <select id="getListWeb" parameterType="HashMap" resultMap="PenalidadMap">
+        select * from web.penalidad
+        where (contratista ILIKE #{query} or objeto ILIKE #{query} or nro_proceso ILIKE #{query} ) 
+        and anho=#{anho} order by id ${order} limit  ${limit} offset ${start}
+    </select>
+    
+    <select id="getTotalListForWeb" parameterType="HashMap"  resultType="Integer">
+        select * from web.penalidad
+        where (contratista ILIKE #{query} or objeto ILIKE #{query} or nro_proceso ILIKE #{query} ) 
+        and anho=#{anho}
+    </select>
+   
+</mapper>
+    

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PlazaConvocatoria">
+    <resultMap id="PlazaConvocatoriaMap" type="PlazaConvocatoria">
+        <id property="puesId" column="pues_id" />
+        <result property="cargo" column="cargo" />
+        <result property="entidad" column="entidad" />
+        <result property="nroPlaza" column="nroplaza" />
+        <result property="modalidad" column="modalidad" />
+        <result property="ingreMensual" column="ingre_mensual" />
+        <result property="estado" column="estado" />
+        <result property="coperId" column="coper_id" />
+    </resultMap>
+    <insert id="insertPlazaConvocatoria" parameterType="PlazaConvocatoria">
+        <selectKey keyProperty="puesId" resultType="int" order="BEFORE">
+            select cast((max(pues_id)+1) as integer) from web.puesto_conv
+        </selectKey>
+        INSERT INTO web.puesto_conv(
+        pues_id, cargo, entidad, modalidad, nroplaza, ingre_mensual, 
+        estado, coper_id)
+        VALUES (${puesId}, #{cargo}, #{entidad}, #{modalidad}, #{nroPlaza}, #{ingreMensual}, 
+        #{estado}, #{coperId})
+    </insert>
+    <select id="listarPlazaConvocatoriaForAdmin" parameterType="java.util.HashMap" resultMap="PlazaConvocatoriaMap">
+        select * FROM web.puesto_conv 
+        where coper_id=#{coperId}
+        ORDER BY pues_id asc
+        limit ${limit} offset ${start}
+    </select>
+    <select id="listarTotalPlazaConvocatoriaForAdmin" parameterType="java.util.HashMap" resultMap="PlazaConvocatoriaMap">
+        select pues_id FROM web.puesto_conv 
+        where coper_id=#{coperId}
+    </select>
+    <select id="listarPlazaConvocatoriaForWeb" parameterType="Integer" resultMap="PlazaConvocatoriaMap">
+        select * FROM web.puesto_conv 
+        where coper_id=#{codigo}
+        ORDER BY pues_id asc 
+    </select>
+    
+    <select id="buscarPlazaConvocatoria" parameterType="Integer" resultMap="PlazaConvocatoriaMap">
+        select * from web.puesto_conv where id=#{codigo} and tipo = 1
+    </select>
+    
+    <delete id="deletePlazaConvocatoria" parameterType="Integer">
+        DELETE FROM web.puesto_conv
+        WHERE pues_id = #{id};
+    </delete>
+    
+    <update id="updatePlaza" parameterType="PlazaConvocatoria">
+        UPDATE web.puesto_conv
+        SET cargo=#{cargo},  modalidad=#{modalidad}, nroplaza=#{nroPlaza}, ingre_mensual=#{ingreMensual}
+        WHERE pues_id = #{puesId}
+    </update>
+</mapper>

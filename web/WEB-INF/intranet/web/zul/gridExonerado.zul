@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zk xmlns="http://www.zkoss.org/2005/zul">
+    <panel title="Lista de Procesos de Exoneración" border="normal" width="100%" >
+        <panelchildren style="overflow-y:auto;">
+            
+            <div  apply="org.zkoss.bind.BindComposer "   viewModel="@id('vm') @init('gob.peam.dao.ExoneradoDao')" >
+                <label value="@bind(vm.anho)" style="display:none" />
+                <listbox id="grid" model="@bind(vm.items)" selectedItem="@bind(vm.selected)" emptyMessage="No hay Registros Encontrados" mold="paging" pageSize="10"  >
+                    <auxhead sclass="category-center">
+                        <auxheader colspan="8">
+                            <n:button xmlns:n="native" type="button" lang="nuevo" id="btnNuevo">Nuevo</n:button>
+                            <n:button xmlns:n="native"  type="button" lang="editar" id="btnEditar">Editar</n:button>
+                            <button id="btnDelete" onClick="@command('delete', item=grid.getSelectedItem().getLastChild().getLabel())" label="Borrar" />
+                            <button label="Actualizar" id="update" onClick="@global-command('updateAnho')" />
+                            <n:script xmlns:n="native">init();</n:script>
+                        </auxheader>
+                    </auxhead>
+                    <auxhead sclass="category-center">
+                        <auxheader label="A&#241;o: " colspan="2">
+                            <window apply="org.zkoss.bind.BindComposer" viewModel="@id('cm') @init('gob.peam.dao.ExoneradoDao')">
+                                <listbox id="anho" model="@load(cm.anhos)" selectedItem="@bind(cm.selectedAnho)" mold="select"   onSelect="@global-command('changeAnho', select=cm.selectedAnho.getAnho())" >
+                                    <template name="model" var="f">
+                                        <listitem label="@load(f.anho)"  />
+                                    </template>
+                                </listbox>
+                            </window>
+                        </auxheader>
+                        <auxheader label="Buscar Exoneración " colspan="6">
+                            <image src="/resources/images/16x16/funnel.png" />
+                            <textbox value="@bind(vm.filter)" onChange="@command('changeFilter')"  width="280px" instant="true"/>
+                        </auxheader>
+                    </auxhead>
+                    <listhead sizable="true">
+                        <listheader width="10%" label="Fecha" align="left"/> 
+                        <listheader width="15%" label="Causal" align="left"/>
+                        <listheader width="20%" label="Objeto" align="center" />
+                        <listheader width="20%" label="Descripción" align="center" />
+                        <listheader width="10%" label="Monto" align="center" />
+                        <listheader width="12%" label="Nombre" align="center" />
+                        <listheader width="8%" label="R.U.C" align="center" />
+                        <listheader width="5%" label="link" align="center" />
+                    </listhead>
+                    <template name="model" var="a">
+                        <listitem >
+                            <listcell label="@load(a.fecha) @converter('formatedDate', format='dd/MM/yyyy')" />
+                            <listcell label="@load(a.causa)" />
+                            <listcell label="@load(a.objeto)" />
+                            <listcell label="@load(a.descripcion)" />
+                            <listcell label="@load(a.monto)" />
+                            <listcell label="@load(a.contratista)" />
+                            <listcell label="@load(a.ruc)" />
+                            <listcell style="text-align : center" image="/resources/images/16x16/${a.url != null ? 'link' : 'd_link' }.png" />
+                            <listcell label="@load(a.id)" style="display:none" />
+                        </listitem>
+                    </template>
+                </listbox>
+            </div>
+        </panelchildren>
+    </panel>
+</zk>

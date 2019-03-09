@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Persona">
+    <resultMap id="PersonaMap" type="Persona">
+        <id property="idPersona" column="pers_id" />
+        <result property="dni" column="pers_dni" />
+        <result property="nombre" column="pers_nombre" />
+        <result property="apellidoPaterno" column="pers_apellido_paterno" />
+        <result property="apellidoMaterno" column="pers_apellido_materno" />
+        <result property="estado" column="pers_estado" />		
+        <result property="cargo" column="pers_cargo" />
+    </resultMap>
+    <resultMap id="CargoMap" type="Cargo">
+        <id property="idCargo" column="carg_id" />
+        <result property="estado" column="carg_estado" />
+        <association property="responsable" column="pers_id" javaType="Persona">
+            <id property="idPersona" column="pers_id" />
+            <result property="dni" column="pers_dni" />
+            <result property="nombre" column="pers_nombre" />
+            <result property="apellidoPaterno" column="pers_apellido_paterno" />
+            <result property="apellidoMaterno" column="pers_apellido_materno" />
+        </association>
+        <association property="dependencia" column="depe_id" javaType="Dependencia">
+            <result property="idDependencia" column="depe_id" />
+            <result property="nombre" column="depe_nombre" />
+            <result property="abreviatura" column="depe_abreviatura" />
+            <result property="estado" column="depe_estado" />
+            <result property="padre" column="depe_padre" />
+            <result property="nivel" column="depe_nivel" />
+        </association>      
+    </resultMap>
+    <select id="selectRepresentante" parameterType="int" resultMap="PersonaMap">
+        SELECT 
+        persona.pers_dni, 
+        persona.pers_nombre, 
+        persona.pers_apellido_paterno, 
+        persona.pers_apellido_materno, 
+        persona.pers_id,
+        persona.pers_estado
+        FROM 
+        administracion.cargo inner join  
+        administracion.persona
+        on cargo.carg_responsable = persona.pers_id        
+        where administracion.cargo.depe_id=#{depe_id}  and cargo.carg_estado=true       
+    </select>
+    <select id="listarPersonas" parameterType="HashMap" resultMap="PersonaMap">
+        SELECT 
+        persona.pers_dni, 
+        persona.pers_nombre, 
+        persona.pers_apellido_paterno, 
+        persona.pers_apellido_materno, 
+        persona.pers_id,
+        persona.pers_estado
+        FROM  
+        administracion.persona        
+        where 
+        pers_dni like #{query} or upper(pers_nombre) like #{query} or upper(pers_apellido_paterno) like #{query} or upper(pers_apellido_materno) like #{query}
+        ORDER BY pers_apellido_paterno asc
+        limit ${limit} offset ${start}
+    </select>
+    <select id="listarTotalPersonas" parameterType="HashMap" resultMap="PersonaMap">
+        SELECT 
+        persona.pers_dni, 
+        persona.pers_nombre, 
+        persona.pers_apellido_paterno, 
+        persona.pers_apellido_materno, 
+        persona.pers_id,
+        persona.pers_estado
+        FROM  
+        administracion.persona
+        where 
+        pers_dni like #{query} or upper(pers_nombre) like #{query} or upper(pers_apellido_paterno) like #{query} or upper(pers_apellido_materno) like #{query}
+        ORDER BY pers_apellido_paterno asc        
+    </select>
+    <update id="updateCargo" parameterType="Cargo">
+        UPDATE administracion.cargo
+        SET carg_estado=true
+        WHERE depe_id=#{dependencia.idDependencia} and carg_responsable=#{responsable.idPersona}
+    </update>
+    <insert id="insertCargo" parameterType="Cargo">
+        <selectKey keyProperty="idCargo" resultType="int" order="BEFORE">
+                        select cast(((case  when max(carg_id) is null then 0 else max(carg_id) end) +1) as int) from administracion.cargo
+        </selectKey>
+        INSERT INTO administracion.cargo(
+        carg_id, depe_id, carg_responsable, carg_estado)
+        VALUES (#{idCargo}, #{dependencia.idDependencia}, #{responsable.idPersona}, true);
+    </insert>
+    <select id="existeCargo" parameterType="Cargo" resultMap="CargoMap">
+        SELECT 
+        cargo.carg_id, 
+        cargo.depe_id, 
+        cargo.carg_estado, 
+        cargo.carg_responsable, 
+        persona.pers_dni, 
+        persona.pers_nombre, 
+        persona.pers_apellido_paterno, 
+        persona.pers_apellido_materno, 
+        dependencia.depe_nombre, 
+        dependencia.depe_abreviatura, 
+        dependencia.depe_estado, 
+        dependencia.depe_padre, 
+        dependencia.depe_nivel
+        FROM 
+        administracion.cargo inner join
+        administracion.dependencia on  dependencia.depe_id = cargo.depe_id inner join
+        administracion.persona on persona.pers_id = cargo.carg_responsable
+        where cargo.depe_id=#{dependencia.idDependencia} and cargo.carg_responsable=#{responsable.idPersona}
+    </select>
+    <update id="desactivarCargo" parameterType="int">
+        update administracion.cargo
+        set carg_estado=false
+        where depe_id=#{idDependencia}
+    </update>
+    <insert id="insertPersona" parameterType="Persona">
+        <selectKey keyProperty="idPersona" resultType="int" order="BEFORE">
+                        select cast(((case  when max(pers_id) is null then 0 else max(pers_id) end) +1) as int) from administracion.persona
+        </selectKey>
+        INSERT INTO administracion.persona(
+        pers_id, pers_dni, pers_nombre, pers_apellido_paterno, pers_apellido_materno, pers_estado,pers_iniciales,pers_cargo)
+        VALUES (#{idPersona}, #{dni}, #{nombre}, #{apellidoPaterno}, #{apellidoMaterno}, #{estado},#{iniciales},#{cargo})
+    </insert>
+    <select id="buscarPersonaPorDni" parameterType="String" resultMap="PersonaMap">
+        select * from administracion.persona where pers_dni=#{dni}
+    </select>
+    <select id="buscarPersona" parameterType="Integer" resultMap="PersonaMap">
+        select * from administracion.persona where pers_id=#{id}
+    </select>
+    <update id="updatePersona" parameterType="Persona">
+        UPDATE administracion.persona
+        SET  pers_dni=#{dni}, pers_nombre=#{nombre}, pers_apellido_paterno=#{apellidoPaterno}, 
+        pers_apellido_materno=#{apellidoMaterno}, pers_estado=#{estado},pers_iniciales=#{iniciales},pers_cargo=#{cargo}
+        WHERE pers_id=#{idPersona};
+    </update>   
+    <delete id="delPersona" parameterType="Integer">
+        DELETE FROM administracion.persona
+        WHERE pers_id=#{pers_id}
+    </delete>
+    <select id="existePersonaParaEliminar" parameterType="Integer" resultMap="PersonaMap">
+        select persona.* from administracion.persona  
+        inner join administracion.usuario on usuario.pers_id=persona.pers_id        
+        where persona.pers_id=#{idPersona}
+    </select>
+    <select id="listarPersonasPorDependencia" parameterType="HashMap" resultMap="PersonaMap">
+        SELECT persona.* FROM 
+        administracion.persona inner join  administracion.dependencia_persona on dependencia_persona.pers_id = persona.pers_id
+        WHERE 
+        ( persona.pers_nombre like #{query} or persona.pers_apellido_paterno like #{query} or persona.pers_apellido_materno like #{query})  and dependencia_persona.depe_id=#{depe_id} order by persona.pers_apellido_paterno asc limit ${limit} offset ${start}
+    </select>
+    <select id="listarTotalPersonasPorDependencia" parameterType="HashMap" resultMap="PersonaMap">
+        SELECT persona.* FROM 
+        administracion.persona inner join  administracion.dependencia_persona on dependencia_persona.pers_id = persona.pers_id
+        WHERE 
+        ( persona.pers_nombre like #{query} or persona.pers_apellido_paterno like #{query} or persona.pers_apellido_materno like #{query})  and dependencia_persona.depe_id=#{depe_id}
+    </select>
+    <select id="listarEmpleados" parameterType="HashMap" resultMap="PersonaMap">
+        select * from administracion.persona
+        where pers_id not in (select pers_id from administracion.dependencia_persona)
+        and  
+        ( persona.pers_nombre like #{query} or persona.pers_apellido_paterno like #{query} or persona.pers_apellido_materno like #{query}) order by persona.pers_apellido_paterno asc limit ${limit} offset ${start}
+    </select> 
+    <select id="listarTotalEmpleados" parameterType="HashMap" resultMap="PersonaMap">
+        select * from administracion.persona
+        where pers_id not in (select pers_id from administracion.dependencia_persona)
+        and  
+        ( persona.pers_nombre like #{query} or persona.pers_apellido_paterno like #{query} or persona.pers_apellido_materno like #{query})  order by persona.pers_apellido_paterno asc
+    </select>
+</mapper>

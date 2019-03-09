@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Anuncio">
+    <resultMap id="AnuncioMap" type="Anuncio">
+        <result property="anuId" column="anu_id" />
+        <result property="anuFechaInicio" column="anu_fecha_ini" />
+        <result property="anuFechaFin" column="anu_fecha_fin" />
+        <result property="tipo" column="tipo" />
+        <result property="titulo" column="titulo" />
+        <result property="contenido" column="contenido" />
+        <result property="estado" column="estado" />
+    </resultMap>
+    
+    <resultMap id="AnhosMap" type="java.lang.String">
+        <result property="anho" column="anho" />
+    </resultMap>
+    
+    <select id="getAnuncioForNotice" parameterType="java.util.HashMap"  resultMap="AnuncioMap">
+        select * from web.anuncio order by anu_id ${order} limit 1
+    </select>
+    
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="AnuncioMap">
+        select * from web.anuncio where upper(titulo) ILIKE #{query} or upper(contenido) ILIKE #{query} order by anu_id ${order} limit ${limit} offset ${start}
+    </select>
+    
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="AnuncioMap">
+        select (anu_id) from web.anuncio  where upper(titulo) ILIKE #{query} or upper(contenido) ILIKE #{query}
+    </select>
+    
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="AnuncioMap">
+        select * from web.anuncio 
+        WHERE 
+        upper(anuncio.titulo) ILIKE #{filtro} or upper(anuncio.contenido) ILIKE #{filtro} order by anuncio.anu_id desc limit ${limit} offset ${start}
+    </select>
+    
+    <select id="getTotalListForAdmin" parameterType="String"  resultMap="AnuncioMap">
+        select * from web.anuncio 
+        WHERE 
+        upper(anuncio.titulo) ILIKE #{filtro} or upper(anuncio.contenido) ILIKE #{filtro}
+    </select>
+
+    <select id="getListAnioForWeb"  resultMap="AnhosMap">
+        select distinct(trim(substring(anu_fecha_ini from 0)))::character(4) anho  from web.anuncio  order by anho desc
+    </select>
+    
+    <select id="getAnuncioSingle" parameterType="int"  resultMap="AnuncioMap">
+        select * from web.anuncio where anu_id=#{id}
+    </select>
+    
+    <select id="getAnuncioForWeb"  parameterType="java.util.HashMap" resultMap="AnuncioMap">
+        select * from web.anuncio where estado=true and  cast(anu_fecha_ini as date) &lt;= cast (#{fecha} as date) and cast(anu_fecha_fin as date) &gt;= cast(#{fecha} as date)
+        order by RANDOM() LIMIT 1;
+    </select>
+    
+    <insert id="insertAnuncio" parameterType="Anuncio">
+        <selectKey keyProperty="anuId" resultType="int" order="BEFORE">
+            select cast((max(anu_id)+1) as integer)  from web.anuncio
+        </selectKey>
+        INSERT INTO web.anuncio(
+        anu_id, anu_fecha_ini, anu_fecha_fin, tipo, titulo, contenido, 
+        estado)
+        VALUES (#{anuId}, #{anuFechaInicio}, #{anuFechaFin} , #{tipo}, #{titulo}, #{contenido}, 
+        #{estado});
+    </insert>
+    
+    <update id="updateAnuncio" parameterType="Anuncio">
+        UPDATE web.anuncio
+        SET  titulo=#{titulo}, contenido=#{contenido}, anu_fecha_ini=#{anuFechaInicio}, anu_fecha_fin=#{anuFechaFin}, estado = #{estado}
+        WHERE anu_id=#{anuId}
+    </update>
+    
+    <delete id="deleteAnuncio" parameterType="int">
+        delete from web.anuncio
+        where anu_id=#{id}
+    </delete>
+    
+    <update id="publicarAnuncio" parameterType="int">
+        update web.anuncio
+        set estado = true
+        where anu_id=#{id}
+    </update>
+    
+</mapper>

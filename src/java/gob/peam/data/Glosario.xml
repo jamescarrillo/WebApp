@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Glosario">
+    <resultMap id="GlosarioMap" type="Glosario">
+        <id property="id" column="id" />
+        <result property="descripcion" column="descripcion" />
+        <result property="titulo" column="titulo" />
+    </resultMap>
+    
+    <select id="getList" parameterType="String" resultMap="GlosarioMap">
+        SELECT id, titulo, descripcion
+        FROM web.glosario
+        where (descripcion ILIKE #{c} or titulo ILIKE #{c} )  order by titulo asc
+    </select>
+    
+   
+    <select id="get" parameterType="Integer" resultMap="GlosarioMap">
+        select * from web.glosario where id = #{id}
+    </select>
+    
+    <insert id="insert" parameterType="Glosario">
+        <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
+            select case when max(id) is null then 1 else (max(id)+1) end id 
+            from web.glosario
+        </selectKey>
+        INSERT INTO web.glosario(
+        id, titulo, descripcion)
+        VALUES (#{id}, #{titulo}, #{descripcion});
+
+
+    </insert>
+    
+    <update id="update" parameterType="Glosario">
+        UPDATE web.glosario
+        SET  titulo=#{titulo}, descripcion=#{descripcion}
+        WHERE id=#{id}
+
+    </update>
+    <delete id="delete"  parameterType="Integer">
+        DELETE FROM  web.glosario where id = #{id}
+    </delete>
+    
+    
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="GlosarioMap">
+        select * from web.glosario where
+        (titulo ILIKE #{query} or descripcion ILIKE #{query})
+        order by titulo asc limit  ${limit} offset ${start}
+    </select>
+    
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultType="Integer">
+        select count(id) from web.glosario where
+        (titulo ILIKE #{query} or descripcion ILIKE #{query})
+    </select>
+    
+</mapper>
+    

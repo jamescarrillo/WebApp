@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zk xmlns="http://www.zkoss.org/2005/zul">
+    <div  apply="org.zkoss.bind.BindComposer" viewModel="@id('vm') @init('gob.peam.dao.ArcDigDao')">
+        <listbox width="100%" id="lista" model="@bind(vm.items)" multiple="true" selectedItems="@bind(vm.selected)" emptyMessage="No hay Registros Encontrados" mold="paging" pageSize="10" >
+            <auxhead sclass="category-center">
+                <auxheader label="Etiquetas/Año: " >
+                    <window apply="org.zkoss.bind.BindComposer" viewModel="@id('cm') @init('gob.peam.dao.CategoriaArcDigDao')">
+                        <listbox id="categoria" model="@load(cm.items)" selectedItem="@bind(cm.selected)" width="150px" mold="select" onSelect=" @command('changeFilterDato', dato=cm.selected.getCharId()), @global-command('changeSelect', select=cm.selectedAnho.getAnho(), tipo = cm.selected.getId())" >
+                            <template name="model" var="e">
+                                <listitem label="@load(e.nombre)" value="@load(e.charId)"  />
+                            </template>
+                        </listbox>
+                        <listbox id="anho" model="@load(cm.anhos)" selectedItem="@bind(cm.selectedAnho)" mold="select" width="100px"  onSelect="@global-command('changeSelect', select=cm.selectedAnho.getAnho(), tipo = cm.selected.getId())" >
+                            <template name="model" var="f">
+                                <listitem label="@load(f.anho)"  value="@load(e.anho)"/>
+                            </template>
+                        </listbox>
+                    </window>
+                </auxheader>
+                <auxheader label="Buscar Documentos: " >
+                    <image src="/resources/images/16x16/funnel.png" />
+                    <textbox value="@bind(vm.filter)" onChange="@command('changeFilter')"  width="280px" instant="true"/>
+                </auxheader>
+                <auxheader >
+                    <button  image="/resources/images/16x16/refresh.png" id="refresh" onClick="@global-command('refresh'), @command('update')" />
+                    <n:script xmlns:n="native">init1();</n:script>
+                </auxheader>
+            </auxhead>
+            <listhead sizable="true">
+                <listheader width="30%" label="Titulo" align="left"/>
+                <listheader width="65%" label="Resumen" align="center" />
+                <listheader width="5%" label="Doc." align="center" />
+            </listhead>
+            <template name="model" var="a">
+                <listitem >
+                    <listcell label="@load(a.titulo)" />
+                    <listcell label="@load(a.resumen)" />
+                    <listcell style="text-align:center" image="/resources/images/16x16/mini_pdf.png"  />
+                    <listcell label="@load(a.id)" style="display:none" />
+                </listitem>
+            </template>
+        </listbox>
+        
+    </div>
+</zk>

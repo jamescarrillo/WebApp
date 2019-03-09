@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ConvocatoriaBien">
+    <resultMap id="ConvocatoriaBienMap" type="ConvocatoriaBien">
+        <id property="convoId" column="convo_id" />
+        <result property="anho" column="anho" />
+        <result property="fecha" column="fecha" jdbcType="DATE" javaType="java.sql.Date" />
+        <result property="tipo" column="tipo" />
+        <result property="titulo" column="titulo" />
+        <result property="referencia" column="referencia" />
+        <result property="valReferencial" column="val_referencial" />
+        <result property="costParticipacion" column="cost_participacion" />
+        <result property="lugRegParticipante" column="lug_reg_participante" />
+        <result property="basesFile" column="bases_file" />
+        <result property="resEjectFile" column="res_eject_file" />
+        <result property="absConObserFile" column="abs_con_obser_file" />
+        <result property="absConsultFile" column="abs_consult_file" />
+        <result property="absObservaFile" column="abs_observa_file" />
+        <result property="ProEntiFile" column="pro_enti_file" />
+        <result property="ProOsceFile" column="pro_osce_file" />
+        <result property="basInteFile" column="bas_inte_file" />
+        <result property="actEvalTecFile" column="act_eval_tec_file" />
+        <result property="notiSusFile" column="noti_sus_file" />
+        <result property="cuaCompaFile" column="cua_compa_file" />
+        <result property="actaBuenaProFile" column="acta_buena_pro_file" />
+        <result property="resRecEntiFile" column="res_rec_enti_file" />
+        <result property="resRecTribFile" column="res_rec_trib_file" />
+        <result property="estado" column="estado" />
+    </resultMap>
+    
+    <select id="listarConvocatoriaBien" parameterType="java.util.HashMap" resultMap="ConvocatoriaBienMap">
+        select * from web.convocatoria_bien
+        where (referencia ILIKE #{query} or titulo ILIKE #{query}) ${filtro} ORDER BY  fecha desc, convo_id desc
+        limit ${limit} offset ${start}
+    </select>
+    
+    <select id="listarTotalConvocatoriaBien" parameterType="java.util.HashMap" resultMap="ConvocatoriaBienMap">
+        select * from web.convocatoria_bien
+        where (referencia ILIKE #{query} or titulo ILIKE #{query}) ${filtro}
+    </select>
+    
+    <select id="listarConvocatoriaBienForWeb" parameterType="java.util.HashMap" resultMap="ConvocatoriaBienMap">
+        select * from web.convocatoria_bien
+        where (referencia ILIKE #{query} or titulo ILIKE #{query}) and estado = true ORDER BY  fecha desc, convo_id desc
+        limit ${limit} offset ${start}
+    </select>
+    
+    <select id="listarTotalConvocatoriaBienForWeb" parameterType="java.util.HashMap" resultMap="ConvocatoriaBienMap">
+        select * from web.convocatoria_bien
+        where (referencia ILIKE #{query} or titulo ILIKE #{query}) and estado = true
+    </select>
+   
+    <insert id="insertConvocatoriaBien" parameterType="ConvocatoriaBien">
+        <selectKey keyProperty="convoId" resultType="int" order="BEFORE">
+            select cast((max(convo_id)+1) as integer) from web.convocatoria_bien
+        </selectKey>
+        INSERT INTO web.convocatoria_bien(
+        convo_id, anho, fecha, tipo, referencia, val_referencial, cost_participacion, 
+        lug_reg_participante, bases_file, res_eject_file, abs_consult_file, 
+        abs_observa_file, pro_enti_file, pro_osce_file, bas_inte_file, 
+        act_eval_tec_file, cua_compa_file, acta_buena_pro_file, noti_sus_file, 
+        res_rec_enti_file, res_rec_trib_file, estado, abs_con_obser_file,  proceso, titulo)
+        VALUES (#{convoId}, #{anho}, #{fecha}, #{tipo}, #{referencia}, #{valReferencial}, 
+        #{costParticipacion}, #{lugRegParticipante}, #{basesFile}, #{resEjectFile},  
+        #{absConsultFile}, #{absObservaFile}, #{proEntiFile}, #{proOsceFile}, 
+        #{basInteFile}, #{actEvalTecFile}, #{cuaCompaFile}, #{actaBuenaProFile}, 
+        #{notiSusFile}, #{resRecEntiFile}, #{resRecTribFile}, #{estado}, #{absConObserFile},  #{proceso}, #{titulo});
+    </insert>
+    <update id="updateConvocatoriaBien" parameterType="ConvocatoriaBien">
+        UPDATE web.convocatoria_bien
+        SET 
+        tipo=#{tipo}, 
+        titulo = #{titulo},
+        referencia=#{referencia}, 
+        val_referencial=#{valReferencial}, 
+        cost_participacion=#{costParticipacion}, 
+        lug_reg_participante=#{lugRegParticipante}, 
+        bases_file=#{basesFile}, 
+        res_eject_file=#{resEjectFile}, 
+        abs_consult_file=#{absConsultFile}, 
+        abs_observa_file=#{absObservaFile}, 
+        pro_enti_file=#{proEntiFile}, 
+        pro_osce_file=#{proOsceFile}, 
+        bas_inte_file=#{basInteFile}, 
+        act_eval_tec_file=#{actEvalTecFile}, 
+        cua_compa_file=#{cuaCompaFile}, 
+        acta_buena_pro_file=#{actaBuenaProFile}, 
+        noti_sus_file=#{notiSusFile}, 
+        res_rec_enti_file=#{resRecEntiFile}, 
+        res_rec_trib_file=#{resRecTribFile}, 
+        estado = #{estado},
+        abs_con_obser_file=#{absConObserFile},
+        proceso = #{proceso},
+        fecha = #{fecha},
+        anho = #{anho}
+        WHERE convo_id = #{convoId};
+
+    </update>
+   
+    <update id="estadoConvocatoriaBien" parameterType="java.util.HashMap" >
+        UPDATE web.convocatoria_bien
+        SET estado = #{estado}
+        where convo_id = #{convoId}
+    </update>
+    <select id="buscarConvocatoriaBien" parameterType="Integer" resultMap="ConvocatoriaBienMap">
+        select * from web.convocatoria_bien where convo_id=#{idConvo}
+    </select>
+    
+ 
+    <delete id="deleteConvocatoriaBien" parameterType="Integer">
+        DELETE FROM web.convocatoria_bien
+        WHERE convo_id = #{convoId}
+    </delete>
+   
+    <select id="listarChildrenForConvocatoriaBien" parameterType="Integer" resultMap="ConvocatoriaBienMap">
+        SELECT id
+        FROM web.calendario_conv where convo_id = #{convoId} and tipo = 1
+    </select>
+
+</mapper>

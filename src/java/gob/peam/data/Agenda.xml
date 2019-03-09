@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Agenda">
+    <resultMap id="AgendaMap" type="Agenda">
+        <result property="id" column="id" />
+        <result property="fechaInicio" column="fecha_inicio" />
+        <result property="horaInicio" column="hora_inicio" />
+        <result property="horaFinal" column="hora_final" />
+        <result property="actividad" column="actividad"  />
+        <result property="ciudad" column="ciudad" />
+        <result property="lugar" column="lugar" />
+        <result property="direccion" column="direccion" />
+        <result property="estado" column="estado" />
+    </resultMap>
+    
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="AgendaMap">
+        select * from web.f00019 where  fecha_inicio = cast(#{fechaFiltro} as date) and tipo=#{tipo} order by fecha_inicio asc, id asc
+    </select>
+    
+    <select id="getListDayForWeb" parameterType="java.util.HashMap"  resultMap="AgendaMap">
+        select * from web.f00019 where fecha_inicio = cast(#{fechaFiltro} as date ) and tipo=#{tipo} and estado= true order by fecha_inicio asc, id asc
+    </select>
+    <select id="getLastAgendaForWeb" parameterType="java.util.HashMap"  resultMap="AgendaMap">
+        select lpad(date_part('DAY',fecha_inicio)::text,2,'0') as ciudad,
+        CASE date_part('MONTH',fecha_inicio)
+        WHEN 1 THEN 'ENERO' 
+        WHEN 2 THEN 'FEBRERO' 
+        WHEN 3 THEN 'MARZO' 
+        WHEN 4 THEN 'ABRIL' 
+        WHEN 5 THEN 'MAYO' 
+        WHEN 6 THEN 'JUNIO' 
+        WHEN 7 THEN 'JULIO' 
+        WHEN 8 THEN 'AGOSTO' 
+        WHEN 9 THEN 'SEPTIEMBRE' 
+        WHEN 10 THEN 'OCTUBRE' 
+        WHEN 11 THEN 'NOVIEMBRE' 
+        WHEN 12 THEN 'DICIEMBRE' 
+        END as lugar,* from web.f00019 where tipo=#{tipo} and estado= true order by fecha_inicio desc limit 1;
+    </select>
+    
+    <select id="getListForAdmin" parameterType="java.util.HashMap" resultMap ="AgendaMap" >
+        SELECT *
+        FROM web.f00019 where (( actividad ILIKE #{query} or lugar ILIKE #{query} or ciudad ILIKE #{query}) and tipo=#{tipo} ${filtro} ) ORDER BY fecha_inicio desc,  id desc
+        limit  ${limit} offset ${start}
+    </select>
+        
+    <select id="getTotalForAdmin" parameterType="java.util.HashMap" resultMap ="AgendaMap" >
+        SELECT *
+        FROM web.f00019 where ((actividad ILIKE #{query} or lugar ILIKE #{query} or ciudad ILIKE #{query}) and tipo=#{tipo} ${filtro} )
+    </select>
+    
+    <insert id="insertActividadAgenda" parameterType="java.util.HashMap">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select case when max(id) is null then 1 else cast((max(id)+1) as integer) end id  from web.f00019
+        </selectKey>
+        INSERT INTO web.f00019(id, fecha_inicio, hora_inicio, hora_final, actividad, ciudad, lugar, tipo, estado)
+        VALUES (#{id}, cast(#{fechaInicio} as date), #{horaInicio}, #{horaFinal}, #{actividad}, #{ciudad}, #{lugar}, #{tipo}, #{estado});
+    </insert>
+    
+    <select id="buscarActividadAgenda" parameterType="Integer" resultMap ="AgendaMap" >
+        SELECT *
+        FROM web.f00019 where id = #{id}
+    </select>
+    
+    <update id="updateActividadAgenda" parameterType="java.util.HashMap" >
+        UPDATE web.f00019
+        SET fecha_inicio=cast(#{fechaInicio} as date), hora_inicio=#{horaInicio}, hora_final=#{horaFinal}, actividad=#{actividad}, ciudad=#{ciudad}, lugar=#{lugar}, estado = #{estado}
+        WHERE id = #{id}
+    </update>
+    
+    <delete id="deleteActividadAgenda" parameterType="Integer">
+        DELETE FROM web.f00019
+        WHERE id = #{id}
+    </delete>
+    
+    <update id="estadoActividadAgenda" parameterType="java.util.HashMap" >
+        UPDATE web.f00019
+        SET estado = #{estado}
+        where id = #{id}
+    </update>
+</mapper>

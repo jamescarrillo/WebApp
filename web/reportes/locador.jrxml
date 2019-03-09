@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="planilla" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="792" leftMargin="30" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ed69163d-1197-4720-b745-027a9b08b1d9">
+	<property name="ireport.zoom" value="0.9982500000000016"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#FAEBD7">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#CCCCCC">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="DSDetalle" uuid="8338a4b8-9592-4e33-a098-cfc585c323b1">
+		<parameter name="p_anho" class="java.lang.String">
+			<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+		</parameter>
+		<parameter name="p_trimestre" class="java.lang.Integer"/>
+		<queryString>
+			<![CDATA[select *, case when trimestre = 1 then 'Trimestre 1'  else
+	  case when trimestre = 2 then 'Trimestre 2'  else
+	  case when trimestre = 3 then 'Trimestre 3'  else
+	  case when trimestre = 4 then 'Trimestre 4'
+end end end end format_trimestre
+ from web.f00010 where tipo = 2 and anho = $P{p_anho} and trimestre = $P{p_trimestre} ORDER BY apellidos_nombres asc]]>
+		</queryString>
+		<field name="id" class="java.lang.Integer"/>
+		<field name="anho" class="java.lang.String"/>
+		<field name="denominacion" class="java.lang.String"/>
+		<field name="trimestre" class="java.lang.Integer"/>
+		<field name="cargo" class="java.lang.String"/>
+		<field name="codigo_formato" class="java.lang.String"/>
+		<field name="pension" class="java.lang.String"/>
+		<field name="fecha_ingreso" class="java.lang.String"/>
+		<field name="fecha_cede" class="java.lang.String"/>
+		<field name="apellidos_nombres" class="java.lang.String"/>
+		<field name="numero_dni" class="java.lang.String"/>
+		<field name="codigo_civil" class="java.lang.String"/>
+		<field name="oficina_area" class="java.lang.String"/>
+		<field name="remuneracion_mensual" class="java.math.BigDecimal"/>
+		<field name="beneficios" class="java.math.BigDecimal"/>
+		<field name="ingreso_total" class="java.math.BigDecimal"/>
+		<field name="tipo" class="java.lang.Integer"/>
+		<field name="categoria" class="java.lang.String"/>
+		<field name="estado" class="java.lang.Boolean"/>
+		<field name="observacion" class="java.lang.String"/>
+		<field name="format_trimestre" class="java.lang.String"/>
+		<variable name="ind" class="java.lang.Integer" calculation="Count">
+			<variableExpression><![CDATA[$F{id}]]></variableExpression>
+		</variable>
+	</subDataset>
+	<parameter name="p_logo" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_trimestre_p" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_anho_p" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select anho,trimestre, concat (case when trimestre = 1 then 'Primer Trimestre'  else
+	  case when trimestre = 2 then 'Segundo Trimestre'  else
+	  case when trimestre = 3 then 'Tercer Trimestre'  else
+	  case when trimestre = 4 then 'Cuarto Trimestre'
+end end end end, ' - ', anho) formato from web.f00010 where tipo=2 and anho = $P{p_anho_p} and trimestre = $P{p_trimestre_p}
+group by anho, trimestre
+order by anho desc, trimestre desc]]>
+	</queryString>
+	<field name="anho" class="java.lang.String"/>
+	<field name="trimestre" class="java.lang.Integer"/>
+	<field name="formato" class="java.lang.String"/>
+	<pageHeader>
+		<band height="50" splitType="Stretch">
+			<image scaleImage="FillFrame" hAlign="Center" vAlign="Top">
+				<reportElement uuid="47a8b7ec-0f20-4439-a36d-5582047cb1ad" x="0" y="0" width="792" height="50"/>
+				<imageExpression><![CDATA[$P{p_logo}]]></imageExpression>
+			</image>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="50b57a57-83a0-40ae-bd9c-fb0ed60bbc97" x="691" y="-21" width="100" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="40">
+			<textField>
+				<reportElement uuid="cce51e10-a636-492e-a8d6-1e9ba6194495" x="0" y="20" width="792" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{formato}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="fbb2ca49-525c-4d0d-ae87-054834827e8c" x="0" y="0" width="792" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REPORTE DE PERSONAL Y REMUNERACIONES (LOCACIÓN DE SERVICIOS)]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="418" splitType="Stretch">
+			<componentElement>
+				<reportElement uuid="596a2b62-cd8f-4680-8735-cc0a8e5e55bc" key="table" style="table" x="0" y="0" width="792" height="418" isPrintWhenDetailOverflows="true"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
+					<datasetRun subDataset="DSDetalle" uuid="78f5a621-c10a-496f-8d06-fc831db12fa7">
+						<datasetParameter name="p_anho">
+							<datasetParameterExpression><![CDATA[$F{anho}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="p_trimestre">
+							<datasetParameterExpression><![CDATA[$F{trimestre}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column uuid="87212301-efa2-4d8a-8cad-f77dbc231c5f" width="30">
+						<jr:columnHeader style="table_CH" height="23" rowSpan="1">
+							<staticText>
+								<reportElement uuid="999dff88-bf49-4a39-9313-9cdf4fa24830" x="0" y="0" width="30" height="23"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[N°]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement uuid="1cfc91b8-e392-4fc0-ac6d-d3e419c722da" x="0" y="0" width="30" height="18"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="8" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{ind}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="b4320113-5f82-444a-8501-e2ef54f6f898" width="120">
+						<jr:columnHeader style="table_CH" height="23" rowSpan="1">
+							<staticText>
+								<reportElement uuid="9c709f8f-859a-43f7-9455-1d87c149e84f" x="0" y="0" width="120" height="23"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Apellidos y Nombres]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement uuid="e0b899d9-4126-45c3-b924-a1b5a5ef3b1f" x="0" y="0" width="120" height="18"/>
+								<textElement verticalAlignment="Middle">
+									<font size="7"/>
+									<paragraph leftIndent="2" rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{apellidos_nombres}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="c817dc6e-c027-4e37-b5b0-3a64879a5cd3" width="37">
+						<jr:columnHeader style="table_CH" height="23" rowSpan="1">
+							<staticText>
+								<reportElement uuid="2e945f4b-1ed0-4536-a113-ce521a727a65" x="0" y="0" width="37" height="23"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[DNI]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField isBlankWhenNull="true">
+								<reportElement uuid="4620e7a5-7df9-4fa2-b034-599d83b0e1de" x="0" y="0" width="37" height="18"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="7"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{numero_dni}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="1a65751c-4a4d-4bb1-9c26-db4f606854d2" width="44">
+						<jr:columnHeader style="table_CH" height="23" rowSpan="1">
+							<staticText>
+								<reportElement uuid="b5c082a5-0398-4b1b-be23-7725d47f239a" x="0" y="0" width="44" height="22"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Fecha de Inicio]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField isBlankWhenNull="true">
+								<reportElement uuid="a811309e-9edb-4fd6-b35c-1e176c47049a" x="0" y="0" width="44" height="18"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="7"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{fecha_ingreso}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="732f937c-230f-4594-a778-74ec4f0c009d" width="108">
+						<jr:columnHeader style="table_CH" height="23" rowSpan="1">
+							<staticText>
+								<reportElement uuid="9edf3744-22da-4812-8b91-4fa198cc335c" x="0" y="0" width="108" height="23"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Área o Dependencia]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement uuid="1bea10dc-86a2-4772-b3a4-91bb99ff85ff" x="0" y="0" width="100" height="18"/>
+								<textElement textAlignment="Left" verticalAlignment="Middle">
+									<font size="7"/>
+									<paragraph leftIndent="2" rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{oficina_area}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="363753ae-5cab-4801-8415-3f9d6df270ae" width="343">
+						<jr:columnHeader style="table_CH" height="23" rowSpan="1">
+							<staticText>
+								<reportElement uuid="7f84985b-0c67-47e9-8625-41203b69b4f8" x="0" y="0" width="343" height="23"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Actividad principal]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement uuid="b18ac5d3-2f4b-463c-983b-f29e8d0e1ef7" x="1" y="0" width="342" height="20" isPrintWhenDetailOverflows="true"/>
+								<textElement textAlignment="Justified" verticalAlignment="Middle">
+									<font size="7" isStrikeThrough="false"/>
+									<paragraph leftIndent="2" rightIndent="2" tabStopWidth="40"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{cargo}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="7782b1bf-8532-4bdd-bcea-425ea27a5f71" width="36">
+						<jr:columnHeader style="table_CH" height="23" rowSpan="1">
+							<staticText>
+								<reportElement uuid="376fdd46-62d7-4887-84a7-c41be1ae5d7b" x="0" y="0" width="35" height="22"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Código Civil]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField isBlankWhenNull="true">
+								<reportElement uuid="970196ed-e9d7-42e3-b4d1-47ff75627682" x="1" y="0" width="35" height="18"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="7"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{codigo_civil}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column uuid="c2d0e647-6ead-4447-b5c3-0cf7ce8a58fb" width="64">
+						<jr:columnHeader style="table_CH" height="23" rowSpan="1">
+							<staticText>
+								<reportElement uuid="7f84985b-0c67-47e9-8625-41203b69b4f8" x="2" y="0" width="62" height="23"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Retribución mensual (S/.)]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField pattern="#,##0.00" isBlankWhenNull="true">
+								<reportElement uuid="e0cc58eb-0d23-4d5d-8c58-ffa23795e457" x="1" y="0" width="63" height="18"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="7"/>
+									<paragraph rightIndent="2"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{remuneracion_mensual}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="6e504d41-1cc7-4a83-ae0e-12ed10a69aac" x="658" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="063f5d9f-af6a-4d69-acf8-87ce93755628" x="738" y="0" width="40" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="fd4d7688-feae-4be0-8ff0-e6fe8056d925" x="15" y="0" width="148" height="20"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[www.peam.gob.pe]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+</jasperReport>

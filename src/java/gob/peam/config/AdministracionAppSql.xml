@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+     <typeAliases>
+        <typeAlias alias="Usuario" type="gob.peam.administracion.beans.Usuario" />
+        <typeAlias alias="Grupo" type="gob.peam.administracion.beans.Grupo" />
+        <typeAlias alias="Persona" type="gob.peam.administracion.beans.Persona" />
+        <typeAlias alias="Dependencia" type="gob.peam.administracion.beans.Dependencia" />
+        <typeAlias alias="Entidad" type="gob.peam.administracion.beans.Entidad" />
+        <typeAlias alias="Modulo" type="gob.peam.administracion.beans.Modulo" />
+        <typeAlias alias="SubModulo" type="gob.peam.administracion.beans.SubModulo" />
+        <typeAlias alias="Cargo" type="gob.peam.administracion.beans.Cargo" />
+        <typeAlias alias="Etiqueta" type="gob.peam.administracion.beans.Etiqueta" />
+        <typeAlias alias="Rol" type="gob.peam.administracion.beans.Rol" />
+        <typeAlias alias="Permisos" type="gob.peam.administracion.beans.Permisos" />
+        <typeAlias alias="Periodo" type="gob.peam.administracion.beans.Periodo" />
+        <typeAlias alias="Mes" type="gob.peam.administracion.beans.Mes" />
+        <typeAlias alias="Prefijo" type="gob.peam.administracion.beans.Prefijo" />
+        <typeAlias alias="ParametroDocumento" type="gob.peam.administracion.beans.ParametroDocumento" />
+        <typeAlias alias="Correlativo" type="gob.peam.administracion.beans.Correlativo" />
+        <typeAlias alias="Sesion" type="gob.peam.administracion.beans.Sesion" />
+        <typeAlias alias="Thema" type="gob.peam.administracion.beans.Thema" />
+    </typeAliases>
+    <environments default="SISAI">
+        <environment id="SISAI">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="org.postgresql.Driver"/>
+                <property name="url" value="jdbc:postgresql://172.16.2.4:5432/SISAI"/>
+                <property name="username" value="userSISAI"/>
+                <property name="password" value="userSISAI"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <mapper resource="gob/peam/administracion/data/Usuario.xml" />
+        <mapper resource="gob/peam/administracion/data/Entidad.xml" />
+        <mapper resource="gob/peam/administracion/data/Dependencia.xml" />
+        <mapper resource="gob/peam/administracion/data/Modulo.xml" />
+        <mapper resource="gob/peam/administracion/data/Persona.xml" />
+        <mapper resource="gob/peam/administracion/data/Grupo.xml" />
+        <mapper resource="gob/peam/administracion/data/SubModulo.xml" />
+        <mapper resource="gob/peam/administracion/data/Etiqueta.xml" />
+        <mapper resource="gob/peam/administracion/data/Rol.xml" />
+        <mapper resource="gob/peam/administracion/data/Permisos.xml" />
+        <mapper resource="gob/peam/administracion/data/Periodo.xml" />
+        <mapper resource="gob/peam/administracion/data/Prefijo.xml" />
+        <mapper resource="gob/peam/administracion/data/ParametroDocumento.xml" />
+        <mapper resource="gob/peam/administracion/data/Correlativo.xml" />
+        <mapper resource="gob/peam/administracion/data/Sesion.xml" />
+        <mapper resource="gob/peam/administracion/data/Thema.xml" />
+    </mappers>
+</configuration>

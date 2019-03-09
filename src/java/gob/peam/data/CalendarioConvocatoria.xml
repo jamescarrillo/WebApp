@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CalendarioConvocatoria">
+    <resultMap id="CalendarioConvocatoriaMap" type="CalendarioConvocatoria">
+        <id property="id" column="id" />
+        <result property="fechaInicio" column="fecha_inicio" />
+        <result property="fechaFin" column="fecha_fin" />
+        <result property="estado" column="estado" />
+        <result property="convoId" column="convo_id" />
+        <result property="actiId" column="acti_id" />
+        <association property="actividad" column="acti_id" javaType="Actividad">
+            <id property="actiId" column="acti_id"/>
+            <result property="descripcion" column="descripcion"/>
+        </association>
+    </resultMap>
+    
+    <insert id="insertCalendarioConvocatoria" parameterType="CalendarioConvocatoria">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select cast((max(id)+1) as integer) from web.calendario_conv
+        </selectKey>
+        INSERT INTO web.calendario_conv(
+        id, fecha_inicio, fecha_fin, estado, convo_id, acti_id, tipo)
+        VALUES (#{id}, cast(#{fechaInicio} as date), cast(#{fechaFin} as date), 'true', #{convoId}, #{actiId}, 1)
+    </insert>
+    
+    <select id="listarCalendarioConvocatoriaForAdmin" parameterType="java.util.HashMap" resultMap="CalendarioConvocatoriaMap">
+        select * FROM web.calendario_conv 
+        inner join web.actividad on web.calendario_conv.acti_id =  web.actividad.acti_id
+        where  web.actividad.descripcion ILIKE #{query} and  convo_id=#{convoId} and tipo = 1
+        ORDER BY id asc 
+        limit ${limit} offset ${start}
+    </select>
+    
+    <select id="listarTotalCalendarioConvocatoriaForAdmin" parameterType="java.util.HashMap" resultMap="CalendarioConvocatoriaMap">
+        select * FROM web.calendario_conv 
+        inner join web.actividad on web.calendario_conv.acti_id =  web.actividad.acti_id
+        where web.actividad.descripcion ILIKE #{query} and convo_id=#{convoId} and tipo = 1
+        
+    </select>
+    
+    <select id="listarCalendarioConvocatoriaForWeb" parameterType="java.util.HashMap" resultMap="CalendarioConvocatoriaMap">
+        select * FROM web.calendario_conv 
+        inner join web.actividad on web.calendario_conv.acti_id =  web.actividad.acti_id
+        where convo_id=#{convoId} and tipo = 1
+        ORDER BY id asc 
+    </select>
+    
+    <select id="buscarCalendarioConvocatoria" parameterType="Integer" resultMap="CalendarioConvocatoriaMap">
+        select * from web.calendario_conv where id=#{codigo} and tipo = 1
+    </select>
+
+    <!--PERSONAL-->
+    <insert id="insertCalendarioConvocatoriaPers" parameterType="CalendarioConvocatoria">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select cast((max(id)+1) as integer) from web.calendario_conv
+        </selectKey>
+        INSERT INTO web.calendario_conv(
+        id, fecha_inicio, fecha_fin, estado, convo_id, acti_id, tipo)
+        VALUES (#{id}, cast(#{fechaInicio} as date), cast (#{fechaFin} as date), 'true', #{convoId}, #{actiId}, 2)
+    </insert>
+    
+    <select id="listarCalendarioConvocatoriaPersForAdmin" parameterType="java.util.HashMap" resultMap="CalendarioConvocatoriaMap">
+        select * FROM web.calendario_conv 
+        inner join web.actividad on web.calendario_conv.acti_id =  web.actividad.acti_id
+        where web.actividad.descripcion ILIKE #{query} and convo_id=#{coperId} and tipo = 2
+        ORDER BY id asc 
+        limit ${limit} offset ${start}
+    </select>
+    
+    <select id="listarTotalCalendarioConvocatoriaPersForAdmin" parameterType="java.util.HashMap" resultMap="CalendarioConvocatoriaMap">
+        select * FROM web.calendario_conv 
+        inner join web.actividad on web.calendario_conv.acti_id =  web.actividad.acti_id
+        where web.actividad.descripcion ILIKE #{query} and convo_id=#{coperId} and tipo = 2
+    </select>
+    
+    <select id="listarCalendarioConvocatoriaPersForWeb" parameterType="java.util.HashMap" resultMap="CalendarioConvocatoriaMap">
+        select * FROM web.calendario_conv 
+        inner join web.actividad on web.calendario_conv.acti_id =  web.actividad.acti_id
+        where convo_id=#{coperId} and tipo = 2
+        ORDER BY id asc 
+    </select>
+    
+    <select id="buscarCalendarioConvocatoriaPers" parameterType="Integer" resultMap="CalendarioConvocatoriaMap">
+        select * from web.calendario_conv where id=#{codigo} and tipo = 2
+    </select>
+    
+    <update id="updateCalendarioConvocatoria" parameterType="CalendarioConvocatoria">
+        UPDATE web.calendario_conv
+        SET
+        fecha_inicio=cast(#{fechaInicio} as date),
+        fecha_fin=cast(#{fechaFin} as date),
+        acti_id=#{actiId}
+        WHERE (id=#{id})
+    </update>
+    
+    <select id="childrenCalendarioConvocatoria" parameterType="Integer" resultMap="CalendarioConvocatoriaMap">
+        select id from web.document_conv where id= #{id}
+    </select>
+    
+    <delete id="deleteCalendarioConvocatoria" parameterType="Integer">
+        DELETE FROM web.calendario_conv
+        WHERE id = #{id};
+    </delete>
+    
+</mapper>

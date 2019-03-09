@@ -1,0 +1,79 @@
+/*
+Document   : grid
+Created on : 29/08/2012, 10:15:08 AM
+Author     : jpgprog84
+Description:
+Purpose of the stylesheet follows.
+*/
+
+/*
+TODO customize this sample style
+Syntax recommendation http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html
+*/
+.jgrid{    
+    .header{
+        width: 100%;
+        overflow:hidden; 
+        border:none;
+        div{ 
+            padding:$padding;
+            float:left;            
+        }
+    }
+    .body{
+        width: 100%;
+        height:220px;
+        overflow:auto;
+        display:block;
+        ul{
+            list-style:none; 
+            li{
+                display:block;                
+                div{                    
+                    padding:$padding;
+                    display:inline-block;
+                }
+                a{
+                    margin-top:5px;
+                    padding-left:5px;
+                    display:inline-block;
+                    vertical-align:midle;                    
+                }
+            }
+        }
+    }
+    .paginate{   
+        padding:$padding 0;   
+        margin:0;
+        overflow: hidden;
+        display:block;
+        .lizq{        
+            float:left;        
+            .binicio{    
+                width:16px;
+                height:16px;
+                background:url('../images/binicio16x16.png') 40% 40% no-repeat;
+            }
+            .bizq{  
+                width:16px;
+                height:16px;
+                background:url('../images/bizq16x16.png') 40% 40% no-repeat;
+            }
+            .bder{  
+                width:16px;
+                height:16px;
+                background:url('../images/bder16x16.png') 40% 40% no-repeat;
+            }
+            .bfinal{  
+                width:16px;
+                height:16px;
+                background:url('../images/bfinal16x16.png') 40% 40% no-repeat;
+            }
+        }
+        .lder{
+            float:right;
+            padding:0 $padding ;
+            label{vertical-align:middle;}
+        }        
+    }    
+}

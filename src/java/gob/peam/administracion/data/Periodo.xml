@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Periodo">
+    <resultMap id="PeriodoOnlyMap" type="Periodo">
+        <id property="anio" column="peri_anio" />
+        <result property="descripcion" column="peri_descripcion" />
+        <result property="activo" column="peri_activo" />
+    </resultMap>
+    <resultMap id="MesesOnlyMap" type="Mes">
+        <id property="id" column="mes_id" />
+        <result property="nombre" column="mes_nombre" />
+        <result property="activo" column="mes_activo" />
+    </resultMap>
+    <select id="selectPeriodos" resultMap="PeriodoOnlyMap">
+        SELECT * from administracion.periodo order by peri_anio desc
+    </select>
+    <select id="buscarPeriodo" parameterType="String" resultMap="PeriodoOnlyMap">
+        SELECT * from administracion.periodo
+        where peri_anio=#{anio}
+    </select>
+    <select id="selectMeses" parameterType='String' resultMap="MesesOnlyMap">
+        select * from administracion.mes where peri_anio=#{anho} order by mes_id asc
+    </select>
+    <update id="updatePeriodo" parameterType="Periodo">
+        UPDATE administracion.periodo
+        SET peri_descripcion=#{descripcion}
+        WHERE peri_anio=#{anio}
+    </update> 
+    <select id="buscarPeriodoActivo" resultMap="PeriodoOnlyMap">
+        select * from administracion.periodo where peri_activo=true
+    </select>
+    <select id="buscarMesActivo" parameterType="String" resultMap="MesesOnlyMap">
+        select * from administracion.mes where peri_anio=#{anho} and mes_activo=true
+    </select>   
+    <update id="incrementMes" parameterType="HashMap">
+        update administracion.mes set mes_activo=true
+        where mes_id=#{idMes} and peri_anio=#{anio}
+    </update>
+    <update id="desactivarMeses" parameterType="String">
+        update administracion.mes set mes_activo=false
+        where peri_anio=#{anio}
+    </update>
+     <update id="desactivarPeriodo" parameterType="String">
+        UPDATE administracion.periodo
+        SET peri_activo=false
+        WHERE peri_anio=#{anio}
+    </update> 
+    <insert id="insertAnio" parameterType="String">
+        INSERT INTO administracion.periodo(
+        peri_anio, peri_activo, peri_descripcion)
+        VALUES (#{anio}, true, '')
+    </insert>
+    <insert id="insertMes" parameterType="Mes">
+        INSERT INTO administracion.mes(
+        mes_nombre, mes_activo, peri_anio, mes_id)
+        VALUES (#{nombre}, #{activo}, #{periodo.anio}, #{idMes})
+    </insert>
+</mapper>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Reclamo">
+    <resultMap id="ReclamoMap" type="Reclamo">
+        <result property="numero" column="numero" />
+        <result property="anio" column="anho" />
+        <result property="fecha" column="fecha"/>
+        <result property="usuario" column="usuario" />
+        <result property="documentoIdentidad" column="documento_identidad" />
+        <result property="numeroDocumento" column="numero_documento"  />
+        <result property="direccion" column="direccion" />
+        <result property="telefono" column="telefono"/>
+        <result property="email" column="e_mail"/>
+        <result property="descripcionAtencion" column="descripcion_atencion"/>
+        <result property="firmaUsuario" column="firma_usuario"/>
+        <result property="detalleAcciones" column="detalle_acciones"/>
+        <result property="estado" column="estado"/>
+    </resultMap>
+    
+    <select id="getListReclamo" parameterType="java.util.HashMap"  resultMap="ReclamoMap">
+        SELECT * FROM web.libro_reclamacion where estado = 'true' order by fecha desc, numero desc limit ${limit} offset ${start}
+    </select>
+    
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="ReclamoMap">
+        SELECT * FROM web.libro_reclamacion order by fecha desc, numero desc limit ${limit} offset ${start}
+    </select>
+    
+    <select id="getTotalListForAdmin" parameterType="java.util.HashMap"  resultMap="ReclamoMap">
+        SELECT * FROM web.libro_reclamacion;
+    </select>
+    
+    <insert id="insertReclamo" parameterType="Reclamo">
+        INSERT INTO web.libro_reclamacion(
+        numero, anho, fecha, usuario, documento_identidad, numero_documento, 
+        direccion, telefono, e_mail, descripcion_atencion, firma_usuario, 
+        detalle_acciones, fecha_acciones, estado)
+        VALUES (#{numero}, #{anio}, cast (#{fecha} as date ), #{usuario}, #{documentoIdentidad}, #{numeroDocumento}, #{direccion}, 
+        #{telefono}, #{email}, #{descripcionAtencion}, '', '', cast (#{fechaAcciones} as date ), 'false');
+    </insert>
+    
+    <select id="getTotalListReclamo" parameterType="java.util.HashMap"  resultMap="ReclamoMap">
+        SELECT * FROM web.libro_reclamacion where estado = 'true'
+    </select>
+    
+    <select id="getReclamoSingle" parameterType="java.util.HashMap"  resultMap="ReclamoMap">
+        SELECT * FROM web.libro_reclamacion where (libro_reclamacion.numero=#{numero} and libro_reclamacion.anho = #{anho})
+    </select>
+    
+    <update id="updateReclamo" parameterType="Reclamo">
+        UPDATE web.libro_reclamacion 
+        SET  descripcion_atencion=#{descripcionAtencion}, detalle_acciones=#{detalleAcciones},
+        fecha_acciones= cast (#{fechaAcciones} as date), estado = #{estado}
+        WHERE (numero=#{numero} and anho = #{anio})
+    </update>
+    
+    <delete id="deleteReclamo" parameterType="java.util.HashMap" >
+        delete from web.libro_reclamacion
+        where numero = #{numero} and anho = #{anho}
+    </delete>
+    
+    <select id="maxIdReclamo" resultType="String">
+        select numero from web.libro_reclamacion
+    </select>
+    
+    <select id="getRepetidoIdReclamo" parameterType="Reclamo"  resultType="String">
+        select lpad(cast(((cast((max(numero)) as integer))+1) as varchar ), 10, '0') as numero
+        from web.libro_reclamacion where (anho = #{anio})
+    </select>
+</mapper>
+

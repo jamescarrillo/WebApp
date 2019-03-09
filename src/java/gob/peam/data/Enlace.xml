@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Enlace">
+    <resultMap id="EnlaceMap" type="Enlace">
+        <result property="id" column="id" />
+        <result property="descripcion" column="descripcion" />
+        <result property="abreviatura" column="abreviatura" />
+        <result  property="url" column="url" />
+        <result property="logo" column="logo" />
+        <result property="estado" column="estado"  />
+    </resultMap>
+    <select id="getListEnlaces"   resultMap="EnlaceMap">
+        select * from web.enlaces order by id asc 
+    </select>
+</mapper>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Publicidad">
+    <resultMap id="PublicidadMap" type="Publicidad">
+        <result property="id" column="id" />        
+        <result property="anho" column="anho" />
+        <result property="bienesServicios" column="bienes_servicios" />
+        <result property="fuenteFinanciamiento" column="fuente_financiamiento"  />
+        <result property="proceso" column="proceso" />    
+        <result property="contrato" column="contrato" />    
+        <result property="objetoContrato" column="objeto_contrato" /> 
+        <result property="valorReferencial" column="valor_referencial" />    
+        <result property="proveedor" column="proveedor" />   
+        <result property="ruc" column="ruc" /> 
+        <result property="montoContrato" column="monto_contrato" /> 
+        <result property="penalidad" column="penalidad" /> 
+        <result property="costoFinal" column="costo_final" /> 
+        <result property="observaciones" column="observaciones" /> 
+        <result property="estado" column="estado"/>     
+    </resultMap>
+    <resultMap id="AnhosMap" type="java.lang.String">
+        <result property="anho" column="anho" />  
+    </resultMap>
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="PublicidadMap">
+        select * from web.f00026 where (contrato ILIKE #{query} or ruc ILIKE  #{query} or proveedor ILIKE  #{query})  and  anho=#{anio} order by id ${order} limit ${limit} offset ${start} 
+    </select>
+    <select id="getListAnioForWeb"  resultMap="AnhosMap">
+        select distinct(anho) as anho from web.f00026  order by anho desc 
+    </select>
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="PublicidadMap">
+        select * from web.f00026 where (contrato ILIKE #{query} or ruc ILIKE  #{query} or proveedor ILIKE  #{query} ) and  anho=#{anio} order by id ${order}
+    </select>
+    <update id="createTableTemp">
+        CREATE TEMP TABLE temp2
+        (
+        id integer NOT NULL,
+        anho character varying(4) NOT NULL,
+        bienes_servicios character varying(40),
+        fuente_financiamiento character varying(80),
+        proceso character varying(100),
+        contrato character varying(100),
+        objeto_contrato character varying(200),
+        valor_referencial numeric(15,2),
+        proveedor character varying(100),
+        ruc character(11),
+        monto_contrato numeric(15,2),
+        penalidad numeric(15,2) DEFAULT 0.00,
+        costo_final numeric(15,2),
+        observaciones text,
+        estado boolean,
+        CONSTRAINT peam_temp2_pk PRIMARY KEY (id )
+        ) ON COMMIT DROP
+    </update>
+    <insert id="insertTemp" parameterType="Publicidad">
+        INSERT INTO temp2(
+        id, anho, bienes_servicios, fuente_financiamiento, proceso, contrato,
+        objeto_contrato, valor_referencial, proveedor, ruc, monto_contrato,
+        penalidad, costo_final, observaciones, estado)
+        VALUES (#{id}, #{anho} , #{bienesServicios}, #{fuenteFinanciamiento}, #{proceso}, #{contrato},
+        #{objetoContrato}, #{valorReferencial}, #{proveedor}, #{ruc}, #{montoContrato},
+        #{penalidad}, #{costoFinal}, #{observaciones}, #{estado});
+    </insert>
+    
+    <delete id="deleteTemporalPublicidad" parameterType="Integer">
+        DELETE FROM temp2
+        WHERE id = #{id}
+    </delete>
+
+    <select id="getListTempForWeb" parameterType="java.util.HashMap"  resultMap="PublicidadMap">
+        select * from temp2
+    </select>
+    
+    <select id="getRepetidoPublicidad" parameterType="java.util.HashMap"  resultMap="PublicidadMap">
+        select id from web.f00026 where (bienes_servicios =#{bienesServicios} and anho = #{anho} and contrato = #{contrato})
+    </select>
+    
+    <insert id="addItemPublicidad"  parameterType="java.util.HashMap" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select cast((max(id)+1) as integer) from web.f00026
+        </selectKey>
+        INSERT INTO web.f00026(
+        id, anho, bienes_servicios, fuente_financiamiento, proceso, contrato, 
+        objeto_contrato, valor_referencial, proveedor, ruc, monto_contrato, 
+        penalidad, costo_final, observaciones, estado)
+        VALUES (#{id}, #{anho}, #{bienesServicios}, #{fuenteFinanciamiento}, #{proceso}, #{contrato}, 
+        #{objetoContrato}, #{valorReferencial}, #{proveedor}, #{ruc}, #{montoContrato}, 
+        #{penalidad}, #{costoFinal}, #{observaciones}, true);
+    </insert>
+    
+    <delete id="deletePublicidad" parameterType="Integer">
+        DELETE FROM web.f00026
+        WHERE id = #{id}
+    </delete>
+</mapper>

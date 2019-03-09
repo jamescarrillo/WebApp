@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Correo">
+    <resultMap id="CorreoMap" type="Correo">
+        <result property="id" column="id" />
+        <result property="paraCorreo" column="para_correo" />
+        <result property="ccCorreo" column="cc_correo" />
+        <result property="parteCorreo" column="parte_correo" />
+        <result property="mensajeCorreo" column="mensaje_correo"  />
+        <result property="estado" column="estado" />
+        <result property="tipo" column="tipo" />
+
+    </resultMap>
+    
+    <select id="buscarCorreo" parameterType="Integer" resultMap ="CorreoMap" >
+        SELECT *
+        FROM web.config_correo where id = #{id}
+    </select>
+    
+    <update id="updateCorreo" parameterType="java.util.HashMap" >
+        UPDATE web.config_correo
+        SET para_correo=#{paraCorreo}, cc_correo=#{ccCorreo}, parte_correo=#{parteCorreo}, mensaje_correo=#{mensajeCorreo}, 
+        estado=#{estado}
+        WHERE id=#{id}
+    </update>
+    
+   
+</mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Exonerado">
+    <resultMap id="ExoneradoMap" type="Exonerado">
+        <id property="id" column="id" />
+        <id property="nroExonerado" column="nro_exonerado" />
+        <result property="fecha" column="fecha" />
+        <result property="causa" column="causa" />
+        <result property="objeto" column="objeto" />
+        <result property="descripcion" column="descripcion" />
+        <result property="monto" column="monto" />
+        <result property="contratista" column="contratista" />
+        <result property="ruc" column="ruc" />
+        <result property="url" column="url" />
+    </resultMap>
+    <resultMap id="AnhoMap" type="Anho">
+        <id property="anho" column="anho" />
+    </resultMap>
+    <select id="getList" parameterType="java.util.HashMap" resultMap="ExoneradoMap">
+        select *
+        from web.exonerado where (descripcion ILIKE #{c} ) ${anho} order by id desc
+    </select>
+    
+    <select id="getAnho" resultMap="AnhoMap" >
+        select distinct(anho) anho from web.exonerado order by anho desc
+    </select>
+    
+    <select id="get" parameterType="Integer" resultMap="ExoneradoMap">
+        select * from web.exonerado where id = #{id}
+    </select>
+    
+    <insert id="insert" parameterType="Exonerado">
+        <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
+            select case when max(id) is null then 1 else (max(id)+1) end id 
+            from web.exonerado
+        </selectKey>
+        INSERT INTO web.exonerado(
+        id, nro_exonerado , anho, fecha, causa, objeto, descripcion, monto, contratista, ruc, 
+        url)
+        VALUES (#{id}, #{nroExonerado}, #{anho}, #{fecha}, #{causa}, #{objeto}, #{descripcion}, #{monto}, #{contratista}, #{ruc}, 
+        #{url});
+    </insert>
+    
+    <update id="update" parameterType="Exonerado">
+        UPDATE web.exonerado
+        SET fecha=#{fecha}, nro_exonerado=#{nroExonerado}, causa=#{causa}, objeto=#{objeto}, descripcion=#{descripcion}, monto=#{monto}, contratista=#{contratista}, 
+        ruc=#{ruc}, url=#{url}
+        WHERE id = #{id}
+    </update>
+    
+    <delete id="delete"  parameterType="Integer">
+        DELETE FROM web.exonerado where id = #{id}
+    </delete>
+    
+   <select id="getListWeb" parameterType="HashMap" resultMap="ExoneradoMap">
+        select * from web.exonerado
+        where (descripcion ILIKE #{query} or objeto ILIKE #{query} or contratista ILIKE #{query} or nro_exonerado ILIKE #{query} ) 
+        and anho=#{anho} order by id ${order} limit  ${limit} offset ${start}
+    </select>
+    
+    <select id="getTotalListForWeb" parameterType="HashMap"  resultType="Integer">
+        select * from web.exonerado
+        where (descripcion ILIKE #{query} or objeto ILIKE #{query} or contratista ILIKE #{query} or nro_exonerado ILIKE #{query} ) 
+        and anho=#{anho} 
+    </select>
+</mapper>
+    

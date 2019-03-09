@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Evento">
+    <resultMap id="EventoMap" type="Evento">
+        <result property="id" column="id" />
+        <result property="anho" column="anho" />
+        <result property="titulo" column="titulo" />
+        <result property="fecha" column="fecha"   />
+        <result property="foto" column="foto" />    
+        <result property="area" column="area" />    
+        <result property="estado" column="estado"/>
+        <result property="creadoPor" column="creado_por"/>
+        <result property="fechaCreado" column="fecha_creado" jdbcType="DATE" javaType="java.sql.Date" />   
+        <result property="editadoPor" column="editado_por"/>
+        <result property="fechaEditado" column="fecha_editado" jdbcType="DATE" javaType="java.sql.Date" />   
+        <result property="link" column="link"   />
+    </resultMap>   
+    <resultMap id="AnhosMap" type="java.lang.String">
+        <result property="anho" column="anho" />  
+    </resultMap>    
+    
+    <insert id="insertNotice" parameterType="Evento">
+         <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select coalesce(max(id),0)+1  from web.evento
+        </selectKey>
+        INSERT INTO web.evento(
+        id, anho, titulo,fecha, foto, estado, creado_por,fecha_creado,editado_por,fecha_editado, link, area)
+        VALUES (#{id}, #{anho}, upper(#{titulo}), cast (#{fecha} as DATE), #{foto}, false, #{creadoPor},#{fechaCreado},#{editadoPor},#{fechaEditado}, #{link},#{area});
+    </insert>
+    <update id="updateNotice" parameterType="Evento">
+        UPDATE web.evento
+        SET  anho=#{anho}, titulo=upper(#{titulo}), fecha=cast(#{fecha} as DATE), foto=#{foto}, 
+        editado_por=#{editadoPor},fecha_editado=#{fechaEditado}, link= #{link}, area=#{area}
+        WHERE id=#{id}
+    </update>
+    <update id="publicarNotice" parameterType="int">
+        update web.evento
+        set estado = true
+        where id=#{id}
+    </update>
+    <delete id="deleteNotice" parameterType="int">
+        delete from web.evento
+        where id=#{id}
+    </delete>
+    
+    <select id="getEventoSingle" parameterType="int"  resultMap="EventoMap">
+        select * from web.evento where id=#{id}
+    </select>
+    
+    
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="EventoMap">
+        select * from web.evento where upper(evento.titulo) ILIKE #{filtro} order by evento.fecha desc, evento.id desc limit ${limit} offset ${start}
+    </select>
+    <select id="getTotalListForAdmin" parameterType="String"  resultMap="EventoMap">
+        select anho from web.evento where upper(evento.titulo) ILIKE #{filtro}
+    </select>
+    
+     <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="EventoMap">
+        select * from web.evento where anho=#{anho} and estado = true and area=#{area} 
+         order by fecha desc, id ${order} limit ${limit} 
+    </select>
+    
+</mapper>

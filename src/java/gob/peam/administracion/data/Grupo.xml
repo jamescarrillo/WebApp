@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Grupo">
+    <resultMap id="GrupoMap" type="Grupo">
+        <result property="idGrupo" column="grup_id" />
+        <result property="nombre" column="grup_nombre" />
+        <result property="estado" column="grup_estado" />        
+    </resultMap>
+    <resultMap id="UsuarioMap" type="Usuario">
+        <result property="idUsuario" column="usua_id" />        
+        <result property="login" column="usua_login" />                
+    </resultMap>  
+    <select id="seleccionarGrupo" resultMap="GrupoMap">
+        select * from administracion.grupo
+    </select>    
+    <insert id="insertGrupo" parameterType="Grupo">
+        <selectKey keyProperty="idGrupo" resultType="int" order="BEFORE">
+                        select cast(((case  when max(grup_id) is null then 0 else max(grup_id) end) +1) as int) from administracion.grupo
+        </selectKey>
+        INSERT INTO administracion.grupo(
+        grup_id, grup_nombre, grup_estado)
+        VALUES (#{idGrupo},#{nombre}, #{estado})
+    </insert>
+    <update id="updateGrupo" parameterType="Grupo">
+        UPDATE administracion.grupo
+        SET  grup_nombre=#{nombre}, grup_estado=#{estado}
+        WHERE grup_id=#{idGrupo}
+    </update>
+    <select id="existeGrupo" parameterType="String" resultMap="GrupoMap">
+        select * from administracion.grupo where grup_nombre=#{nombre} 
+    </select>
+    <select id="buscarGrupoPorNombre" parameterType="String" resultMap="GrupoMap">
+        select * from administracion.grupo where grup_nombre=#{nombre}
+    </select>
+     <select id="buscarGrupo" parameterType="Integer" resultMap="GrupoMap">
+        select * from administracion.grupo where grup_id=#{idGrupo}
+    </select>
+    <select id="childrenGrupo" parameterType="Integer" resultMap="UsuarioMap">
+        select usua_id,usua_login from administracion.usuario where grup_id=#{id}
+    </select>
+    <delete id="deleteGrupo" parameterType="Integer">
+        DELETE FROM administracion.grupo
+        WHERE grup_id=#{id}
+    </delete>
+       <select id="listarGrupos" parameterType="java.util.HashMap" resultMap="GrupoMap">
+        select * from administracion.grupo
+        where upper(grup_nombre) like #{query} ORDER BY grup_nombre asc
+        limit ${limit} offset ${start}
+    </select>
+       <select id="listarTotalGrupos" parameterType="java.util.HashMap" resultMap="GrupoMap">
+        select * from administracion.grupo
+        where upper(grup_nombre) like #{query} ORDER BY grup_nombre asc        
+    </select>
+</mapper>

@@ -1,0 +1,89 @@
+<%-- any content can be specified here e.g.: --%>
+<%@ page pageEncoding="UTF-8" %>
+<link rel="shortcut icon" href="favicon.ico"/>
+<div id="sidebar-menu" style="display: none">
+    <div class="closeAnuncio">(x)</div>
+    <h2 id="tituAnuncio">Anuncio</h2>
+    <h3 id="subtiAnuncio"></h3>
+    <div id="contentAnuncio">
+        cargando...
+    </div>
+</div>
+
+<div class="cabecera">
+    <div id="norte">
+        <div id="logo-goresam"></div>
+        <div id="logo-escudo"></div>
+        <div class="institucion">
+            <table style="top:10px">
+                <tr>
+                    <td id="sociales" colspan="2" style="padding: 10px;">
+                        <a  href="./Inicio">Inicio</a> |
+                        <a href="./MapaSitio">Mapa de Sitio</a> |
+                        <a href="./Intranet" target="_blank">Intranet</a> |
+                        <a href="./Servicios" target="_blank">Servicios</a> |
+                        <a href="./Glosario" >Glosario</a>
+                        <a style="padding:8px" href="http://www.youtube.com/user/PEAM1140?feature=watch" target="_blank" id="youtube" title="youtube">&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                        <a style="padding:8px" href="http://www.flickr.com/photos/83313636@N07/" target="_blank" id="flickr" title="Flickr">&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                        <a style="padding:8px"  href="http://www.twitter.com/p_altomayo" target="_blank" id="twitter" title="Twitter">&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                        <a style="padding:8px" href="http://www.facebook.com/pages/Proyecto-Especial-Alto-Mayo/188571127885448" target="_blank" id="facebook" title="Facebook">&nbsp;&nbsp;&nbsp;&nbsp;</a>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td id ="titulo" colspan="2">
+                        <a href="./">PROYECTO ESPECIAL ALTO MAYO</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="divActualizacion">
+                        <em>Ultima actualización: 15/07/2014</em>
+                    </td>
+                    <td>
+                        <a id="portal-transparencia" target="_blank" href="./ParticipacionCiudadana?action=PortalTransparencia">Portal de Transparencia</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="soportado">
+                        <img src="resources/images/32x32/Chrome.png" alt="Chrome" />
+                        <img src="resources/images/32x32/Firefox.png" alt="Firefox" />
+                        <img src="resources/images/32x32/IE.png" alt="IE"/>
+                        <img src="resources/images/32x32/Safari.png" alt="Safari" />
+                        <img src="resources/images/32x32/Opera.png" alt="Opera"/>
+                    </td>
+                    <td id="divBuscador">
+                        Buscar: <input id="buscarPag"  type="text" size="50"  class="ui-widget-content ui-corner-all" /> 
+                    </td>
+                </tr>
+            </table>
+            <input id="txtCurrent" type=hidden value=0 /> <input id="txtStart" type=hidden value=0 /> <input id="txtLimit" type=hidden value=10 />
+        </div>
+    </div>
+    <div id="centro">
+        <div id="menu">
+            <ul>
+                <li>
+                    <a href="./LaInstitucion">La Instituci&oacute;n</a>|
+                    <!-- <a href="./NuestraLabor">Nuestra Labor</a>|-->
+                    <a href="./GestionTransparente">Gesti&oacute;n Transparente</a>|
+                    <a href="./Convocatorias">Convocatorias</a>|
+                    <a href="./Publicaciones">Publicaciones</a>|
+                    <a href="./ParticipacionCiudadana?action=Consultas">Consultas</a>
+                    
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="accordion">
+        <h3 class="toggler" id="cab1"><span id="tituloNoticia"></span><span class="linknoti" data="1" >Ver Noticias</span></h3>
+        <div id="sur" class="element">
+            <div class="animar">
+                <div id="s-content"></div>
+            </div>
+        </div>
+        <h3 class="toggler" id="hidenoti" ><span class="linknoti" style="float:left; margin-left: 20px"><a href="./Publicaciones?action=NotaPrensa">Ver Más Noticias</a></span><span class="linknoti" data="2"> Ocultar Noticias</span></h3>
+        <div class="element" ></div>
+    </div>
+</div>
+

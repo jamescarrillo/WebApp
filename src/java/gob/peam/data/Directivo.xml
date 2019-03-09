@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Directivo">
+    <resultMap id="DirectivoMap" type="Directivo">
+        <result property="id" column="id" />        
+        <result property="tratamiento" column="tratamiento" />
+        <result property="nombresApellidos" column="nombres_apellidos" />
+        <result property="cargo" column="cargo"  />
+        <result property="nivelRemunerativo" column="nivel_remunerativo" />    
+        <result property="numeroDni" column="numero_dni" />    
+        <result property="resolucion" column="resolucion" /> 
+        <result property="fechaDesignacion" column="fecha_designacion"   />    
+        <result property="telefono" column="telefono" />   
+        <result property="fax" column="fax" /> 
+        <result property="eMail" column="e_mail" /> 
+        <result property="foto" column="foto" /> 
+        <result property="profesion" column="profesion" /> 
+        <result property="resumen" column="resumen" /> 
+        <result property="institucion" column="institucion"/>     
+        <result property="regimenLaboral" column="regimen_laboral"/>     
+        <result property="retribucionMensual" column="retribucion_mensual"/>     
+        <result property="hojaVida" column="hoja_vida"/>     
+        <result property="estado" column="estado"/>     
+    </resultMap>
+    
+    <select id="getListForAdmin" parameterType="java.util.HashMap" resultMap ="DirectivoMap" >
+        SELECT *
+        FROM web.f00012 where nombres_apellidos ILIKE #{query} ORDER BY id desc
+        limit  ${limit} offset ${start}
+    </select>
+        
+    <select id="getTotalForAdmin" parameterType="java.util.HashMap" resultMap ="DirectivoMap" >
+        SELECT nombres_apellidos
+        FROM web.f00012 where nombres_apellidos ILIKE #{query} 
+    </select>
+    <select id="getListForWeb" resultMap="DirectivoMap">
+        select * from web.f00012 where estado = true  order by id asc
+    </select>
+    
+    <insert id="insertDirectivo" parameterType="java.util.HashMap">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select case when max(id) is null then 1 else cast((max(id)+1) as integer) end id  from web.f00012
+        </selectKey>
+        INSERT INTO web.f00012(
+        id, tratamiento, nombres_apellidos, cargo, nivel_remunerativo, 
+        numero_dni, resolucion, fecha_designacion, telefono, fax, e_mail, 
+        foto, profesion, resumen, institucion, regimen_laboral, retribucion_mensual, 
+        hoja_vida, estado)
+        VALUES (#{id}, #{tratamiento}, #{nombresApellidos}, #{cargo}, #{nivelRemunerativo}, 
+        #{numeroDni}, #{resolucion}, cast(#{fechaDesignacion} as date), #{telefono}, #{fax}, #{eMail}, 
+        #{foto}, #{profesion}, #{resumen}, #{institucion} ,#{regimenLaboral}, #{retribucionMensual}, 
+        #{hojaVida}, #{estado});
+    </insert>
+    
+    <select id="buscarDirectivo" parameterType="Integer" resultMap ="DirectivoMap" >
+        SELECT *
+        FROM web.f00012 where id = #{id}
+    </select>
+    
+    <update id="updateDirectivo" parameterType="java.util.HashMap" >
+        UPDATE web.f00012
+        SET institucion=#{institucion}, tratamiento=#{tratamiento}, nombres_apellidos=#{nombresApellidos}, cargo=#{cargo}, 
+        nivel_remunerativo=#{nivelRemunerativo}, numero_dni=#{numeroDni}, resolucion=#{resolucion}, fecha_designacion=cast(#{fechaDesignacion} as date), 
+        telefono=#{telefono}, fax=#{fax}, e_mail=#{eMail}, foto=#{foto}, profesion=#{profesion}, resumen=#{resumen}, 
+        regimen_laboral=#{regimenLaboral}, retribucion_mensual=#{retribucionMensual}, hoja_vida=#{hojaVida}, estado=#{estado}
+        WHERE id = #{id}
+    </update>
+    
+    <delete id="deleteDirectivo" parameterType="Integer">
+        DELETE FROM web.f00012
+        WHERE id = #{id}
+    </delete>
+    
+    <update id="estadoDirectivo" parameterType="java.util.HashMap" >
+        UPDATE web.f00012
+        SET estado = #{estado}
+        where id = #{id}
+    </update>
+</mapper>

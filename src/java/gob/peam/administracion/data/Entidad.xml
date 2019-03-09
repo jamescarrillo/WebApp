@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Entidad">
+    <resultMap id="EntidadMap" type="Entidad">
+        <result property="idEntidad" column="enti_id" />
+        <result property="nombre" column="enti_nombre" />
+        <result property="abreviatura" column="enti_abreviatura" />
+        <result property="frase" column="enti_frase" />
+        <result property="direccion" column="enti_direccion" />
+        <result property="ruc" column="enti_ruc" />
+        <result property="representanteLegal" column="enti_representante_legal" />
+        <result property="carpetaSiaf" column="enti_carpeta_siaf" />
+        <result property="secuenciaEjecutora" column="enti_secuencia_ejecutora" />
+        <result property="pie" column="enti_pie" />
+        <result property="version" column="enti_version" />
+    </resultMap>
+    <resultMap id="EntidadLogoMap" type="Entidad">
+        <result property="idEntidad" column="enti_id" />
+        <result property="logo" column="enti_logo" />
+    </resultMap>
+    <select id="seleccionarEntidad" resultMap="EntidadMap">
+        select * from administracion.entidad
+    </select>
+    <select id="seleccionarLogoEntidad" resultMap="EntidadLogoMap">
+        select enti_id,enti_logo from administracion.entidad
+    </select>
+    <update id="updateDataEntidad" parameterType="Entidad">
+        update administracion.entidad set
+        enti_nombre=#{nombre},
+        enti_abreviatura=#{abreviatura},
+        enti_frase=#{frase},
+        enti_direccion=#{direccion},
+        enti_ruc=#{ruc},
+        enti_representante_legal=#{representanteLegal},
+        enti_carpeta_siaf=#{carpetaSiaf},
+        enti_secuencia_ejecutora=#{secuenciaEjecutora},
+        enti_pie=#{pie},
+        enti_version=#{version}
+        where enti_id=#{idEntidad}
+    </update>
+    <update id="updateImgEntidad" parameterType="Entidad">
+        update administracion.entidad set
+        enti_logo=#{logo}
+        where enti_id=#{idEntidad}
+    </update>
+</mapper>

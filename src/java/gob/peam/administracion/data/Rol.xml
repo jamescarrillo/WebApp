@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Rol">
+    <resultMap id="RolMap" type="Rol">
+        <id property="idRol" column="role_id" />
+        <result property="nombre" column="role_nombre" />
+        <result property="estado" column="role_estado" />        
+        <!--<collection property="subModulos" column="modu_id" javaType="ArrayList" ofType="SubModulo">
+            <id property="idSubModulo" column="sumo_id" />
+            <result property="nombre" column="sumo_nombre" />
+            <result property="url" column="sumo_url" />
+            <result property="estado" column="sumo_estado" />
+            <association property="etiqueta" column="etiq_id" javaType="Etiqueta">
+                <id property="idEtiqueta" column="etiq_id" />
+                <result property="descripcion" column="etiq_descripcion" />
+                <result property="estado" column="etiq_estado" />
+            </association>
+        </collection>-->
+    </resultMap>
+  
+    <select id="listarRoles" parameterType="java.util.HashMap" resultMap="RolMap">
+        select * from administracion.roles
+        where upper(role_nombre) like #{query} ORDER BY role_nombre asc
+        limit ${limit} offset ${start}
+    </select>
+    <select id="listarRolesPorGrupo" parameterType="java.util.HashMap" resultMap="RolMap">
+        select * from administracion.roles
+        where upper(role_nombre) like #{query} and role_id in (select role_id from administracion.grupo_rol where grup_id=#{idGrupo})
+        ORDER BY role_nombre asc
+        limit ${limit} offset ${start}
+    </select>
+    <select id="listarRolesSinGrupo" parameterType="java.util.HashMap" resultMap="RolMap">
+        select * from administracion.roles
+        where upper(role_nombre) like #{query} and role_id not in (select role_id from administracion.grupo_rol where grup_id=#{idGrupo})
+        ORDER BY role_nombre asc
+        limit ${limit} offset ${start}
+    </select>
+    <select id="listarTotalRoles" parameterType="java.util.HashMap" resultMap="RolMap">
+        select * from administracion.roles
+        where upper(role_nombre) like #{query} ORDER BY role_nombre asc        
+    </select>
+    <select id="listarTotalRolesPorGrupo" parameterType="java.util.HashMap" resultMap="RolMap">
+        select * from administracion.roles
+        where upper(role_nombre) like #{query} and role_id in (select role_id from administracion.grupo_rol where grup_id=#{idGrupo})
+        ORDER BY role_nombre asc        
+    </select>
+    <select id="listarTotalRolesSinGrupo" parameterType="java.util.HashMap" resultMap="RolMap">
+        select * from administracion.roles
+        where upper(role_nombre) like #{query} and role_id not in (select role_id from administracion.grupo_rol where grup_id=#{idGrupo})
+        ORDER BY role_nombre asc        
+    </select>
+    <insert id="insertRol" parameterType="Rol">
+        <selectKey keyProperty="idRol" resultType="int" order="BEFORE">
+                        select cast(((case  when max(role_id) is null then 0 else max(role_id) end) +1) as int) from administracion.roles
+        </selectKey>
+        INSERT INTO administracion.roles(
+        role_id, role_nombre, role_estado)
+        VALUES (#{idRol}, #{nombre}, #{estado})
+    </insert>
+    <select id="existeRol" parameterType="String" resultMap="RolMap">
+        select * from administracion.roles where upper(role_nombre)=#{nombre}
+    </select>
+    <select id="buscarRol" parameterType="Integer" resultMap="RolMap">
+        select * from administracion.roles where role_id=#{idRol}
+    </select>
+    <select id="buscarRolForNombre" parameterType="String" resultMap="RolMap">
+        select * from administracion.roles where role_nombre=#{nombre}
+    </select>
+    <update id="updateRol" parameterType="Rol">
+        UPDATE administracion.roles
+        SET role_nombre=#{nombre}, role_estado=#{estado}        
+        WHERE role_id=#{idRol}
+    </update>
+    <delete id="deleteRol" parameterType="Integer">
+        DELETE FROM administracion.roles
+        WHERE role_id=#{idRol}
+    </delete>
+    <select id="listarChildrenForRoles" parameterType="Integer" resultMap="RolMap">
+        select * from administracion.roles where role_id in (select role_id from administracion.permisos where role_id=#{idRol})
+    </select>
+    <insert id="insertPerfil" parameterType="java.util.HashMap">
+        INSERT INTO administracion.grupo_rol(
+        grup_id, role_id)
+        VALUES (#{idGrupo}, #{idRol})
+    </insert>
+    <delete id="delPerfil" parameterType="java.util.HashMap">
+        DELETE FROM administracion.grupo_rol
+        WHERE grup_id=#{idGrupo} and role_id=#{idRol}
+    </delete>
+</mapper>

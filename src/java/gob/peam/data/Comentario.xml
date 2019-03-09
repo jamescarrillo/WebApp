@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Comentario">
+    <resultMap id="ComentarioMap" type="Comentario">
+        <result property="numero" column="numero" />
+        <result property="anho" column="anho" />
+        <result property="usuario" column="usuario" />
+        <result property="fecha" column="fecha" />
+        <result property="correo" column="correo"/>
+        <result property="tema" column="tema" />
+        <result property="descripcion" column="descripcion"  />
+        <result property="estado" column="estado"/>
+    </resultMap>
+    <select id="getListComentario" parameterType="java.util.HashMap"  resultMap="ComentarioMap">
+        SELECT * FROM web.coment_suggest where estado = 'true' order by numero desc limit ${limit} offset ${start}
+    </select>
+    <insert id="insertComentario" parameterType="Comentario">
+        <selectKey keyProperty="numero" resultType="string" order="BEFORE">
+            select lpad(cast(((cast((max(numero)) as integer))+1) as varchar ) ,10,'0') as varchar  from web.coment_suggest
+        </selectKey>
+        INSERT INTO web.coment_suggest(
+        numero, anho, usuario, fecha, correo, tema, descripcion, estado)
+        VALUES (#{numero}, #{anho}, #{usuario}, cast (#{fecha} as date), #{correo}, #{tema}, #{descripcion}, 'true');
+    </insert>
+    <select id="getTotalListComentario" parameterType="java.util.HashMap"  resultMap="ComentarioMap">
+        SELECT * FROM web.coment_suggest where estado = 'true'
+    </select>
+    
+    <select id="getComentarioSingle" parameterType="String"  resultMap="ComentarioMap">
+        SELECT * FROM web.coment_suggest where (coment_suggest.numero=#{numero})
+    </select>
+    
+    <update id="updateComentario" parameterType="Comentario">
+        UPDATE web.coment_suggest
+        SET  tema = #{tema}, descripcion = #{descripcion}
+        WHERE numero=#{numero}
+    </update>
+    
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="ComentarioMap">
+        SELECT * FROM web.coment_suggest order by numero desc, numero desc limit ${limit} offset ${start}
+    </select>
+    
+    <select id="getTotalListForAdmin" parameterType="java.util.HashMap"  resultMap="ComentarioMap">
+        SELECT * FROM web.coment_suggest
+    </select>
+    
+    <delete id="deleteComentario" parameterType="String" >
+        delete from web.coment_suggest
+        where numero = #{id};
+    </delete>
+</mapper>
+

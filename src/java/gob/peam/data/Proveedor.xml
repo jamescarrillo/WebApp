@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Proveedor">
+    <resultMap id="ProveedorMap" type="Proveedor">
+        <result property="id" column="id" />        
+        <result property="anho" column="anho" />
+        <result property="trimestre" column="trimestre" />
+        <result property="ruc" column="ruc"  />
+        <result property="proveedor" column="proveedor" />    
+        <result property="importe" column="importe" jdbcType="DECIMAL"  />       
+        <result property="estado" column="estado"/>     
+    </resultMap>
+    <resultMap id="AnhosMap" type="java.lang.String">
+        <result property="anho" column="anho" />  
+    </resultMap>
+    <resultMap id="TrimestreMap" type="java.lang.String">
+        <result property="trimestre" column="trimestre" />
+    </resultMap>
+    <select id="getListTrimestreForWeb" parameterType="String"  resultMap="TrimestreMap">
+        select distinct trimestre  from web.f00006 where(anho=#{anho}) order by trimestre desc
+    </select>
+
+    <select id="getListAnioForWeb"  resultMap="AnhosMap">
+        select distinct(anho) as anho from web.f00006  order by anho desc 
+    </select>
+    
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="ProveedorMap">
+        select * from web.f00006 where (ruc ILIKE  #{query} or proveedor ILIKE  #{query})  and  anho=#{anio} and trimestre=#{trimestre} order by importe desc limit ${limit} offset ${start} 
+    </select>
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="ProveedorMap">
+        select * from web.f00006 where (ruc ILIKE  #{query} or proveedor ILIKE  #{query}) and  anho=#{anio} and trimestre=#{trimestre} order by id ${order}
+    </select>
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="ProveedorMap">
+        select * from web.f00006 where (ruc ILIKE  #{query} or proveedor ILIKE  #{query})  and  anho=#{anio}  order by importe desc limit ${limit} offset ${start} 
+    </select>
+    <select id="getTotalListForAdmin" parameterType="java.util.HashMap"  resultMap="ProveedorMap">
+        select * from web.f00006 where (ruc ILIKE  #{query} or proveedor ILIKE  #{query}) and  anho=#{anio}  order by id ${order}
+    </select>   
+    <update id="createTableTemp">
+        CREATE  TEMP TABLE temp
+        (
+        id integer NOT NULL,
+        anho character varying(4) NOT NULL,
+        trimestre character(2) NOT NULL,
+        ruc character varying(11),
+        proveedor character varying(120),
+        importe numeric(15,2),
+        estado boolean,
+        CONSTRAINT peam_id_pk PRIMARY KEY (id )
+        ) ON COMMIT DROP 
+    </update>
+    
+    <insert id="insertTemp" parameterType="Proveedor">
+        INSERT INTO temp(
+        id, anho, trimestre, ruc, proveedor, importe, estado)
+        VALUES (#{id}, #{anho}, #{trimestre}, #{ruc}, #{proveedor}, #{importe}, #{estado});
+    </insert>
+    
+    <delete id="deleteTemporalProveedor" parameterType="Integer">
+        DELETE FROM temp
+        WHERE id = #{id}
+    </delete>
+
+    <select id="getListTempForWeb" parameterType="java.util.HashMap"  resultMap="ProveedorMap">
+        select * from temp 
+    </select>
+    
+    <select id="getRepetidoProveedor" parameterType="java.util.HashMap"  resultMap="ProveedorMap">
+        select id from web.f00006 where (anho =#{anho} and trimestre = #{trimestre} and ruc = #{ruc} and proveedor = #{proveedor}
+        and importe = #{importe})
+    </select>
+    
+    <insert id="addItemProveedor"  parameterType="java.util.HashMap" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select cast((max(id)+1) as integer) from web.f00006
+        </selectKey>
+        INSERT INTO web.f00006(
+        id, anho, trimestre, ruc, proveedor, importe, estado)
+        VALUES (#{id}, #{anho}, #{trimestre}, #{ruc}, #{proveedor}, #{importe}, 'true');
+    </insert>
+    
+        
+    <delete id="deleteProveedor" parameterType="Integer">
+        DELETE FROM web.f00006
+        WHERE id = #{id}
+    </delete>
+</mapper>

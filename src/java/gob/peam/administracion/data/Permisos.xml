@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Permisos">
+    <resultMap id="PermisoForSubModuloMap" type="Permisos">
+        <id property="primaryKey.subModulo.idSubModulo" column="sumo_id" />        
+        <result property="nuevo" column="perm_nuevo" />
+        <result property="editar" column="perm_editar" />
+        <result property="eliminar" column="perm_eliminar" />
+        <result property="imprimir" column="perm_imprimir" />
+        <result property="ver" column="perm_ver" />        
+        <result property="publicar" column="perm_publicar" />
+        <association property="subModulo" column="sumo_id" javaType="SubModulo">
+            <id property="idSubModulo" column="sumo_id" />
+            <result property="nombre" column="sumo_nombre" />            
+        </association>        
+    </resultMap>
+    <resultMap id="PermisoMap" type="Permisos">
+        <id property="primaryKey.subModulo.idSubModulo" column="sumo_id" />        
+        <id property="primaryKey.rol.idRol" column="role_id" />  
+        <result property="nuevo" column="perm_nuevo" />
+        <result property="editar" column="perm_editar" />
+        <result property="eliminar" column="perm_eliminar" />
+        <result property="imprimir" column="perm_imprimir" />
+        <result property="ver" column="perm_ver" />        
+        <result property="publicar" column="perm_publicar" />
+        <association property="subModulo" column="sumo_id" javaType="SubModulo">
+            <id property="idSubModulo" column="sumo_id" />        
+        </association>    
+        <association property="rol" column="role_id" javaType="Rol">
+            <id property="idRol" column="role_id" />        
+        </association>     
+    </resultMap>
+    <resultMap id="PermisoForUsuarioMap" type="Permisos">
+        <result property="nuevo" column="perm_nuevo" />
+        <result property="editar" column="perm_editar" />
+        <result property="eliminar" column="perm_eliminar" />
+        <result property="imprimir" column="perm_imprimir" />
+        <result property="ver" column="perm_ver" />        
+        <result property="publicar" column="perm_publicar" />
+    </resultMap>
+    <select id="listarPermisosForSubModulo" parameterType="java.util.HashMap" resultMap="PermisoForSubModuloMap">
+        select  sub_modulo.sumo_id,sub_modulo.sumo_nombre,
+        case when  permisos.perm_nuevo is null then false else permisos.perm_nuevo end as perm_nuevo,
+        case when  permisos.perm_editar is null then false else permisos.perm_editar end as perm_editar,
+        case when  permisos.perm_eliminar is null then false else  permisos.perm_eliminar end as perm_eliminar,
+        case when  permisos.perm_imprimir is null then false else  permisos.perm_imprimir end as perm_imprimir,
+        case when  permisos.perm_ver is null then false else permisos.perm_ver end as perm_ver, 
+        case when  permisos.perm_publicar is null then false else permisos.perm_publicar end as perm_publicar 
+        from administracion.sub_modulo
+        left  join administracion.permisos on permisos.sumo_id=sub_modulo.sumo_id
+        where (sub_modulo.modu_id=#{idModulo} and  permisos.role_id=#{idRol}) and sub_modulo.sumo_estado=true
+        union 
+        select  sub_modulo.sumo_id,sub_modulo.sumo_nombre,
+        false as perm_nuevo,
+        false as perm_editar,
+        false as perm_eliminar,
+        false as perm_imprimir,
+        false as perm_ver,
+        false as perm_publicar
+        from administracion.sub_modulo
+        where sub_modulo.modu_id=#{idModulo} and sub_modulo.sumo_estado=true and sub_modulo.sumo_id not in 
+        (select sumo_id from administracion.permisos where permisos.role_id=#{idRol})
+    </select>
+    <select id="buscarPermiso" parameterType="java.util.HashMap" resultMap="PermisoMap">
+        select  permisos.sumo_id,
+        permisos.role_id,
+        case when  permisos.perm_nuevo is null then false else permisos.perm_nuevo end as perm_nuevo,
+        case when  permisos.perm_editar is null then false else permisos.perm_editar end as perm_editar,
+        case when  permisos.perm_eliminar is null then false else  permisos.perm_eliminar end as perm_eliminar,
+        case when  permisos.perm_imprimir is null then false else  permisos.perm_imprimir end as perm_imprimir,
+        case when  permisos.perm_ver is null then false else permisos.perm_ver end as perm_ver,  
+        case when  permisos.perm_publicar is null then false else permisos.perm_publicar end as perm_publicar
+        from administracion.permisos
+        where permisos.sumo_id=#{idSubModulo} and permisos.role_id=#{idRol}
+    </select>
+    <insert id="insertPermisos" parameterType="Permisos">
+        INSERT INTO administracion.permisos(
+        role_id, sumo_id, perm_nuevo, perm_editar, perm_eliminar, perm_imprimir,perm_ver, perm_publicar)
+        VALUES (#{rol.idRol}, #{subModulo.idSubModulo}, #{nuevo}, #{editar}, #{eliminar}, #{imprimir}, #{ver}, #{publicar})
+    </insert>
+    <update id="updatePermisos" parameterType="Permisos">
+        UPDATE administracion.permisos
+        SET  perm_nuevo=#{nuevo}, perm_editar=#{editar}, perm_eliminar=#{eliminar}, perm_imprimir=#{imprimir}, perm_ver=#{ver}, perm_publicar = #{publicar}
+        WHERE role_id=#{rol.idRol} and sumo_id=#{subModulo.idSubModulo}
+    </update>
+    <select id="buscarPermisoPorUsuario" parameterType="java.util.HashMap" resultMap="PermisoForUsuarioMap">
+        select
+	case when sum(case when permisos.perm_nuevo is true then 1 else 0 end)  &gt;= 1 then true else false end perm_nuevo,
+        case when sum(case when permisos.perm_editar is true then 1 else 0 end)  &gt;= 1 then true else false end perm_editar,
+	case when sum(case when permisos.perm_eliminar is true then 1 else 0 end)  &gt;= 1 then true else false end perm_eliminar,
+	case when sum(case when permisos.perm_imprimir is true then 1 else 0 end)  &gt;= 1 then true else false end perm_imprimir,
+	case when sum(case when permisos.perm_ver is true then 1 else 0 end)  &gt;= 1 then true else false end perm_ver,
+        case when sum(case when permisos.perm_publicar is true then 1 else 0 end)  &gt;= 1 then true else false end perm_publicar
+        from administracion.permisos
+        inner join administracion.roles on roles.role_id = permisos.role_id
+        inner join administracion.grupo_rol on grupo_rol.role_id = roles.role_id
+        inner join administracion.grupo on grupo.grup_id = grupo_rol.grup_id
+        inner join administracion.usuario on usuario.grup_id = grupo.grup_id
+        where permisos.sumo_id = ${idSubModulo} and usuario.usua_login = #{usuaLogin}
+        limit 1 offset 0
+    </select>
+</mapper>

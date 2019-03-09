@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Solicitud">
+    <resultMap id="SolicitudMap" type="Solicitud">
+        <result property="soliId" column="soli_id" />
+        <result property="anho" column="anho" />
+        <result property="usuario" column="usuario" />
+        <result property="dni" column="dni" />
+        <result property="correo" column="correo"/>
+        <result property="dependencia" column="dependencia"/>
+        <result property="descripcion" column="descripcion"/>
+        <result property="domicilio" column="domicilio"/>
+        <result property="forma" column="forma"/>
+        <result property="fechaRegistro" column="fecha_registro" />
+        <result property="fechaAtendido" column="fecha_atendido" />
+        <result property="estado" column="estado"/>
+        <result property="telefono" column="telefono"/>
+    </resultMap>
+    <select id="getListSolicitud" parameterType="java.util.HashMap"  resultMap="SolicitudMap">
+        SELECT * FROM web.solicitud where estado = 'true' order by fecha_registro desc, soli_id desc limit ${limit} offset ${start}
+    </select>
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="SolicitudMap">
+        SELECT * FROM web.solicitud order by fecha_registro desc, soli_id desc, anho desc  limit ${limit} offset ${start}
+    </select>
+    <select id="getTotalListForAdmin" parameterType="java.util.HashMap"  resultMap="SolicitudMap">
+        SELECT (soli_id) FROM web.solicitud;
+    </select>
+    <insert id="insertSolicitud" parameterType="Solicitud">
+        <selectKey keyProperty="soliId" resultType="int" order="BEFORE">
+            select case when max(soli_id) is null then 1 else cast((max(soli_id)+1) as integer) end soli_id  from web.solicitud
+        </selectKey>
+        INSERT INTO web.solicitud(
+        soli_id, anho, usuario, dni ,correo, dependencia, descripcion, fecha_registro, 
+        fecha_atendido, estado, telefono, domicilio, forma)
+        VALUES (#{soliId}, #{anho}, #{usuario}, #{dni}, #{correo}, #{dependencia}, #{descripcion}, cast (#{fechaRegistro} as date), 
+        '', 'true', #{telefono}, #{domicilio}, #{forma});
+    </insert>
+    <select id="maxIdSolicitud" resultType="Integer">
+        select cast((max(soli_id)) as integer)  from web.solicitud
+    </select>
+    <select id="getTotalListSolicitud" parameterType="java.util.HashMap"  resultMap="SolicitudMap">
+        SELECT * FROM web.solicitud;
+    </select>
+    <select id="getSolicitudSingle" parameterType="Integer"  resultMap="SolicitudMap">
+        SELECT * FROM web.solicitud where (soli_id=#{id})
+    </select>
+    
+    <update id="updateSolicitud" parameterType="Solicitud">
+        UPDATE web.solicitud
+        SET fecha_atendido = cast (#{fechaAtendido} as date)
+        WHERE soli_id = #{soliId} and fecha_atendido = ''
+    </update>
+    <select id="getAlertaSolicitud" resultMap="SolicitudMap">
+        SELECT 
+        fecha_registro
+        FROM web.solicitud where fecha_atendido = ''
+    </select>
+    <delete id="deleteSolicitud" parameterType="Integer" >
+        delete from web.solicitud
+        where soli_id = #{id};
+    </delete>
+</mapper>
+

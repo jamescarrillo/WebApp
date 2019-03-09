@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Telefonia">
+    <resultMap id="TelefoniaMap" type="Telefonia">
+        <result property="id" column="id" />        
+        <result property="anho" column="anho" />
+        <result property="mes" column="mes" />
+        <result property="areaOficina" column="area_oficina" />
+        <result property="tipo" column="tipo" />
+        <result property="numero" column="numero" />
+        <result property="asignadoA" column="asignado_a"  />
+        <result property="cargoActividad" column="cargo_actividad" />    
+        <result property="importe" column="importe" />       
+        <result property="estado" column="estado"/>     
+    </resultMap>
+    <resultMap id="AnhosMap" type="java.lang.String">
+        <result property="anho" column="anho" />  
+    </resultMap>
+    
+    <resultMap id="MesMap" type="java.lang.String">
+        <result property="mes" column="mes" />
+    </resultMap>
+    <select id="getListMesForWeb" parameterType="String"  resultMap="MesMap">
+        select distinct mes  from web.f00020 where(anho=#{anho}) order by mes desc
+    </select>
+    
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="TelefoniaMap">
+        select * from web.f00020 where (area_oficina ILIKE  #{query} or asignado_a ILIKE #{query} )  and  anho=#{anio} and mes=#{mes}  order by id ${order} limit ${limit} offset ${start} 
+    </select>
+
+    <select id="getListAnioForWeb"  resultMap="AnhosMap">
+        select distinct(anho) as anho from web.f00020  order by anho desc 
+    </select>
+    
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="TelefoniaMap">
+        select * from web.f00020 where (area_oficina ILIKE  #{query} or asignado_a ILIKE #{query} ) and  anho=#{anio} and mes=#{mes} order by id ${order}
+    </select>
+    
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="TelefoniaMap">
+        select * from web.f00020 where (area_oficina ILIKE  #{query} or asignado_a ILIKE #{query} )  and  anho=#{anio} order by id ${order} limit ${limit} offset ${start} 
+    </select>
+    <select id="getTotalListForAdmin" parameterType="java.util.HashMap"  resultMap="TelefoniaMap">
+        select (anho) from web.f00020 where (area_oficina ILIKE  #{query} or asignado_a ILIKE #{query} ) and  anho=#{anio} order by id ${order}
+    </select>
+    <update id="createTableTemp">
+        CREATE  TEMP TABLE temp
+        (
+        id integer NOT NULL,
+        anho character(4) NOT NULL,
+        mes character(2) NOT NULL,
+        area_oficina character varying(100),
+        asignado_a character varying(300),
+        cargo_actividad character varying(200),
+        importe numeric(15,2),
+        estado boolean,
+        tipo character varying(100),
+        numero character varying(100),
+        CONSTRAINT temp_id_pk PRIMARY KEY (id)
+        ) ON COMMIT DROP 
+    </update>
+    
+    <insert id="insertTemp" parameterType="Telefonia">
+        INSERT INTO temp(
+        id, anho, mes, area_oficina, asignado_a, cargo_actividad, importe, 
+        estado, tipo, numero)
+        VALUES (#{id}, #{anho}, #{mes}, #{areaOficina}, #{asignadoA} ,#{cargoActividad}, #{importe}, #{estado}, #{tipo}, #{numero}
+        );
+    </insert>
+    
+    <delete id="deleteTemporalTelefonia" parameterType="Integer">
+        DELETE FROM temp
+        WHERE id = #{id}
+    </delete>
+
+    <select id="getListTempForWeb" parameterType="java.util.HashMap"  resultMap="TelefoniaMap">
+        select * from temp 
+    </select>
+    
+    <insert id="addItemTelefonia"  parameterType="java.util.HashMap" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select cast((max(id)+1) as integer) from web.f00020
+        </selectKey>
+        INSERT INTO web.f00020(id, anho, mes, area_oficina, asignado_a, cargo_actividad, importe, estado, tipo, numero)
+        VALUES (#{id}, #{anho}, #{mes}, #{areaOficina}, #{asignadoA}, #{cargoActividad}, #{importe}, 'true', #{tipo}, #{numero});
+    </insert>
+        
+    <delete id="deleteTelefonia" parameterType="Integer">
+        DELETE FROM web.f00020
+        WHERE id = #{id}
+    </delete>
+    
+    <select id="getRepetidoTelefonia" parameterType="java.util.HashMap"  resultMap="TelefoniaMap">
+        select id from web.f00020 where (anho =#{anho} and mes = #{mes} and area_oficina = #{areaOficina} and asignado_a = #{asignadoA}
+        and cargo_actividad = #{cargoActividad} and importe = #{importe} and tipo = #{tipo}  and numero = #{numero})
+    </select>
+</mapper>

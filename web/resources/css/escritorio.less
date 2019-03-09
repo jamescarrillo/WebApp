@@ -1,0 +1,104 @@
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video { margin: 0; padding: 0; border: 0; font: inherit; font-size: 100%; vertical-align: baseline; }
+html { line-height: 1; }
+ol, ul { list-style: none; }
+table { border-collapse: collapse; border-spacing: 0; }
+caption, th, td { text-align: left; font-weight: normal; vertical-align: middle; }
+q, blockquote { quotes: none; }
+q:before, q:after, blockquote:before, blockquote:after { content: ""; content: none; }
+a img { border: none; }
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary { display: block; }
+@padding:5px;
+@width:920px;
+body{
+    font-size:12px;
+}
+#cuerpo{
+    margin: 2% auto;    
+    min-width:@width;
+    padding:@padding;
+    #centro{              
+        margin:@padding;
+        overflow:hidden;
+        #modulos{
+            padding:@padding*2; 
+            float:left;
+            width:53%;
+            overflow:hidden;
+        }
+        #profile{
+            padding:@padding*2; 
+            float:right;
+            width:42%;
+            border-left:0.1em solid #ccc;
+            h2{
+                padding:@padding;                
+                border-bottom:0.1em dashed #ccc;
+            }
+            form{
+                padding:@padding;
+                div{
+                    display:block;
+                    overflow:hidden;
+                    label{
+                        float:left;
+                        width:30%;
+                    }
+                    span{
+                        float:right;
+                        text-align:left;
+                        width:66%;
+                        padding:@padding;
+                    }
+                }
+            }
+        }
+    }
+}
+
+#gadget{
+    margin: 2% auto;    
+    padding:@padding;
+    div.gadget{
+        margin:@padding;    
+        float:left;
+        width:25%;
+        height:100px;
+        padding:@padding;
+        display:block;
+        cursor:pointer;
+        &:hover{
+            box-shadow:5px 5px 10px #ccc;
+        }
+        img{
+            display:block;
+            padding:@padding;
+            margin:0 auto;
+        }
+        span{
+            padding:@padding;
+            text-align:center;
+            margin:0 auto;
+            display:block;
+        }             
+    }
+}
+#frmPeriodo{
+    padding:0px;
+    margin:0px;
+    overflow:hidden;
+    .side-i{
+        float:left;
+        padding:0px;
+        width:20%;
+    }
+    .side-d{
+        width:77%;
+        float:right;
+        padding:0px;
+    }
+}
+#gridPeriodo{
+    .body{
+        height:370px;
+    }
+}

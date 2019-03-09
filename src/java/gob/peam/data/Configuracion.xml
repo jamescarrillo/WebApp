@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Configuracion">
+    <resultMap id="ConfiguracionMap" type="Configuracion">
+        <id property="id" column="id" />        
+        <result property="resolucion" column="resolucion" />
+        <result property="presupuesto" column="presupuesto" />
+        <result property="documentos" column="documentos"  />
+        <result property="normas" column="normas" />    
+        <result property="viatico" column="viatico" />   
+       
+    </resultMap>
+    <select id="getListForWeb"   resultMap="ConfiguracionMap">
+        select * from web.configuracion
+    </select>
+    <update id="updateConfiguracion" parameterType="Configuracion">
+        UPDATE web.configuracion
+        SET  resolucion=#{resolucion}, 
+        presupuesto=#{presupuesto},
+        documentos=#{documentos},
+        normas=#{normas}, 
+        viatico=#{viatico}
+        WHERE id=#{id}
+    </update>
+</mapper>

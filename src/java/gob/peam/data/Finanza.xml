@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Finanza">
+    <resultMap id="FinanzaMap" type="Finanza">
+        <id property="id" column="id" />
+        <result property="anho" column="anho" />
+        <result property="mes" column="mes" />
+        <result property="titulo" column="titulo" />
+        <result property="descripcion" column="descripcion" />
+        <result property="tituloFormato" column="titulo_formato"  />
+        <result property="documento" column="documento" />
+        <result property="ubicacion" column="ubicacion" />
+        <result property="estado" column="estado" />
+        <result property="docuId" column="docu_id" />
+        <result property="fecha" column="fecha" />
+    </resultMap>
+    
+    <resultMap id="AnhosMap" type="Anho">
+        <result property="anho" column="anho" />
+    </resultMap>
+    
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="FinanzaMap">
+        select * from web.f00017 where
+        tipo = #{tipo} ${anho} and descripcion ilike #{query} and estado = true
+        order by docu_id desc limit ${limit} offset ${start}
+    </select>
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="FinanzaMap">
+        select (id) from web.f00017 where
+        tipo = #{tipo} ${anho}  and descripcion ilike #{query} and estado = true
+    </select>
+    <select id="getList" parameterType="java.util.HashMap"  resultMap="FinanzaMap">
+        select * from web.f00017 where
+        tipo = #{tipo}  ${anho}  and descripcion ilike #{c}
+        order by docu_id
+    </select>
+    <select id="get" parameterType="java.util.HashMap"  resultMap="FinanzaMap">
+        select * from web.f00017 where
+        tipo = #{tipo}  and id=#{id}
+    </select>
+    <select id="getListAnioForWeb" parameterType="int"  resultMap="AnhosMap">
+        select distinct(anho) anho  from web.f00017 where tipo = #{tipo} and estado = true  order by anho desc
+    </select>
+    <select id="getListAnio" parameterType="int"  resultMap="AnhosMap">
+        select distinct(anho) anho  from web.f00017 where tipo = #{tipo}  order by anho desc
+    </select>
+    <insert id="addItemFinanza"  parameterType="java.util.HashMap" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select case when max(id) is null then 1 else cast((max(id)+1) as integer) end id  from web.f00017
+        </selectKey>
+        INSERT INTO web.f00017(id, tipo, anho, mes, titulo_formato, documento, descripcion, ubicacion, estado, docu_id)
+        VALUES (#{id}, #{tipo_f}, #{anho}, #{mes},initcap(#{tituloFormato}), '', initcap(#{descripcion}), '', true, #{docuId});
+    </insert>
+    <select id="getRepetidoFinanza" parameterType="java.util.HashMap"  resultMap="FinanzaMap">
+        select id from web.f00017 where (docu_id =#{docuId});
+    </select>
+    <update id="updateFinanza" parameterType="Finanza">
+        UPDATE web.f00017
+        SET anho=#{anho}, mes=#{mes}, titulo_formato=#{tituloFormato}, documento=#{documento}, descripcion=#{descripcion}, 
+        ubicacion=#{ubicacion}, estado=#{estado}
+        where id=#{id}
+    </update>
+    
+    <update id="update" parameterType="Finanza">
+        UPDATE web.f00017
+        SET anho=#{anho}, mes=#{mes},  descripcion=#{descripcion}
+        where id=#{id}
+    </update>
+    
+    <delete id="deleteFinanza" parameterType="int">
+        delete from web.f00017
+        where id=#{id}
+    </delete>
+    
+    <update id="activarFinanza"  parameterType="java.util.HashMap">
+        UPDATE web.f00017
+        SET  estado = #{act}
+        WHERE id = #{codigo}
+    </update>
+    
+    <insert id="insertFinanza" parameterType="Finanza">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select case when max(id) is null then 1 else cast((max(id)+1) as integer) end id  from web.f00017
+        </selectKey>
+        INSERT INTO web.f00017(
+        id, tipo, anho, mes, titulo_formato, documento, descripcion, 
+        ubicacion, estado, docu_id, fecha)
+        VALUES (#{id}, #{tipo}, #{anho}, #{mes}, #{tituloFormato}, #{documento}, #{descripcion}, 
+        #{ubicacion}, #{estado}, #{docuId}, #{fecha});
+    </insert>
+    
+    <update id="publicar" parameterType="HashMap">
+        update web.f00017 set estado = #{estado}
+        where id = #{id}
+    </update>
+    
+    <select id="getFinanza" parameterType="HashMap" resultMap="FinanzaMap">
+        select * from  web.f00017 where id = #{id} 
+    </select>
+</mapper>

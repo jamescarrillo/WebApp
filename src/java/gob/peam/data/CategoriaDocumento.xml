@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CategoriaDocumento">
+    <resultMap id="CategoriaDocumentoMap" type="CategoriaDocumento">
+        <result property="cateId" column="id_cate" />
+        <result property="nombre" column="nombre" />
+        <result property="tidoId" column="tido_id" />
+    </resultMap>
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="CategoriaDocumentoMap">
+        select id_cate, nombre from web.categoria_doc where tido_id = #{tido_id}
+    </select>
+    
+</mapper>

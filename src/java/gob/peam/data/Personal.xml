@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Personal">
+    <resultMap id="PersonalMap" type="Personal">
+        <result property="id" column="id" />        
+        <result property="anho" column="anho" />
+        <result property="denominacion" column="denominacion" />
+        <result property="trimestre" column="trimestre" />
+        <result property="cargo" column="cargo" />
+        <result property="codigoFormato" column="codigo_formato"  />
+        <result property="pension" column="pension" />
+        <result property="fechaIngreso" column="fecha_ingreso" />
+        <result property="fechaCede" column="fecha_cede" />
+        <result property="numeroDni" column="numero_dni" />
+        <result property="apellidosNombres" column="apellidos_nombres" />    
+        <result property="codigoCivil" column="codigo_civil" />    
+        <result property="oficinaArea" column="oficina_area" /> 
+        <result property="remuneracionMensual" column="remuneracion_mensual" />    
+        <result property="beneficios" column="beneficios" />    
+        <result property="ingresoTotal" column="ingreso_total" />
+        <result property="tipo" column="tipo"/>
+        <result property="categoria" column="categoria"/>     
+        <result property="estado" column="estado"/>     
+        <result property="observacion" column="observacion"/> 
+        <result property="bonificacionQuinqu" column="bonificacion_quinq"/>   
+    </resultMap>
+    
+    <resultMap id="AnhosMap" type="java.lang.String">
+        <result property="anho" column="anho" />  
+    </resultMap>
+    <resultMap id="TrimestreMap" type="java.lang.String">
+        <result property="trimestre" column="trimestre" />
+    </resultMap>
+    <resultMap id="MesMap" type="java.lang.String">
+        <result property="mes" column="mes" />
+    </resultMap>
+    <select id="getListTrimestreForWeb" parameterType="java.util.HashMap"  resultMap="TrimestreMap">
+        select distinct trimestre  from web.f00010 where(anho=#{anho} and  tipo=#{tipo}) order by trimestre desc
+    </select>
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="PersonalMap">
+        select * from web.f00010 where (upper(apellidos_nombres) ILIKE #{query} or upper(oficina_area) ILIKE #{query} or upper(cargo) ILIKE #{query} ) and codigo_formato='SNP'  and  anho=#{anio} order by trimestre desc,id ${order} limit ${limit} offset ${start} 
+    </select>
+    <select id="getListAnioForWeb"  resultMap="AnhosMap">
+        select distinct(anho) as anho from web.f00010 where tipo=#{tipo}  order by anho desc
+    </select>
+    <!--<select id="getListAnioForWeb2"  resultMap="AnhosMap">
+        select distinct(anho) as anho from web.f00010 where tipo='1'  order by anho desc
+    </select>-->
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="PersonalMap">
+        select * from web.f00010 where (upper(apellidos_nombres) ILIKE #{query} or upper(oficina_area) ILIKE #{query}) and codigo_formato='SNP' and  anho=#{anio} order by id,trimestre ${order}
+    </select>
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="PersonalMap">
+        select * from web.f00010 where (apellidos_nombres ILIKE #{query} or upper(cargo) ILIKE #{query} or upper(oficina_area) ILIKE #{query}) and tipo=#{tipo}  and  anho=#{anio} and trimestre=#{trimestre} order by id ${order} limit ${limit} offset ${start}
+    </select>
+    <select id="getTotalListForAdmin" parameterType="java.util.HashMap"  resultMap="PersonalMap">
+        select * from web.f00010 where (apellidos_nombres ILIKE #{query} ) and tipo=#{tipo} and  anho=#{anio} and trimestre=#{trimestre} order by id ${order}
+    </select>
+    <select id="getRepetidoPersonal" parameterType="java.util.HashMap"  resultMap="PersonalMap">
+        select id from web.f00010 
+        where (anho=#{anho} and trimestre=#{trimestre} and cargo=#{cargo} 
+        and fecha_ingreso=#{fechaIngreso} and apellidos_nombres=#{apellidosNombres} and numero_dni=#{numeroDni} )
+    </select>
+
+    <update id="createTableTemp">
+        CREATE TEMP TABLE temp(
+        id integer NOT NULL,
+        anho character varying(10) ,
+        denominacion character varying(50),
+        trimestre integer ,
+        cargo text,
+        codigo_formato character(10),
+        pension character(50),
+        fecha_ingreso character varying(20),
+        fecha_cede character varying(20),
+        apellidos_nombres character varying(300),
+        numero_dni character varying(8),
+        codigo_civil character varying(20),
+        oficina_area text,
+        remuneracion_mensual numeric(15,2),
+        beneficios numeric(15,2),
+        ingreso_total numeric(15,2),
+        tipo integer,
+        categoria character varying(3),
+        estado boolean NOT NULL,
+        observacion text,
+        bonificacion_quinq numeric(15,2),
+        CONSTRAINT peam_temp_pk PRIMARY KEY (id)
+        ) ON COMMIT DROP 
+    </update>
+    
+    <insert id="insertTemp" parameterType="Personal">
+        INSERT INTO temp(
+        id, anho, denominacion, trimestre, cargo, codigo_formato, pension, 
+        fecha_ingreso, fecha_cede, apellidos_nombres, numero_dni, codigo_civil, 
+        oficina_area, remuneracion_mensual, beneficios, ingreso_total, 
+        tipo, categoria , estado, observacion, bonificacion_quinq )
+        VALUES (#{id}, #{anho}, #{denominacion}, #{trimestre}, #{cargo}, #{codigoFormato}, #{pension}, 
+        #{fechaIngreso} , #{fechaCede} , #{apellidosNombres}, lpad(#{numeroDni}, 8, '0'), #{codigoCivil}, 
+        #{oficinaArea}, #{remuneracionMensual}, #{beneficios}, #{ingresoTotal}, 
+        #{tipo}, #{categoria}, #{estado}, #{observacion},#{bonificacionQuinqu});
+    </insert>
+    
+    <delete id="deleteTemporalPersonal" parameterType="Integer">
+        DELETE FROM temp
+        WHERE id = #{id}
+    </delete>
+    
+    <select id="getListTempForWeb" parameterType="java.util.HashMap"  resultMap="PersonalMap">
+        select * from temp
+    </select>
+    
+    <insert id="addItemPersonal"  parameterType="java.util.HashMap" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select case when max(id) is null then 1 else cast((max(id)+1) as integer) end id  from web.f00010
+        </selectKey>
+        INSERT INTO web.f00010(
+        id, anho, denominacion, trimestre, cargo, codigo_formato, pension, 
+        fecha_ingreso, fecha_cede, apellidos_nombres, numero_dni, codigo_civil, 
+        oficina_area, remuneracion_mensual, beneficios, ingreso_total, 
+        tipo, categoria , estado, observacion, bonificacion_quinq)
+        VALUES (#{id}, #{anho}, #{denominacion}, #{trimestre}, #{cargo}, #{codigoFormato}, #{pension}, 
+        #{fechaIngreso} , #{fechaCede} , #{apellidosNombres}, #{numeroDni}, #{codigoCivil}, 
+        #{oficinaArea}, #{remuneracionMensual}, #{beneficios}, #{ingresoTotal}, 
+        #{tipo}, #{categoria}, 'true', #{observacion},#{bonificacionQuinqu});
+    </insert>
+    
+    <delete id="deletePersonal" parameterType="Integer">
+        DELETE FROM web.f00010
+        WHERE id = #{id}
+    </delete>
+    
+ 
+</mapper>

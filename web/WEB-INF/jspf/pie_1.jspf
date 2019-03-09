@@ -1,0 +1,19 @@
+<%-- any content can be specified here e.g.: --%>
+<%@ page pageEncoding="UTF-8" %>
+<div class="pie">
+    <div id="enlaces"></div>
+    <div id="datospie">
+        <div id="peam" style="font-weight: bold">Proyecto Especial Alto Mayo</div>
+        <div id="peam-descripcion">
+            <div id="direccion" style="line-height: 1.1em; color:#fff">
+                Carretera Presidente Fernando Belaúnde Terry Km.493  Moyobamba - San Martín - Perú<br />
+                Horario de Atencion: Lunes a Viernes: De 7:30 a 13:00 horas y de 14:30 a 17:00 horas </div>
+            <div id="telefono" style="line-height: 1.1em; color:#fff">Teléfono/Fax: <em style="color:#fff">(042) 562522</em> <br /> RUC Nº <em style="color:#fff">20172237127</em></div>            
+        </div>     
+        <div style="float: left; color: #fff; font-size: 91%; margin: 5px; width: 100%; text-align: justify ">
+            Responsable de Transparencia y Acceso a la Información Pública: <a style="color:#fff; " href="mailto:mbejarano@peam.gob.pe" >Ing. Miguel Angel Bejarano Lazo</a> | Designado por Resolución Gerencial: <em style="color:#fff"><a href="http://www.peam.gob.pe/GestionTransparente?action=verResolucion&amp;id=15955&amp;anho=2011" target="_blank" style="color:white" > 070-2011-GRSM-PEAM-01.00 </a> </em>            
+        </div>    
+    </div>
+</div>
+
+

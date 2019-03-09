@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Usuario">
+    <resultMap id="UsuarioMap" type="Usuario">
+        <result property="idUsuario" column="usua_id" />        
+        <result property="login" column="usua_login" />
+        <result property="clave" column="usua_clave" />        
+        <result property="estado" column="usua_estado"/>     
+        <association property="grupo" column="grup_id" javaType="Grupo">
+            <result property="idGrupo" column="grup_id" /> 
+            <result property="nombre" column="grup_nombre" />
+            <result property="estado" column="grup_estado" />
+        </association>
+        <association property="persona" column="pers_id" javaType="Persona">
+            <result property="idPersona" column="pers_id" /> 
+            <result property="dni" column="pers_dni" />
+            <result property="apellidoPaterno" column="pers_apellido_paterno" />
+            <result property="nombre" column="pers_nombre" />
+            <result property="apellidoMaterno" column="pers_apellido_materno" />
+            <association property="dependencia" column="depe_id" javaType="Dependencia">
+                <result property="idDependencia" column="depe_id" /> 
+                <result property="nombre" column="depe_nombre" />
+                <result property="abreviatura" column="depe_abreviatura" />
+                <result property="estado" column="depe_estado" />
+                <result property="padre" column="depe_padre" />   
+            </association>
+        </association>       
+    </resultMap>
+    <resultMap id="UsuarioOnlyMap" type="Usuario">
+        <result property="idUsuario" column="usua_id" />        
+        <result property="login" column="usua_login" />
+        <result property="estado" column="usua_estado"/> 
+        <association property="grupo" column="grup_id" javaType="Grupo">
+            <result property="idGrupo" column="grup_id" /> 
+            <result property="nombre" column="grup_nombre" />
+            <result property="estado" column="grup_estado" />
+        </association>
+    </resultMap>
+    <resultMap id="UsuarioDelMap" type="Usuario">
+        <result property="idUsuario" column="usua_id" />        
+        <result property="login" column="usua_login" />
+    </resultMap>
+    <select id="buscarUsuarioPorLogin" parameterType="String" resultMap="UsuarioMap">
+        select u.*,g.grup_nombre,g.grup_estado,d.depe_id,d.depe_nombre,d.depe_abreviatura,d.depe_estado,d.depe_padre,p.pers_dni,p.pers_nombre,p.pers_apellido_paterno,p.pers_apellido_materno
+        from administracion.usuario  as u inner join administracion.persona as p on p.pers_id=u.pers_id
+        inner join administracion.grupo as g on g.grup_id=u.grup_id
+        inner join administracion.dependencia_persona as du on du.pers_id = p.pers_id 
+        inner join administracion.dependencia as d on d.depe_id=du.depe_id
+        where u.usua_login=#{login}
+    </select>
+    <insert id="insertUsuario" parameterType="Usuario">
+        <selectKey keyProperty="idUsuario" resultType="int" order="BEFORE">
+            select cast(((case  when max(usua_id) is null then 0 else max(usua_id) end) +1) as int) from administracion.usuario
+        </selectKey>
+        INSERT INTO administracion.usuario(
+        usua_id, usua_login, usua_clave, usua_estado, grup_id, pers_id)
+        VALUES (#{idUsuario}, #{login}, #{clave}, #{estado}, #{grupo.idGrupo}, #{persona.idPersona})
+    </insert>
+    <select id="buscarUsuarioPorPersona" parameterType="Integer" resultMap="UsuarioOnlyMap">
+        select usuario.usua_id,usuario.usua_login,usuario.grup_id,usuario.usua_estado,grupo.grup_nombre,grupo.grup_estado from administracion.usuario
+        inner join administracion.grupo on grupo.grup_id=usuario.grup_id where usuario.pers_id=#{id}
+    </select>
+    <select id="buscarUsuarioPorId" parameterType="Integer" resultMap="UsuarioDelMap">
+        select * from administracion.usuario
+        where usuario.usua_id=#{id}
+    </select>    
+    <update id="updateUsuario" parameterType="Usuario">
+        UPDATE administracion.usuario
+        SET  usua_login=#{login}, usua_clave=#{clave}, usua_estado=#{estado}, grup_id=#{grupo.idGrupo}, 
+        pers_id=#{persona.idPersona}
+        WHERE usua_id=#{idUsuario}
+    </update>
+    <update id="desactivarUsuario" parameterType="Integer">
+        update administracion.usuario
+        set usua_estado=false
+        where usua_id=#{idUsuario}
+    </update>
+    <update id="activarUsuario" parameterType="Integer">
+        update administracion.usuario
+        set usua_estado=true
+        where usua_id=#{idUsuario}
+    </update>
+    <delete id="delUsuario" parameterType="Integer">
+        DELETE FROM administracion.usuario
+        WHERE usua_id=#{usua_id}
+    </delete>
+    <select id="existeUsuarioParaEliminar" parameterType="Integer" resultMap="UsuarioDelMap">
+        select usuario.usua_id,usua_login from administracion.usuario 
+        inner join administracion.dependencia_usuario on dependencia_usuario.usua_id=usuario.usua_id
+        where usuario.usua_id=#{usua_id}
+    </select>
+</mapper>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PersonalCategoria">
+    <resultMap id="PersonalCategoriaMap" type="PersonalCategoria">
+        <result property="id" column="id" />        
+        <result property="anho" column="anho" />
+        <result property="trimestre" column="trimestre" />
+        <result property="codigo" column="codigo"  />
+        <result property="categoria" column="categoria" />    
+        <result property="remuneracionMinima" column="remuneracion_minima" />    
+        <result property="remuneracionMaxima" column="remuneracion_maxima" /> 
+        <result property="numeroTrabajadores" column="numero_trabajadores" />      
+        <result property="estado" column="estado"/>     
+    </resultMap>
+    <resultMap id="AnhosMap" type="java.lang.String">
+        <result property="anho" column="anho" />
+    </resultMap>
+    <resultMap id="TrimestreMap" type="java.lang.String">
+        <result property="trimestre" column="trimestre" />
+    </resultMap>
+    
+    <select id="getListTrimestreForWeb" parameterType="java.util.HashMap"  resultMap="TrimestreMap">
+        select distinct trimestre  from web.f00009 where(anho=#{anho}) order by trimestre desc
+    </select>
+    
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="PersonalCategoriaMap">
+        select * from web.f00009 where (categoria ILIKE #{query} or codigo ILIKE #{query}) and  anho=#{anio} and trimestre = #{trimestre} order by trimestre desc,id ${order} limit ${limit} offset ${start} 
+    </select>
+    <select id="getListAnioForWeb"  resultMap="AnhosMap">
+        select distinct(anho) as anho from web.f00009  order by anho desc 
+    </select>
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="PersonalCategoriaMap">
+        select * from web.f00009 where (categoria ILIKE #{query} or codigo ILIKE #{query}) and   anho=#{anio} and trimestre = #{trimestre} order by id,trimestre ${order}
+    </select>
+    
+    <select id="getRepetidoPersonalCategoria" parameterType="java.util.HashMap"  resultMap="PersonalCategoriaMap">
+        select id from web.f00009
+        where (anho=#{anho} and trimestre=#{trimestre} 
+        and codigo=#{codigo} and categoria=#{categoria} )
+    </select>
+
+    <update id="createTableTemp">
+        CREATE TEMP TABLE temp(
+        id integer NOT NULL,
+        anho character varying(4) NOT NULL,
+        trimestre integer ,
+        codigo character varying(20),
+        categoria character varying(40),
+        remuneracion_minima numeric(15,2) DEFAULT 0,
+        remuneracion_maxima numeric(15,2) DEFAULT 0,
+        numero_trabajadores integer,
+        estado boolean NOT NULL,
+        CONSTRAINT peam_temp_pk PRIMARY KEY (id)
+        ) ON COMMIT DROP 
+    </update>
+    
+    <insert id="insertTemp" parameterType="PersonalCategoria">
+        INSERT INTO temp(
+        id, anho, trimestre, codigo, categoria, remuneracion_minima,
+        remuneracion_maxima, numero_trabajadores, estado)
+        VALUES (#{id}, #{anho}, #{trimestre}, #{codigo}, #{categoria}, #{remuneracionMinima},
+        #{remuneracionMaxima}, #{numeroTrabajadores}, #{estado});
+    </insert>
+    
+    <delete id="deleteTemporalPersonalCategoria" parameterType="Integer">
+        DELETE FROM temp
+        WHERE id = #{id}
+    </delete>
+    
+    <select id="getListTempForWeb" parameterType="java.util.HashMap"  resultMap="PersonalCategoriaMap">
+        select * from temp
+    </select>
+    
+    <insert id="addItemPersonalCategoria"  parameterType="java.util.HashMap" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select case when max(id) is null then 1 else cast((max(id)+1) as integer) end id  from web.f00009
+        </selectKey>
+        INSERT INTO web.f00009(
+        id, anho, trimestre, codigo, categoria, remuneracion_minima,
+        remuneracion_maxima, numero_trabajadores, estado)
+        VALUES (#{id}, #{anho}, #{trimestre}, #{codigo}, #{categoria}, #{remuneracionMinimo},
+        #{remuneracionMaximo}, #{numeroTrabajadores}, 'true');
+    </insert>
+    
+    <delete id="deletePersonalCategoria" parameterType="Integer">
+        DELETE FROM web.f00009
+        WHERE id = #{id}
+    </delete>
+    
+</mapper>

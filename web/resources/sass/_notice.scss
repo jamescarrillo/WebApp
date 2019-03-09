@@ -1,0 +1,93 @@
+/*
+Document   : _notice
+Created on : 13/08/2012, 11:20:15 AM
+Author     : jpgprog84
+Description:
+Purpose of the stylesheet follows.
+*/
+
+/*
+TODO customize this sample style
+Syntax recommendation http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html
+*/
+
+.notice{
+    //border-botton:0.1em #ccc solid;
+   // background:#e6eae0;
+    margin:$padding*3 0;
+    .notice-head{
+        overflow:hidden;
+        //border-botton:0.2em black solid;
+        padding:$padding;
+        h2.notice-htitulo{
+            float:left;
+            font-size:14px;
+            color:#2b83bb;
+            //background:#e6eae0;
+            border:none;
+            border-bottom:0.1em #5c6163 dashed;
+            //            border:none;
+        }
+        h2.notice-hfecha{
+            float:right;
+            border:none;
+            border-bottom:0.1em #5c6163 dashed;
+           // background:#e6eae0;
+            color:#59A91C;
+            font-style: oblique;
+        }
+    }
+    div.notice-description{
+        padding:$padding*2;
+        font-size:13px;
+        height:30px;
+        text-align:justify;
+        font-weight:normal;
+        color: #464646;
+    }
+    div.notice-tools{        
+        overflow:hidden;
+        padding:$padding*2;
+        span.notice-tsubido{
+            float:left;
+            font-size:12px;
+            color:#59A91C;
+            b{
+                font-weight:bold;
+            }
+        }
+        span.notice-tbutton{
+            font-size:13px;
+            margin:0px;
+            padding:0px;
+            float:right;
+            a{
+                margin:0;
+                padding:0;
+                margin-left:$padding;
+                padding-left:23px;
+                cursor:pointer;
+            }
+        }
+    }
+}
+
+a.publicar{
+    background:url('../images/tools/thumb_up.png') 10% 50% no-repeat;
+}
+a.anular{
+    background:url('../images/tools/thumb_down.png') 10% 50% no-repeat;
+}
+a.eliminar{
+    background:url('../images/tools/delete.png') 10% 0 no-repeat;
+}
+a.default-d{
+    background:url('../images/tools/default-d.png') 0% 0 no-repeat;
+}
+    
+a.default{
+    background:url('../images/tools/default.png') 0% 0 no-repeat;
+}
+a.editar{
+    background:url('../images/tools/pencil.png')10% 0 no-repeat;
+}    

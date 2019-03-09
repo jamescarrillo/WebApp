@@ -1,0 +1,29 @@
+
+@mixin button($color){
+    margin-top:$padding;
+    display: inline-block;   
+    padding: ($padding) ($padding*2) ($padding) ($padding*2);   
+    color: #fff;        
+    text-decoration: none; 
+    @include border-radius(3px);  
+    box-shadow: 0 1px 3px rgba(0,0,0,0.6); 
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.6);  
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.6);  
+    border:$color;
+    border-bottom: 1px solid $color; 
+    position: relative;   
+    cursor:pointer;   
+    font-size: 13px; font-weight: bold; line-height: 1;
+    //margin-right:10px;
+    background-color: $color;
+}
+.button{
+    @include button(#2b83bb);
+    &:visited {   @include button(#334E8C);  }
+    &:hover {  @include button(#325E9D); }
+    &:active{  top: 0.1em;}
+    &.green, &.green:visited {   @include button(#59A91C); }
+    &.green:hover{ background-color: #72B53E; }
+    &.red, &.red:visited {@include button(#CB3D3C);}
+    &.red:hover{@include button(#D65B5C);  }
+}

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zk xmlns="http://www.zkoss.org/2005/zul">
+    <panel title="Lista de Anexos" border="normal" width="100%" >
+        <panelchildren style="overflow-y:auto;">
+            <div  apply="org.zkoss.bind.BindComposer "   viewModel="@id('vm') @init('gob.peam.dao.DirectorioTelefonicoDao')" >
+                <listbox id="grid" model="@bind(vm.items)" selectedItem="@bind(vm.selected)" emptyMessage="No hay Registros Encontrados" mold="paging" pageSize="10"  onSelect="@global-command('changeDato', select=grid.getSelectedItem().getLastChild().getLabel())">
+                    <auxhead sclass="category-center">
+                        <auxheader colspan="4">
+                            <n:button xmlns:n="native" type="button" lang="nuevo" id="btnNuevo">Nuevo</n:button>
+                            <n:button xmlns:n="native"  type="button" lang="editar" id="btnEditar">Editar</n:button>
+                            <button id="btnDelete" onClick="@command('delete', item=grid.getSelectedItem().getLastChild().getLabel())" label="Borrar" />
+                            <button label="Actualizar" id="update" onClick="@command('changeFilter')" />
+                            <n:script xmlns:n="native">init();</n:script>
+                        </auxheader>
+                    </auxhead>
+                    <auxhead sclass="category-center">
+                        <auxheader label="Buscar Anexo: " colspan="4">
+                            <image src="/resources/images/16x16/funnel.png" />
+                            <textbox value="@bind(vm.filter)" onChange="@command('changeFilter')"  width="300px" instant="true"/>
+                        </auxheader>
+                    </auxhead>
+                    <listhead sizable="true">
+                        <listheader align="center" width="10%" label="Item" />
+                        <listheader align="center" width="40%" label="Nombre" />
+                        <listheader align="center" width="40%" label="Descripcion" />
+                        <listheader align="center" width="10%" label="anexo" />
+                    </listhead>
+                    <template name="model" var="a" >
+                        <listitem>
+                            <listcell label="@load(a.id)" />
+                            <listcell label="@load(a.oficina)" />
+                            <listcell label="@load(a.seccion)" />
+                            <listcell label="@load(a.anexo)" />
+                            <listcell style="display:none" label="@load(a.id)" />
+                        </listitem>
+                    </template>
+                </listbox>
+            </div>
+        </panelchildren>
+    </panel>
+</zk>

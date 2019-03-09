@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Sesion">
+    <resultMap id="SesionMap" type="Sesion">
+        <id property="sesiId" column="sesi_id" />
+        <result property="sesiKey" column="sesi_key" />
+        <result property="sesiFechaIngreso" column="sesi_fecha_ingreso" />        
+        <result property="sesiFechaSalida" column="sesi_fecha_salida" />        
+        <result property="sesiHoraIngreso" column="sesi_hora_ingreso" />        
+        <result property="sesiHoraSalida" column="sesi_hora_salida" />        
+        <result property="sesiIp" column="sesi_ip" />        
+        <result property="sesiEstado" column="sesi_estado" /> 
+        <association property="dependencia" column="depe_id" javaType="Dependencia">
+            <result property="idDependencia" column="depe_id" /> 
+            <result property="nombre" column="depe_nombre" />
+            <result property="abreviatura" column="depe_abreviatura" />                  
+        </association>
+        <association property="usuario" column="usua_id" javaType="Usuario">
+            <result property="idUsuario" column="usua_id" />        
+            <result property="login" column="usua_login" />        
+            <association property="persona" column="pers_id" javaType="Persona">
+                <result property="idPersona" column="pers_id" /> 
+                <result property="dni" column="pers_dni" />
+                <result property="apellidoPaterno" column="pers_apellido_paterno" />
+                <result property="nombre" column="pers_nombre" />
+                <result property="apellidoMaterno" column="pers_apellido_materno" />
+                <result property="iniciales" column="pers_iniciales" />              
+            </association>  
+        </association>
+    </resultMap>
+    <insert id="insertSesion" parameterType="Sesion">
+        <selectKey keyProperty="sesiId" resultType="int" order="BEFORE">
+            select cast(((case  when max(sesi_id) is null then 0 else max(sesi_id) end) +1) as int) from administracion.sesion
+        </selectKey>
+        INSERT INTO administracion.sesion(
+        sesi_id, sesi_key, sesi_fecha_ingreso, sesi_fecha_salida, sesi_hora_ingreso, 
+        sesi_hora_salida, sesi_ip, usua_id, depe_id,sesi_estado)
+        VALUES (#{sesiId}, #{sesiKey}, #{sesiFechaIngreso}, #{sesiFechaSalida}, #{sesiHoraIngreso}, 
+        #{sesiHoraSalida}, #{sesiIp}, #{usuario.idUsuario}, #{dependencia.idDependencia},#{sesiEstado})
+    </insert>
+    <update id="updateSesion" parameterType="Sesion">
+        UPDATE administracion.sesion
+        SET sesi_key=#{sesiKey}, sesi_fecha_ingreso=#{sesiFechaIngreso}, sesi_fecha_salida=#{sesiFechaSalida}, 
+        sesi_hora_ingreso=#{sesiHoraIngreso}, sesi_hora_salida=#{sesiHoraSalida}, sesi_ip=#{sesiIp}, usua_id=#{usuario.idUsuario}, 
+        depe_id=#{dependencia.idDependencia},sesi_estado=#{sesiEstado}
+        WHERE sesi_id=#{sesiId}
+    </update>
+    <select id="buscarSesion" parameterType="String" resultMap="SesionMap">
+        SELECT 
+        sesion.sesi_id, 
+        sesion.sesi_key, 
+        sesion.sesi_fecha_ingreso, 
+        sesion.sesi_fecha_salida, 
+        sesion.sesi_hora_ingreso, 
+        sesion.sesi_hora_salida, 
+        sesion.sesi_ip, 
+        sesion.usua_id, 
+        sesion.depe_id, 
+        sesion.sesi_estado,
+        usuario.usua_login, 
+        usuario.pers_id, 
+        persona.pers_dni, 
+        persona.pers_nombre, 
+        persona.pers_apellido_paterno, 
+        persona.pers_apellido_materno, 
+        persona.pers_iniciales, 
+        dependencia.depe_nombre, 
+        dependencia.depe_abreviatura
+        FROM 
+        administracion.sesion
+        inner join administracion.usuario on usuario.usua_id=sesion.usua_id
+        inner join administracion.persona on persona.pers_id = usuario.pers_id
+        inner join administracion.dependencia on dependencia.depe_id = sesion.depe_id
+        where sesion.sesi_key=#{sesiKey}
+        limit 1 offset 0
+    </select>
+    <select id="listarSesionesActivas" parameterType="HashMap" resultMap="SesionMap">
+        SELECT       sesion.sesi_id,         sesion.sesi_key,         sesion.sesi_fecha_ingreso, 
+        sesion.sesi_fecha_salida,         sesion.sesi_hora_ingreso,         sesion.sesi_hora_salida, 
+        sesion.sesi_ip,         sesion.usua_id,         sesion.depe_id, 
+        sesion.sesi_estado,         dependencia.depe_abreviatura,         dependencia.depe_nombre, 
+        usuario.usua_login,         persona.pers_dni,         persona.pers_nombre, 
+        persona.pers_apellido_paterno,         persona.pers_apellido_materno,         persona.pers_iniciales
+        FROM 
+        administracion.sesion
+        inner join administracion.usuario on  usuario.usua_id = sesion.usua_id
+        inner join administracion.dependencia on dependencia.depe_id = sesion.depe_id
+        inner join administracion.persona on persona.pers_id = usuario.pers_id
+        where sesi_estado=true
+        order by sesion.sesi_id asc
+        limit ${limit} offset ${start}
+
+    </select>
+    <select id="listarTotalSesiones" parameterType="HashMap" resultMap="SesionMap">
+        SELECT       sesion.sesi_id,         sesion.sesi_key,         sesion.sesi_fecha_ingreso, 
+        sesion.sesi_fecha_salida,         sesion.sesi_hora_ingreso,         sesion.sesi_hora_salida, 
+        sesion.sesi_ip,         sesion.usua_id,         sesion.depe_id, 
+        sesion.sesi_estado,         dependencia.depe_abreviatura,         dependencia.depe_nombre, 
+        usuario.usua_login,         persona.pers_dni,         persona.pers_nombre, 
+        persona.pers_apellido_paterno,         persona.pers_apellido_materno,         persona.pers_iniciales
+        FROM 
+        administracion.sesion
+        inner join administracion.usuario on  usuario.usua_id = sesion.usua_id
+        inner join administracion.dependencia on dependencia.depe_id = sesion.depe_id
+        inner join administracion.persona on persona.pers_id = usuario.pers_id
+        where sesi_estado=true
+        order by sesion.sesi_id asc    
+    </select>
+</mapper>

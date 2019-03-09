@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <typeAliases>
+        <typeAlias alias="NotaPrensa" type="gob.peam.beans.NotaPrensa" />
+        <typeAlias alias="Enlace" type="gob.peam.beans.Enlace" />
+        <typeAlias alias="OrdenCompra" type="gob.peam.beans.OrdenCompra" />
+        <typeAlias alias="OrdenServicio" type="gob.peam.beans.OrdenServicio" />
+        <typeAlias alias="Publicidad" type="gob.peam.beans.Publicidad" />
+        <typeAlias alias="Telefonia" type="gob.peam.beans.Telefonia" />
+        <typeAlias alias="Vehiculo" type="gob.peam.beans.Vehiculo" />
+        <typeAlias alias="Proveedor" type="gob.peam.beans.Proveedor" />
+        <typeAlias alias="PersonalPlanilla" type="gob.peam.beans.PersonalPlanilla" />
+        <typeAlias alias="PersonalSNP" type="gob.peam.beans.PersonalSNP" />
+        <typeAlias alias="PersonalCAS" type="gob.peam.beans.PersonalCAS" />
+        <typeAlias alias="Directivo" type="gob.peam.beans.Directivo" />
+        <typeAlias alias="Funcionario" type="gob.peam.beans.Funcionario" />
+        <typeAlias alias="PersonalCategoria" type="gob.peam.beans.PersonalCategoria" />
+        <typeAlias alias="ResolucionGerencial" type="gob.peam.beans.ResolucionGerencial" />
+        <typeAlias alias="Configuracion" type="gob.peam.beans.Configuracion" />
+        <typeAlias alias="Agenda" type="gob.peam.beans.Agenda" />
+        <typeAlias alias="Busqueda" type="gob.peam.beans.Busqueda" />
+        <typeAlias alias="Reclamo" type="gob.peam.beans.Reclamo" />
+        <typeAlias alias="Comentario" type="gob.peam.beans.Comentario" />
+        <typeAlias alias="DirectorioTelefonico" type="gob.peam.beans.DirectorioTelefonico" />
+        <typeAlias alias="Viatico" type="gob.peam.beans.Viatico" />
+        <typeAlias alias="ConvocatoriaPers" type="gob.peam.beans.ConvocatoriaPers" />
+        <typeAlias alias="ConvocatoriaBien" type="gob.peam.beans.ConvocatoriaBien" />
+        <typeAlias alias="DocumentoGestion" type="gob.peam.beans.DocumentoGestion" />
+        <typeAlias alias="NormaDirectiva" type="gob.peam.beans.NormaDirectiva" />
+        <typeAlias alias="Multimedia" type="gob.peam.beans.Multimedia" />
+        <typeAlias alias="Usuario" type="gob.peam.administracion.beans.Usuario" />
+        <typeAlias alias="Cargo" type="gob.peam.administracion.beans.Cargo" />
+        <typeAlias alias="CategoriaDocumento" type="gob.peam.beans.CategoriaDocumento" />
+        <typeAlias alias="Actividad" type="gob.peam.beans.Actividad" />
+        <typeAlias alias="CalendarioConvocatoria" type="gob.peam.beans.CalendarioConvocatoria" />
+        <typeAlias alias="PlazaConvocatoria" type="gob.peam.beans.PlazaConvocatoria" />
+        <typeAlias alias="DocumentoConvocatoria" type="gob.peam.beans.DocumentoConvocatoria" />
+        <typeAlias alias="Anuncio" type="gob.peam.beans.Anuncio" />
+        <typeAlias alias="Solicitud" type="gob.peam.beans.Solicitud" />
+        <typeAlias alias="Publicacion" type="gob.peam.beans.Publicacion" />
+        <typeAlias alias="Presupuesto" type="gob.peam.beans.Presupuesto" />
+        <typeAlias alias="Finanza" type="gob.peam.beans.Finanza" />
+        <typeAlias alias="Personal" type="gob.peam.beans.Personal" />
+        <typeAlias alias="Correo" type="gob.peam.beans.Correo" />
+        <typeAlias alias="Glosario" type="gob.peam.beans.Glosario" />
+        <typeAlias alias="Exonerado" type="gob.peam.beans.Exonerado" />
+        <typeAlias alias="Penalidad" type="gob.peam.beans.Penalidad" />
+        <typeAlias alias="CategoriaArcDig" type="gob.peam.beans.CategoriaArcDig" />
+        <typeAlias alias="Anho" type="gob.peam.beans.Anho" />
+        <!--Nuevo contenido-->
+        <typeAlias alias="Destacado" type="gob.peam.beans.Destacado" />
+        <typeAlias alias="Estudio" type="gob.peam.beans.Estudio" />
+        <typeAlias alias="Evento" type="gob.peam.beans.Evento" />
+        <typeAlias alias="LineaAccion" type="gob.peam.beans.LineaAccion" />
+        <typeAlias alias="Obra" type="gob.peam.beans.Obra" />
+    </typeAliases>
+    <environments default="WebApp">
+        <environment id="WebApp">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="org.postgresql.Driver"/>
+                    <property name="url" value="jdbc:postgresql://localhost:5432/WebApp"/>
+                <property name="username" value="postgres"/>
+                <property name="password" value="proyecto"/>
+            </dataSource>
+        </environment>
+        <environment id="ArcDig">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="org.postgresql.Driver"/>
+                <property name="url" value="jdbc:postgresql://localhost:5432/ArcDig"/>
+                <property name="username" value="postgres"/>
+                <property name="password" value="proyecto"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <mapper resource="gob/peam/data/NotaPrensa.xml"/>
+        <mapper resource="gob/peam/data/Enlace.xml"/>
+        <mapper resource="gob/peam/data/OrdenCompra.xml"/>
+        <mapper resource="gob/peam/data/OrdenServicio.xml"/>
+        <mapper resource="gob/peam/data/Publicidad.xml"/>
+        <mapper resource="gob/peam/data/Telefonia.xml"/>
+        <mapper resource="gob/peam/data/Vehiculo.xml"/>
+        <mapper resource="gob/peam/data/Proveedor.xml"/>
+        <mapper resource="gob/peam/data/PersonalPlanilla.xml"/>
+        <mapper resource="gob/peam/data/PersonalSNP.xml"/>
+        <mapper resource="gob/peam/data/PersonalCAS.xml"/>
+        <mapper resource="gob/peam/data/Directivo.xml"/>
+        <mapper resource="gob/peam/data/Funcionario.xml"/>
+        <mapper resource="gob/peam/data/PersonalCategoria.xml"/>
+        <mapper resource="gob/peam/data/ResolucionGerencial.xml"/>
+        <mapper resource="gob/peam/data/Configuracion.xml"/>
+        <mapper resource="gob/peam/data/Agenda.xml"/>
+        <mapper resource="gob/peam/data/DirectorioTelefonico.xml"/>
+        <mapper resource="gob/peam/data/Viatico.xml"/>
+        <mapper resource="gob/peam/data/Convocatoria.xml"/>
+        <mapper resource="gob/peam/data/DocumentoGestion.xml"/>
+        <mapper resource="gob/peam/data/NormaDirectiva.xml"/>
+        <mapper resource="gob/peam/data/Multimedia.xml"/>
+        <mapper resource="gob/peam/data/Busqueda.xml" />
+        <mapper resource="gob/peam/data/Reclamo.xml" />
+        <mapper resource="gob/peam/data/Comentario.xml" />
+        <mapper resource="gob/peam/data/ConvocatoriaBien.xml" />
+        <mapper resource="gob/peam/data/CategoriaDocumento.xml" />
+        <mapper resource="gob/peam/data/Actividad.xml" />
+        <mapper resource="gob/peam/data/CalendarioConvocatoria.xml" />
+        <mapper resource="gob/peam/data/DocumentoConvocatoria.xml" />
+        <mapper resource="gob/peam/data/Anuncio.xml" />
+        <mapper resource="gob/peam/data/Solicitud.xml" />
+        <mapper resource="gob/peam/data/Publicacion.xml" />
+        <mapper resource="gob/peam/data/PlazaConvocatoria.xml" />
+        <mapper resource="gob/peam/data/Presupuesto.xml" />
+        <mapper resource="gob/peam/data/Finanza.xml" />
+        <mapper resource="gob/peam/data/Personal.xml" />
+        <mapper resource="gob/peam/data/Correo.xml" />
+        <mapper resource="gob/peam/data/Glosario.xml" />
+        <mapper resource="gob/peam/data/ResolucionObra.xml" />
+        <mapper resource="gob/peam/data/Exonerado.xml" />
+        <mapper resource="gob/peam/data/Penalidad.xml" />
+        <!--Nuevo contenido-->
+        <mapper resource="gob/peam/data/Destacado.xml" />
+        <mapper resource="gob/peam/data/Estudio.xml" />
+        <mapper resource="gob/peam/data/Evento.xml" />
+        <mapper resource="gob/peam/data/LineaAccion.xml" />
+        <mapper resource="gob/peam/data/Obra.xml" />
+    </mappers>
+</configuration>
+

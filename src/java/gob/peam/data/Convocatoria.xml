@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Convocatoria">
+    <resultMap id="ConvocatoriaMap" type="ConvocatoriaPers">
+        <id  property="coperId" column="coper_id" />
+        <result property="convocatoria" column="convocatoria" />
+        <result property="descripcion" column="descripcion" />
+        <result property="fecha" column="fecha" jdbcType="DATE" javaType="java.sql.Date" />
+        <result property="estado" column="estado" />
+        <result property="anho" column="anho" />
+    </resultMap>
+    
+    <select id="listarConvocatoriaPers" parameterType="java.util.HashMap" resultMap="ConvocatoriaMap">
+        select * from web.convocatoria_pers
+        where upper(descripcion) ILIKE #{query} ORDER BY  fecha desc, coper_id
+        limit ${limit} offset ${start}
+    </select>
+    
+    <select id="listarTotalConvocatoriaPers" parameterType="java.util.HashMap" resultMap="ConvocatoriaMap">
+        select * from web.convocatoria_pers
+        where upper(descripcion) ILIKE #{query}
+    </select>
+    
+    <insert id="insertConvocatoriaPers" parameterType="ConvocatoriaPers">
+        <selectKey keyProperty="coperId" resultType="int" order="BEFORE">
+            select cast((max(coper_id)+1) as integer) from web.convocatoria_pers
+        </selectKey>
+        INSERT INTO web.convocatoria_pers(
+        coper_id, convocatoria, descripcion, fecha, estado, anho)
+        VALUES (#{coperId}, #{convocatoria}, #{descripcion}, #{fecha}, 'true', #{anho});
+    </insert>
+    <update id="estadoConvocatoriaPers" parameterType="java.util.HashMap" >
+        UPDATE web.convocatoria_pers
+        SET estado = #{estado}
+        where coper_id = #{coperId}
+    </update>
+    <select id="buscarConvocatoriaPers" parameterType="Integer" resultMap="ConvocatoriaMap">
+        select * from web.convocatoria_pers where coper_id=#{coperId}
+    </select>
+    <update id="updateConvocatoriaPers" parameterType="ConvocatoriaPers">
+        UPDATE web.convocatoria_pers
+        SET convocatoria=#{convocatoria}, descripcion=#{descripcion}, estado=#{estado}
+        WHERE coper_id = #{coperId};
+    </update>
+    <delete id="deleteConvocatoriaPers" parameterType="Integer">
+        DELETE FROM web.convocatoria_pers
+        WHERE coper_id = #{coperId};
+    </delete>
+    <select id="listarChildrenForConvocatoriaPers" parameterType="Integer" resultMap="ConvocatoriaMap">
+        SELECT id
+        FROM web.calendario_conv where convo_id = #{coperId} and tipo = 2
+    </select>
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="ConvocatoriaMap" >
+        select * from web.convocatoria_pers
+        where (upper(descripcion) ILIKE #{query} or trim(upper(convocatoria)) ILIKE #{query}) ORDER BY fecha desc, coper_id
+        limit ${limit} offset ${start}
+    </select>
+    
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="ConvocatoriaMap">
+        select coper_id from web.convocatoria_pers
+        where (upper(descripcion) ILIKE #{query} or trim(upper(convocatoria)) ILIKE #{query})
+    </select>
+    
+    <select id="getConvocatoriaForWeb" parameterType="java.util.HashMap"  resultMap="ConvocatoriaMap">
+        SELECT *  from web.f00004 where id = ${id}
+    </select>
+</mapper>

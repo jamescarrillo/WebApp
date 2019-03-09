@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Viatico">
+    <resultMap id="ViaticoMap" type="Viatico">
+        <result property="id" column="id" />
+        <result property="anho" column="anho" />
+        <result property="mes" column="mes" />
+        <result property="tipoViatico" column="tipo_viatico" />
+        <result property="modalidad" column="modalidad" />
+        <result property="areaOficina" column="area_oficina" />
+        <result property="usuarios" column="usuarios" />		
+        <result property="fuenteFinanciamiento" column="fuente_financiamiento" />
+        <result property="fechaSalida" column="fecha_salida" />
+        <result property="fechaRetorno" column="fecha_retorno" />
+        <result property="ruta" column="ruta" />
+        <result property="autorizacionViaje" column="autorizacion_viaje" />
+        <result property="resolucion" column="resolucion" />
+        <result property="costoPasajes" column="costo_pasajes" />
+        <result property="viaticos" column="viaticos" />
+        <result property="estado" column="estado" />
+    </resultMap>
+    <resultMap id="AnhosMap" type="java.lang.String">
+        <result property="anho" column="anho" />  
+    </resultMap>
+    <resultMap id="MesMap" type="java.lang.String">
+        <result property="mes" column="mes" />
+    </resultMap>
+    <select id="getListMesForWeb" parameterType="String"  resultMap="MesMap">
+        select distinct cast(mes as varchar) mes   from web.f00018 where(anho=#{anho}) order by mes  desc
+    </select>
+    <select id="getListAnioForWeb"  resultMap="AnhosMap">
+        select distinct(anho) as anho from web.f00018 order by anho desc 
+    </select>
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="ViaticoMap">
+        select * from web.f00018 where (trim(usuarios) ILIKE #{query} or trim(ruta)  ILIKE #{query} or area_oficina ILIKE #{query}) and  anho=#{anio} and mes = #{mes} order by area_oficina ${order} limit ${limit} offset ${start} 
+    </select>
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="ViaticoMap">
+        select * from web.f00018 where (trim(usuarios) ILIKE #{query} or trim(ruta)  ILIKE #{query} or area_oficina ILIKE #{query}) and  anho=#{anio} and mes = #{mes} order by area_oficina ${order} 
+    </select>
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="ViaticoMap">
+        select * from web.f00018 where (trim(usuarios) ILIKE #{query} or trim(ruta)  ILIKE #{query} or area_oficina ILIKE #{query}) and  anho=#{anio}  order by area_oficina ${order} limit ${limit} offset ${start} 
+    </select>
+    <select id="getTotalListForAdmin" parameterType="java.util.HashMap"  resultMap="ViaticoMap">
+        select * from web.f00018 where (trim(usuarios) ILIKE #{query} or trim(ruta)  ILIKE #{query} or area_oficina ILIKE #{query}) and  anho=#{anio}  order by area_oficina ${order} 
+    </select>
+    
+    
+    <update id="createTableTemp">
+        CREATE  TEMP TABLE temp
+        (
+        id integer NOT NULL,
+        anho character varying(4) NOT NULL,
+        mes character(2) NOT NULL,
+        tipo_viatico character varying(200),
+        modalidad character varying(200),
+        area_oficina character varying(200),
+        usuarios character varying(200),
+        fuente_financiamiento character varying(200),
+        fecha_salida date,
+        fecha_retorno date,
+        ruta character varying(300),
+        autorizacion_viaje character varying(200),
+        resolucion character varying(200),
+        costo_pasajes numeric(15,2),
+        viaticos numeric(15,2),
+        estado boolean ,
+        CONSTRAINT temp_id_pk PRIMARY KEY (id)
+        ) ON COMMIT DROP 
+    </update>
+    
+    <insert id="insertTemp" parameterType="Viatico">
+        INSERT INTO temp(
+        id, anho, mes, tipo_viatico, modalidad, area_oficina, usuarios, 
+        fuente_financiamiento, fecha_salida, fecha_retorno, ruta, autorizacion_viaje, 
+        resolucion, costo_pasajes, viaticos, estado)
+        VALUES (#{id}, #{anho}, #{mes}, #{tipoViatico}, #{modalidad}, #{areaOficina}, #{usuarios}, 
+        #{fuenteFinanciamiento}, cast(#{fechaSalida} as date), cast (#{fechaRetorno} as date), #{ruta}, #{autorizacionViaje}, 
+        #{resolucion}, #{costoPasajes}, #{viaticos}, #{estado});
+    </insert>
+    
+    <delete id="deleteTemporalViatico" parameterType="Integer">
+        DELETE FROM temp
+        WHERE id = #{id}
+    </delete>
+
+    <select id="getListTempForWeb" parameterType="java.util.HashMap"  resultMap="ViaticoMap">
+        select * from temp 
+    </select>
+    
+    <insert id="addItemViatico"  parameterType="java.util.HashMap" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select cast((max(id)+1) as integer) from web.f00018
+        </selectKey>
+        INSERT INTO web.f00018(
+        id, anho, mes, tipo_viatico, modalidad, area_oficina, usuarios, 
+        fuente_financiamiento, fecha_salida, fecha_retorno, ruta, autorizacion_viaje, 
+        resolucion, costo_pasajes, viaticos, estado)
+        VALUES (#{id}, #{anho}, #{mes}, #{tipoViatico}, #{modalidad}, #{areaOficina}, #{usuarios}, 
+        #{fuenteFinanciamiento}, cast(#{fechaSalida} as date), cast (#{fechaRetorno} as date), #{ruta}, #{autorizacionViaje}, 
+        #{resolucion}, #{costoPasajes}, #{viaticos}, 'true');
+    </insert>
+    
+    <select id="getRepetidoViatico" parameterType="java.util.HashMap"  resultMap="ViaticoMap">
+        Select id from web.f00018 where (anho =#{anho} and mes = #{mes} and tipo_viatico = #{tipoViatico} and modalidad = #{modalidad}
+        and area_oficina = #{areaOficina} and usuarios = #{usuarios} and fuente_financiamiento = #{fuenteFinanciamiento}  and fecha_salida = cast (#{fechaSalida} as date)
+        and fecha_retorno = cast(#{fechaRetorno} as date) and ruta =  #{ruta} and autorizacion_viaje = #{autorizacionViaje} and resolucion = #{resolucion}
+        and costo_pasajes = #{costoPasajes} and viaticos = #{viaticos})
+    </select>
+    
+    <delete id="deleteViatico" parameterType="Integer">
+        DELETE FROM web.f00018
+        WHERE id = #{id}
+    </delete>
+</mapper>

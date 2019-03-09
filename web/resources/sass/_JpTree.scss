@@ -1,0 +1,88 @@
+ul.uljptree{
+    color:#6f92b8;   
+    overflow:auto;
+    li{
+        
+        //padding:$padding;
+        font-size:12px;
+        div.selectable{
+            &:hover{
+                background:#d8ebf9;                
+            }
+            font-weight:normal;
+            padding:0;
+            span{
+                margin:0 2px;
+                cursor:pointer;
+            }
+            
+            .arrow{
+                background:url('../images/16x16/arrow.png') 50% 50% no-repeat;
+                width:16px;
+                height:20px;
+            }
+            .arrow-open{
+                background:url('../images/16x16/arrow-down.png') 50% 50% no-repeat;
+                width:16px;
+                height:20px;
+            }
+            .file{
+                background:url('../images/16x16/file.png') 50% 50% no-repeat;
+                width:16px;
+                height:20px;
+            }
+            .file-open{
+                background:url('../images/16x16/file-open.png') 50% 50% no-repeat;
+                width:16px;
+                height:20px;
+            } 
+            .add{
+                background:url('../images/16x16/add.png') 50% 50% no-repeat;
+                
+                text-decoration:none;
+                // margin:0 1px;
+                cursor:pointer;
+                
+            }
+            .edit{
+                background:url('../images/16x16/edit.png') 50% 50% no-repeat;
+                
+                // margin:0 1px;
+                text-decoration:none;
+                cursor:pointer;
+            }
+            .drop{
+                background:url('../images/16x16/drop.png') 50% 50% no-repeat;                
+                /* width:18px;
+                height:20px;*/
+                //margin:0 1px;
+                text-decoration:none;
+                cursor:pointer;
+            }
+        }
+        ul{
+            padding-left:$padding*2;
+        }
+        
+        
+    }
+}
+div.divjptree{  
+    overflow:hidden;    
+    .msg{
+        float:left;
+        padding:$padding;
+    }
+    .load{
+        float:right;
+        background:url('../images/16x16/loader.gif') 50% 50% no-repeat;
+        width:16px;
+        height:20px;
+    }
+    .opt{
+        float:right;
+        background:url('../images/16x16/tool.png') 50% 50% no-repeat;
+        width:16px;
+        height:20px;
+    }
+}

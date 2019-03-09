@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Publicacion">
+
+    <resultMap id="PublicacionMap" type="Publicacion">
+        <result property="Id" column="id" />
+        <result property="anho" column="anho" />
+        <result property="titulo" column="titulo" />
+        <result property="descripcion" column="descripcion" />
+        <result property="direccionArchivo" column="direccion_archivo" />
+        <result property="tipo" column="tipo" />
+        <result property="estado" column="estado" />
+        <result property="docuId" column="docu_id" />
+    </resultMap>
+
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="PublicacionMap">
+        select * from web.publicacion where ((upper(titulo) ILIKE #{query} or upper(descripcion)  ILIKE #{query} or anho ILIKE #{anho}) and tipo=#{tipo}) order by docu_id desc limit ${limit} offset ${start}
+    </select>
+    
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="PublicacionMap">
+        select (id) from web.publicacion where ((upper(titulo) ILIKE #{query} or upper(descripcion)  ILIKE #{query} or anho ILIKE #{anho} ) and tipo=#{tipo})
+    </select>
+    
+    <select id="getPublicacionForNotice" parameterType="java.util.HashMap"  resultMap="PublicacionMap">
+        select * from web.publicacion order by id ${order} limit 1
+    </select>
+    
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="PublicacionMap">
+        select * from web.publicacion 
+        WHERE 
+        upper(publicacion.titulo) ILIKE #{filtro} or upper(publicacion.contenido) ILIKE #{filtro} order by publicacion.id desc limit ${limit} offset ${start}
+    </select>
+    
+    <select id="getTotalListForAdmin" parameterType="String"  resultMap="PublicacionMap">
+        select * from web.publicacion 
+        WHERE 
+        upper(publicacion.titulo) ILIKE #{filtro} or upper(publicacion.contenido) ILIKE #{filtro}
+    </select>
+    
+    <select id="getPublicacionSingle" parameterType="int"  resultMap="PublicacionMap">
+        select * from web.publicacion where id=#{id}
+    </select>
+    
+    <select id="getPublicacionForWeb"  parameterType="java.util.HashMap" resultMap="PublicacionMap">
+        select * from web.publicacion where estado=true and  cast(mem_fecha_ini as date) &lt;= cast (#{fecha} as date) and cast(mem_fecha_fin as date) &gt;= cast(#{fecha} as date)
+        order by RANDOM() LIMIT 1;
+    </select>
+    
+    <insert id="insertPublicacion" parameterType="Publicacion">
+        <selectKey keyProperty="memId" resultType="int" order="BEFORE">
+            select cast((max(id)+1) as integer)  from web.publicacion
+        </selectKey>
+        INSERT INTO web.publicacion(
+        id, mem_fecha_ini, mem_fecha_fin, tipo, titulo, contenido, 
+        estado)
+        VALUES (#{memId}, #{memFechaInicio}, #{memFechaFin} , #{tipo}, #{titulo}, #{contenido}, 
+        #{estado});
+    </insert>
+    
+    <update id="updatePublicacion" parameterType="Publicacion">
+        UPDATE web.publicacion
+        SET  titulo=#{titulo}, contenido=#{contenido}, mem_fecha_ini=#{memFechaInicio}, mem_fecha_fin=#{memFechaFin}
+        WHERE id=#{memId}
+    </update>
+    
+    <update id="publicarPublicacion" parameterType="int">
+        UPDATE from web.publicacion
+        set estado = true
+        where id = #{id}
+    </update>
+    <delete id="deletePublicacion" parameterType="int">
+        delete from web.publicacion
+        where id=#{id}
+    </delete>
+    <!--Articulos-->
+    <select id="getListArticuloForWeb" parameterType="java.util.HashMap"  resultMap="PublicacionMap">
+        select * from web.publicacion where tipo=2 and upper(titulo) ILIKE #{query} or upper(descripcion)  ILIKE #{query}  order by anho, id ${order} limit ${limit} offset ${start}
+    </select>
+    
+    <select id="getTotalListArticuloForWeb" parameterType="java.util.HashMap"  resultMap="PublicacionMap">
+        select (id) from web.publicacion where tipo=2 and upper(titulo) ILIKE #{query} or upper(descripcion)  ILIKE #{query} 
+    </select>
+    
+    <!-- Otras Publicaciones -->
+    <select id="getListOtraPublicacionForWeb" parameterType="java.util.HashMap"  resultMap="PublicacionMap">
+        select * from web.publicacion where tipo=3 and upper(titulo) ILIKE #{query} or upper(descripcion)  ILIKE #{query}  order by anho, id ${order} limit ${limit} offset ${start}
+    </select>
+    
+    <select id="getTotalListOtraPublicacionForWeb" parameterType="java.util.HashMap"  resultMap="PublicacionMap">
+        select (id) from web.publicacion where tipo=3 and upper(titulo) ILIKE #{query} or upper(descripcion)  ILIKE #{query} 
+    </select>
+    
+    <insert id="addItemPublicacion"  parameterType="java.util.HashMap" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select cast((max(id)+1) as integer) from web.publicacion
+        </selectKey>
+        INSERT INTO web.publicacion(
+        id, anho, titulo, descripcion, direccion_archivo, tipo, estado, 
+        docu_id)
+        VALUES (#{id}, #{anho}, initcap(#{titulo}), #{descripcion}, '', #{tipoP}, true, 
+        #{docuId});
+    </insert>
+    <select id="getRepetidoPublicacion" parameterType="java.util.HashMap"  resultMap="PublicacionMap">
+        select id from web.publicacion where (docu_id =#{docuId});
+    </select>
+    <insert id="insertPublicacionM" parameterType="Publicacion">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select cast((max(id)+1) as integer) from web.publicacion
+        </selectKey>
+        INSERT INTO web.publicacion(
+        id, anho, titulo, descripcion, direccion_archivo, tipo, estado, 
+        docu_id)
+        VALUES (#{id}, #{anho}, initcap(#{titulo}), #{descripcion}, '', #{tipo}, true, 
+        #{docuId});
+    </insert>    
+    <update id="updatePublicacionM" parameterType="Publicacion">
+        UPDATE web.publicacion
+        SET anho=#{anho}, titulo=#{titulo}, descripcion=#{descripcion} ,
+        docu_id=#{docuId}
+        WHERE (id=#{id})
+    </update>
+    <delete id="deletePublicacionM" parameterType="int">
+        delete from web.publicacion
+        where id=#{id}
+    </delete>
+</mapper>

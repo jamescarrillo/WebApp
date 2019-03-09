@@ -1,0 +1,82 @@
+@import  "compass/css3";
+
+$padding:5px;
+$color:#B4D3A4;
+#view-f,#view-c{
+    margin:0 auto;    
+    padding:$padding;   
+    overflow:hidden;    
+    #view-izquierdo-f,#view-izquierdo-c{  
+        padding:0 $padding;
+        float:left;        
+        .view-content{
+            cursor:pointer;
+            padding:$padding;
+            margin-bottom:2px;
+            border:0.1em #ddd solid;
+            background-color:#FDF9EB;
+            a{
+                color:#717171;
+                font-size:90%;
+                font-weight:bold;
+                text-decoration:none;
+            }
+            span{font-size:85%;}
+            img{
+                position:relative;top:-10;
+            }
+        }
+        .view-content.active{             
+            background:#B4D3A4 url('../images/bg_gloss-wave.png') 50%;
+            a{color:#fff;}
+        }
+    }
+    #view-derecha-f,#view-derecha-c{      
+        float:left;
+        border:0.1em #ddd solid;
+        @include border-radius(3px);  
+        #view-head-f,#view-head-c{
+            padding:2px;
+            font-size:100%;
+            color:#fff;
+            overflow: hidden;
+            background:$color url('../images/bg_gloss-wave.png') 50%;
+            #view-htitle-f,#view-htitle-c{float:left;padding:$padding;}               
+        }
+        #view-content-f, #view-content-c{
+            padding:$padding;
+            overflow:hidden;  
+            #vc-images-f,#vc-images-c{               
+                float:left;
+                width:20%;
+                img{ border:0.2em #ddd solid;}
+            }
+            #vc-description-f,#vc-description-c{
+                float:right; 
+                width:70%;                           
+                div{
+                    overflow:hidden; 
+                    width:90%;                        
+                    display:block;
+                    label{
+                        float:left;
+                        width:35%;
+                        text-align:left;
+                        padding:0 0 0 $padding;
+                        font-size:90%;
+                        font-weight:bold;
+                    }
+                    span{                       
+                        float:right;
+                        width:63%;
+                        font-size:87%;
+                    }
+                    padding:3px;
+                }
+            }
+        }
+    }
+    #view-derecha-f.active,#view-derecha-c.active{
+        background-color:#fff;
+    }
+}

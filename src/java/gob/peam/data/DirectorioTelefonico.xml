@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="DirectorioTelefonico">
+    <resultMap id="DirectorioTelefonicoMap" type="DirectorioTelefonico">
+        <result property="id" column="id" />
+        <result property="oficina" column="oficina" />
+        <result property="seccion" column="seccion" />
+        <result property="anexo" column="anexo" />
+        <result property="estado" column="estado" />
+    </resultMap>
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="DirectorioTelefonicoMap">
+        select * from web.f00003 where trim(upper(oficina)) ILIKE #{query} or trim(upper(seccion)) ILIKE #{query} order by oficina ${order} limit ${limit} offset ${start} 
+    </select>
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="DirectorioTelefonicoMap">
+        select * from web.f00003 where trim(upper(oficina)) ILIKE #{query} or trim(upper(seccion)) ILIKE #{query} order by oficina ${order}
+    </select>
+    
+    <select id="getList" parameterType="String" resultMap="DirectorioTelefonicoMap">
+        SELECT *
+        FROM web.f00003
+        where (oficina ILIKE #{c} or seccion ILIKE #{c} )  order by oficina asc
+    </select>
+    
+    <select id="get" parameterType="Integer" resultMap="DirectorioTelefonicoMap">
+        select * from web.f00003 where id = #{id}
+    </select>
+    
+    <insert id="insert" parameterType="DirectorioTelefonico">
+        <selectKey keyProperty="id" resultType="Integer" order="BEFORE">
+            select case when max(id) is null then 1 else (max(id)+1) end id 
+            from web.f00003
+        </selectKey>
+        INSERT INTO web.f00003(id, oficina, seccion, anexo)
+        VALUES (#{id}, #{oficina}, #{seccion}, #{anexo});
+    </insert>
+    
+    <update id="update" parameterType="DirectorioTelefonico">
+        UPDATE web.f00003
+        SET  oficina=#{oficina}, seccion=#{seccion}, anexo = #{anexo}
+        WHERE id=#{id}
+    </update>
+    
+    <delete id="delete"  parameterType="Integer">
+        DELETE FROM  web.f00003 where id = #{id}
+    </delete>
+    
+</mapper>

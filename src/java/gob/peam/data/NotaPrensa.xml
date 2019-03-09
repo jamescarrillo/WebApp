@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="NotaPrensa">
+    <resultMap id="NotaPrensaMap" type="NotaPrensa">
+        <result property="id" column="id" />
+        <result property="anho" column="anho" />
+        <result property="titulo" column="titulo" />
+        <result property="contenido" column="contenido" />
+        <result property="fuente" column="fuente" />
+        <result property="fecha" column="fecha"   />
+        <result property="foto" column="foto" />    
+        <result property="estado" column="estado"/>
+        <result property="usuario" column="subido_por"/>
+    </resultMap>
+    <resultMap id="NotaPrensaAdminMap" type="NotaPrensa">
+        <id property="id" column="id" />
+        <result property="anho" column="anho" />
+        <result property="titulo" column="titulo" />
+        <result property="contenido" column="contenido" />
+        <result property="fuente" column="fuente" />
+        <result property="fecha" column="fecha"    />
+        <result property="foto" column="foto" />    
+        <result property="estado" column="estado"/>   
+        <result property="fechaCreacion" column="fecha_creacion" jdbcType="DATE" javaType="java.sql.Date" />   
+        <result property="fechaActualizacion" column="fecha_actualizacion" jdbcType="DATE" javaType="java.sql.Date" />   
+        <result property="usuario" column="subido_por"/>
+    </resultMap>
+    <resultMap id="AnhosMap" type="java.lang.String">
+        <result property="anho" column="anho" />  
+    </resultMap>
+    <resultMap id="NotaPrensaSingleAdminMap" type="NotaPrensa">
+        <id property="id" column="id" />
+        <result property="anho" column="anho" />
+        <result property="titulo" column="titulo" />
+        <result property="contenido" column="contenido" />
+        <result property="fuente" column="fuente" />
+        <result property="fecha" column="fecha"   />
+        <result property="foto" column="foto" />    
+        <result property="estado" column="estado"/>   
+        <result property="fechaCreacion" column="fecha_creacion" jdbcType="DATE" javaType="java.sql.Date" />   
+        <result property="fechaActualizacion" column="fecha_actualizacion" jdbcType="DATE" javaType="java.sql.Date" />   
+        <result property="usuario" column="subido_por"/>
+    </resultMap>
+    <select id="getListAnioForWeb"  resultMap="AnhosMap">
+        select distinct(anho) as anho from web.f00021  order by anho desc 
+    </select>
+    <select id="getListForNotice" parameterType="java.util.HashMap"  resultMap="NotaPrensaMap">
+        select * from web.f00021 where anho=#{anho} and estado = true order by fecha desc, id ${order} limit ${limit} 
+    </select>
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="NotaPrensaMap">
+        select * from web.f00021 where anho=#{anho} and estado = true order by fecha desc, id ${order} limit ${limit} offset ${start}
+    </select>
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="NotaPrensaMap">
+        select anho from web.f00021 where anho=#{anho} and estado = true
+    </select>
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="NotaPrensaAdminMap">
+        select * from web.f00021 where upper(f00021.titulo) ILIKE #{filtro} or upper(f00021.contenido) ILIKE #{filtro} order by f00021.fecha desc, f00021.id desc limit ${limit} offset ${start}
+    </select>
+    <insert id="insertNotice" parameterType="NotaPrensa">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select cast((max(id)+1) as integer)  from web.f00021
+        </selectKey>
+        INSERT INTO web.f00021(
+        id, anho, titulo, contenido, fuente, fecha, foto, estado, subido_por,fecha_creacion,fecha_actualizacion)
+        VALUES (#{id}, #{anho}, #{titulo}, #{contenido}, #{fuente}, cast (#{fecha} as DATE), #{foto}, false, #{usuario},#{fechaCreacion},#{fechaActualizacion});
+    </insert>
+    <select id="getNotaPrensaSingle" parameterType="int"  resultMap="NotaPrensaSingleAdminMap">
+        select * from web.f00021 where id=#{id}
+    </select>
+    <update id="updateNotice" parameterType="NotaPrensa">
+        UPDATE web.f00021
+        SET  anho=#{anho}, titulo=#{titulo}, contenido=#{contenido}, fuente=#{fuente}, fecha=cast(#{fecha} as DATE), foto=#{foto}, 
+        fecha_actualizacion=#{fechaActualizacion}
+        WHERE id=#{id}
+    </update>
+    <delete id="deleteNotice" parameterType="int">
+        delete from web.f00021
+        where id=#{id}
+    </delete>
+    <update id="publicarNotice" parameterType="int">
+        update web.f00021
+        set estado = true
+        where id=#{id}
+    </update>
+    <select id="getTotalListForAdmin" parameterType="String"  resultMap="NotaPrensaMap">
+        select anho from web.f00021 where upper(f00021.titulo) ILIKE #{filtro} or upper(f00021.contenido) ILIKE #{filtro}
+    </select>
+</mapper>

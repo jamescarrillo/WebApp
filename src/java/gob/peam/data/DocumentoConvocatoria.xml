@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="DocumentoConvocatoria">
+    <resultMap id="DocumentoConvocatoriaMap" type="DocumentoConvocatoria">
+        <result property="docoId" column="doco_id" />        
+        <result property="nombre" column="nombre" />
+        <result property="urlFile" column="url_file"  />
+        <result property="estado" column="estado"  />
+    </resultMap>
+    
+    <select id="getListForWeb" parameterType="Integer"  resultMap="DocumentoConvocatoriaMap">
+        select * from web.document_conv 
+        where id=#{codigo} and estado=true 
+        order by doco_id
+    </select>
+    
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="DocumentoConvocatoriaMap">
+        select * from web.document_conv where id=#{actiId} and estado=true ${filter} and nombre ILIKE #{query}  order by doco_id ${order}
+    </select>
+    
+    <select id="getForWeb" parameterType="Integer"  resultMap="DocumentoConvocatoriaMap">
+        select * from web.document_conv where doco_id=#{id} and estado= true
+    </select>
+    
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="DocumentoConvocatoriaMap">
+        select * from web.document_conv where id=#{actiId} and estado=true ${filter} and nombre ILIKE #{query}  order by doco_id ${order} limit  ${limit} offset ${start}
+    </select>
+    
+    <select id="getTotalListForAdmin" parameterType="java.util.HashMap"  resultMap="DocumentoConvocatoriaMap">
+        select * from web.document_conv where id=#{actiId} and estado=true ${filter} and nombre ILIKE #{query}  order by doco_id ${order}
+    </select>
+        
+    <insert id="insertDocumentoConvocatoria" parameterType="DocumentoConvocatoria">
+        <selectKey keyProperty="docoId" resultType="int" order="BEFORE">
+            select cast((max(doco_id)+1) as integer) from web.document_conv
+        </selectKey>
+        INSERT INTO web.document_conv(
+        doco_id, nombre, url_file, estado, id)
+        VALUES (#{docoId}, #{nombre}, #{urlFile}, #{estado}, #{id});
+    </insert>
+        
+    <delete id="deleteDocumentoConvocatoria" parameterType="Integer">
+        DELETE FROM web.document_conv
+        WHERE doco_id = #{id};
+    </delete>
+    
+    <select id="getTotalForWeb" parameterType="Integer" resultType="Integer">
+        select case when max(doco_id) is null then 0 else max(doco_id) end docu_id from web.document_conv where id = #{codigo}
+    </select>
+</mapper>

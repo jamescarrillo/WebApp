@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Busqueda">
+    <resultMap id="BusquedaMap" type="Busqueda">
+        <result property="titulo" column="t" />
+        <result property="descripcion" column="d" />
+        <result property="ruta" column="r" />
+    </resultMap>
+    <select id="getListBusqueda" parameterType="java.util.HashMap"  resultMap="BusquedaMap">
+        ${query} 
+    </select>
+    <select id="getTotalBusquedaTotal" parameterType="String"  resultMap="BusquedaMap">
+        ${query} 
+    </select>
+</mapper>

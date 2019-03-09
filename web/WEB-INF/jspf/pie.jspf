@@ -1,0 +1,53 @@
+<section>
+    <hr class="hr-t">
+    <div class="container">
+        <!-- Example row of columns -->
+        <div class="row">
+            <div class="col-md-12 text-center box-cliente wow fadeInUp" data-wow-duration="1s" data-wow-delay=".3s">
+                <ul class="bx-carrusel2 pnlEnlaces" id="enlaces"></ul>
+            </div>
+        </div>
+    </div>
+    <hr class="hr-b">
+</section>
+
+<footer>
+    <div class="footer-top" style="padding-bottom: 0px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="h2-b">
+                        <h3 class="h2-title">Ubícanos</h3>
+                    </div>
+                    <div class="spaci-1"></div>
+                    <div class="">
+                        <p><i class="fa fa-map-marker"></i> Calle La Marginal N° 233 Sector Uchuglla - Moyobamba - San Martín - Perú</p>
+                        <p><i class="fa fa-phone"></i> (042) 562522</p>
+                        <p><i class="fa fa fa-envelope"></i> Lunes a Viernes: De 7:30 a 13:00 horas / 14:30 a 17:00 horas</p>
+                    </div>
+                </div>
+                <div class="col-md-4 contact-f">
+                    <div class="text-right h2-b-r">
+                        <h3 class="h2-title">Contáctanos</h3>
+                    </div>
+                    <div class="spaci-2"></div>
+                    <div class="text-right">
+                        <ul class="list-inline list-top-i ">
+                            <li><a target="_blank" href="http://www.flickr.com/photos/83313636@N07/" title="" class="redes-in"><i class="img-redes"></i></a></li>
+                            <li><a target="_blank" href="http://www.twitter.com/p_altomayo" title="" class="redes-ti"><i class="img-redes"></i></a></li>
+                            <li><a target="_blank" href="http://www.facebook.com/pages/Proyecto-Especial-Alto-Mayo/188571127885448" title="" class="redes-fa"><i class="img-redes"></i></a></li>
+                            <li><a target="_blank" href="http://www.youtube.com/user/PEAM1140?feature=watch" title="" class="redes-yo"><i class="img-redes"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="container text-center">
+            <p>Responsable del Acceso a la Información Pública y Libro de Reclamaciones: <span class="responsables">Ing. Ernesto Segundo Ríos Sandoval</span> | <a target="_blank" href="http://lib.peam.gob.pe:8081/ArcDig/OriArc.pdf?id=98428">Designado por Resolución Gerencial: 024-2018-GRSM-PEAM-01.00</a></p>
+            <p>Responsable del Portal de Transparencia Estándar y Portal Institucional: <span class="responsables">Ing. Ernesto Segundo Ríos Sandoval</span> | <a target="_blank" href="http://lib.peam.gob.pe:8081/ArcDig/OriArc.pdf?id=97250">Designado por Resolución Gerencial: 245-2017-GRSM-PEAM-01.00</a></p>
+        </div>
+    </div>
+</footer>
+<a id="scrollTop" href="#top"><i class="fa fa-chevron-up"></i></a>

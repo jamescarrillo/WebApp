@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Obra">
+    <resultMap id="ObraMap" type="Obra">
+        <result property="id" column="id" />
+        <result property="anho" column="anho" />
+        <result property="mes" column="mes"   />
+        <result property="estado" column="estado"/>
+        <result property="creadoPor" column="creado_por"/>
+        <result property="fechaCreado" column="fecha_creado" jdbcType="DATE" javaType="java.sql.Date" />   
+        <result property="editadoPor" column="editado_por"/>
+        <result property="fechaEditado" column="fecha_editado" jdbcType="DATE" javaType="java.sql.Date" />   
+        <result property="descripcion" column="descripcion"   />
+        <result property="montoInversion" column="monto_inversion"   />
+        <result property="montoGastado" column="monto_gastado"   />
+        <result property="tiempoEjecucion" column="tiempo_ejecucion"   />
+        <result property="modalidadEjecucion" column="modalidad_ejecucion"   />
+        <result property="fechaInicio" column="fecha_inicio"   />
+        <result property="fechaFin" column="fecha_fin"   />
+        <result property="seguimiento" column="seguimiento"   />
+        <result property="ubicacion" column="ubicacion"   />
+        <result property="contratista" column="contratista"   />
+        <result property="supervisor" column="supervisor"   />
+        <result property="residente" column="residente"   />
+        <result property="avanceFisico" column="avance_fisico"   />
+        <result property="galeria" column="galeria"   />
+        <result property="foto" column="foto"   />
+        <result property="mesActualizacion" column="mes_actualizacion"   />
+        <result property="anhoActualizacion" column="anho_actualizacion"   />
+        <result property="snip" column="snip"   />
+        <result property="infobras" column="infobras"   />
+        <result property="leyenda" column="leyenda"   />
+        <result property="observacion" column="observacion"   />        
+    </resultMap>   
+    <resultMap id="AnhosMap" type="java.lang.String">
+        <result property="anho" column="anho" />  
+    </resultMap>    
+    
+    <insert id="insertNotice" parameterType="Obra">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select coalesce(max(id),0)+1  from web.obra
+        </selectKey>
+        INSERT INTO web.obra(
+        id, anho, mes, estado, creado_por,fecha_creado,editado_por,fecha_editado,
+        descripcion, monto_inversion, monto_gastado, tiempo_ejecucion, 
+        modalidad_ejecucion, fecha_inicio, fecha_fin, seguimiento, ubicacion, 
+        contratista, supervisor, residente, avance_fisico,area,galeria,foto,anho_actualizacion, mes_actualizacion, snip, observacion, 
+            infobras, leyenda)
+        VALUES (#{id}, #{anho}, #{mes}, false, #{creadoPor},#{fechaCreado},#{editadoPor},#{fechaEditado},
+        upper(#{descripcion}), #{montoInversion}, #{montoGastado}, #{tiempoEjecucion}, 
+        #{modalidadEjecucion}, cast (#{fechaInicio} as DATE), cast (#{fechaFin} as DATE), #{seguimiento}, #{ubicacion}, 
+        #{contratista}, #{supervisor}, #{residente}, #{avanceFisico},#{area},#{galeria},#{foto},#{anhoActualizacion},
+        #{mesActualizacion}, #{snip}, #{observacion}, #{infobras}, #{leyenda});
+    </insert>
+    <update id="updateNotice" parameterType="Obra">
+        UPDATE web.obra 
+        SET  anho=#{anho}, mes=#{mes}, editado_por=#{editadoPor},fecha_editado=#{fechaEditado},
+        descripcion=upper(#{descripcion}), monto_inversion=#{montoInversion}, monto_gastado=#{montoGastado}, tiempo_ejecucion=#{tiempoEjecucion}, 
+        modalidad_ejecucion=#{modalidadEjecucion}, fecha_inicio=cast (#{fechaInicio} as DATE), fecha_fin=cast (#{fechaFin} as DATE), seguimiento=#{seguimiento}, ubicacion=#{ubicacion}, 
+        contratista=#{contratista}, supervisor=#{supervisor}, residente=#{residente}, avance_fisico=#{avanceFisico},area=#{area},galeria=#{galeria},
+        foto=#{foto},anho_actualizacion=#{anhoActualizacion}, mes_actualizacion=#{mesActualizacion}, snip=#{snip}, observacion=#{observacion}, 
+        infobras=#{infobras}, leyenda=#{leyenda}
+        WHERE id=#{id}
+    </update> 
+    <update id="publicarNotice" parameterType="int">
+        update web.obra
+        set estado = true
+        where id=#{id}
+    </update>
+    <delete id="deleteNotice" parameterType="int">
+        delete from web.obra
+        where id=#{id}
+    </delete>
+    
+    <select id="getObraSingle" parameterType="int"  resultMap="ObraMap">
+        select * from web.obra where id=#{id}
+    </select>
+    
+    
+    <select id="getListAnioForWeb" parameterType="java.util.HashMap"  resultMap="AnhosMap" >
+        select distinct(anho) as anho from web.obra where area=#{area}  order by anho desc 
+    </select>
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="ObraMap">
+        select * from web.obra where upper(obra.descripcion) ILIKE #{filtro} order by obra.fecha_inicio desc, obra.id desc limit ${limit} offset ${start}
+    </select>
+    <select id="getTotalListForAdmin" parameterType="String"  resultMap="ObraMap">
+        select anho from web.obra where upper(obra.descripcion) ILIKE #{filtro}
+    </select>
+    
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="ObraMap">
+        select * from web.obra 
+        where anho=#{anho} and area=#{area} and estado = true AND upper(obra.descripcion) ILIKE #{filtro} 
+        <if test="seguimiento != null">
+            and seguimiento=#{seguimiento}
+        </if>
+        order by obra.fecha_inicio desc, obra.id desc limit ${limit} offset ${start}
+    </select>
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="ObraMap">
+        select * from web.obra 
+        where anho=#{anho} and area=#{area} and estado = true AND upper(obra.descripcion) ILIKE #{filtro} 
+        <if test="seguimiento != null">
+            and seguimiento=#{seguimiento}
+        </if>
+    </select>
+    
+</mapper>

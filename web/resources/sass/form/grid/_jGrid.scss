@@ -1,0 +1,32 @@
+/*
+Document   : _jGrid
+Created on : 27/08/2012, 08:10:16 AM
+Author     : jpgprog84
+Description:
+Purpose of the stylesheet follows.
+*/
+
+/*
+TODO customize this sample style
+Syntax recommendation http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html
+*/
+.jGrid{
+    width:100%;
+    .theader{                    
+        width: 100%;
+        span{
+            padding:5px;
+            display: inline-block;            
+        }
+    }
+    .tbody{
+        height:"250px";
+        li{
+            display:block;
+            div{
+                border:solid;
+                display: inline-block;
+            }            
+        }        
+    }
+}

@@ -1,0 +1,10 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<c:if test="${sessionScope.user!=null}">
+    <div class="menu-derecho">
+        <span> ${navigation} </span>
+    </div>
+    <div class="menu-izquierdo">
+        <span id="d">HOLA, <c:out value="${sessionScope.nombre }"></c:out>&nbsp;|&nbsp;<a id="salir" title="Cerrar Sesión" href="./Usuario?action=disconnect">cerrar sesi&oacute;n</a></span>
+    </div>
+</c:if>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ParametroDocumento">
+    <resultMap id="ParametroDocumentoMap" type="Parametrodocumento">
+        <id property="tipoDocumento" column="tipo_documento" />
+        <result property="tituloFirmaHechoPor" column="titulo_firma_hecho_por" />
+        <result property="tituloFirmaAdquisiciones" column="titulo_firma_adquisiciones" />
+        <result property="tituloFirmaAbastecimientos" column="titulo_firma_abastecimientos" />
+        <result property="tituloFirmaAdministrador" column="titulo_firma_administrador" />
+        <result property="tituloPieInforme" column="titulo_pie_informe" />
+        <result property="tituloFirmaJefe" column="titulo_firma_jefe" />
+    </resultMap>  
+    <insert id="insertParametroDocumento" parameterType="ParametroDocumento">
+        INSERT INTO administracion.parametro_documento(
+        tipo_documento, titulo_firma_hecho_por, titulo_firma_adquisiciones, 
+        titulo_firma_abastecimientos, titulo_firma_administrador, titulo_pie_informe, 
+        titulo_firma_jefe)
+        VALUES (#{tipoDocumento}, #{tituloFirmaHechoPor}, #{tituloFirmaAdquisiciones}, 
+        #{tituloFirmaAbastecimientos}, #{tituloFirmaAdministrador}, #{tituloPieInforme}, 
+        #{tituloFirmaJefe});
+    </insert>
+    <update id="updateParametroDocumento" parameterType="ParametroDocumento">
+        UPDATE administracion.parametro_documento
+        SET  titulo_firma_hecho_por=#{tituloFirmaHechoPor}, titulo_firma_adquisiciones=#{tituloFirmaAdquisiciones}, 
+        titulo_firma_abastecimientos=#{tituloFirmaAbastecimientos}, titulo_firma_administrador=#{tituloFirmaAdministrador}, 
+        titulo_pie_informe=#{tituloPieInforme}, titulo_firma_jefe=#{tituloFirmaJefe}
+        WHERE 
+        tipo_documento=#{tipoDocumento}
+    </update>
+    <select id="searchParametroDocumento" parameterType="Integer" resultMap="ParametroDocumentoMap">
+        select * from administracion.parametro_documento
+        where tipo_documento=#{tipoDocumento}
+    </select>
+</mapper>

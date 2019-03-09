@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Correlativo">
+    <resultMap id="CorrelativoMap" type="Correlativo">
+        <id property="tiemAnio" column="tiem_anio" />
+        <result property="corrRequerimiento" column="corr_requerimiento" />
+        <result property="corrCotizacion" column="corr_cotizacion" />
+        <result property="corrExpediente" column="corr_expediente" />
+        <result property="corrNotaIngreso" column="corr_nota_ingreso" />
+        <result property="corrNotaSalida" column="corr_nota_salida" />
+        <result property="corrCotizacionContrato" column="corr_cotizacion_contrato" />
+        <result property="corrCotizacionDirecta" column="corr_cotizacion_directa" />
+    </resultMap>  
+    <insert id="insertCorrelativo" parameterType="Correlativo">
+        INSERT INTO administracion.correlativo(
+        tiem_anio, corr_requerimiento, corr_cotizacion, corr_expediente, 
+        corr_nota_ingreso, corr_nota_salida, corr_cotizacion_contrato, 
+        corr_cotizacion_directa)
+        VALUES (#{tiemAnio}, #{corrRequerimiento}, #{corrCotizacion}, #{corrExpediente}, 
+        #{corrNotaIngreso}, #{corrNotaSalida}, #{corrCotizacionContrato}, 
+        #{corrCotizacionDirecta})
+    </insert>
+    <update id="updateCorrelativo" parameterType="Correlativo">
+        UPDATE administracion.correlativo
+        SET  corr_requerimiento=#{corrRequerimiento}, corr_cotizacion=#{corrCotizacion}, corr_expediente=#{corrExpediente}, 
+        corr_nota_ingreso=#{corrNotaIngreso}, corr_nota_salida=#{corrNotaSalida}, corr_cotizacion_contrato=#{corrCotizacionContrato}, 
+        corr_cotizacion_directa=#{corrCotizacionDirecta}
+        WHERE tiem_anio=#{tiemAnio}
+
+    </update>
+    <select id="searchCorrelativo" parameterType="String" resultMap="CorrelativoMap">
+        select * from administracion.correlativo
+        where tiem_anio=#{tiemAnio}
+    </select>
+</mapper>

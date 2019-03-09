@@ -1,0 +1,193 @@
+<!--[if lt IE 7]>
+          <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+      <![endif]-->
+<!--<div class="preload">
+    <div class="pre-load">
+        <i class="fa fa-spinner fa-spin"></i>
+    </div>
+</div>-->
+<script src="resources/js/vendor/bootstrap.min.js"></script>
+<style>    
+    .modal-body p{
+        padding-left: 10px;
+        font-size: 1em;
+    }
+    .modal-body>h1,.modal-body>h2,.modal-body>h3,.modal-body>h4{
+        padding-left: 10px;
+        margin: 0px;
+    }
+    .modal-body h1,.modal-body h2,.modal-body h3,.modal-body h4, .modal-body b{
+        font-size: 1em;
+        font-weight: normal;
+        margin: 0px;
+    }
+    .tituloResult{
+        font-size: 1.2em;
+        color: #0071bc;
+        text-decoration: underline;
+        background-color: #d9edf7;
+        padding: 10px;
+    }
+</style>
+<script>
+    jQuery.noConflict();
+    jQuery(document).ready(function () {
+
+        jQuery(".triggerinfo").click(function () {
+            jQuery(".panelinfo").hide();
+            jQuery.get("./Publicaciones?action=CerrarAnuncioForWeb");
+        });
+
+        jQuery.get("./Publicaciones?action=GetAnuncioForWeb").success(function (response) {
+            if (response.anuncio != undefined) {
+                if (response.estado == "x") {
+                    jQuery("#popTitulo").html('<a href="./Publicaciones?action=PaginaComunicadoPrint&id=' + response.anuncio.anuId + '">' + response.anuncio.titulo + '</a>');
+                    jQuery("#popContenido").html(response.anuncio.contenido);
+                    jQuery(".panelinfo").toggle("fast");
+                    jQuery(".triggerinfo").toggleClass("active");
+                }
+            }
+        });
+
+
+        var busqueda = jQuery("#busqueda");
+        busqueda.on("keypress", function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+                if (busqueda.val().trim() != "") {
+                    jQuery("#modalBusqueda .modal-body").html('<div class="text-center" style="color: #ff5d05;"><i class="fa fa-spinner fa-spin" style="font-size: 2em;"></i></div>');
+                    jQuery("#modalBusqueda").modal("show");
+                    jQuery("#actual").val(0);
+                    jQuery("#empezar").val(0);
+                    cargarBusqueda();
+                }
+            }
+        });
+        jQuery("#btnLeerMas").on("click", function () {
+            jQuery("#actual").val(parseInt(jQuery("#actual").val()) + 1);
+            jQuery("#empezar").val(parseInt(jQuery("#actual").val()) * parseInt(parseInt(jQuery("#limite").val())));
+            cargarBusqueda();
+        });
+
+        function cargarBusqueda() {
+            jQuery.get("./Busqueda?filter=" + busqueda.val(), {
+                "start": jQuery("#empezar").val(),
+                "limit": jQuery("#limite").val(),
+                "current": jQuery("#actual").val()
+            }).success(function (response) {
+                if (response.total > 0) {
+                    jQuery("#modalBusqueda .modal-body").empty();
+                    jQuery(response.items).each(function (index, node) {
+                        jQuery("#modalBusqueda .modal-body").append("<a href='" + node.ruta + "'><h2 class='tituloResult' >" + node.titulo + "</h2></a><p class='contentResult'>" + node.descripcion + " <br /><a href='" + node.ruta + "' >Leer Más</a> </p>");
+                    });
+                    if (response.total > parseInt(jQuery("#limite").val()) * (parseInt(jQuery("#actual").val() + 1))) {
+                        jQuery("#btnLeerMas").show();
+                    } else {
+                        jQuery("#btnLeerMas").hide();
+                    }
+                } else {
+                    jQuery("#modalBusqueda .modal-body").html('<div class="alert alert-warning" role="alert"> <strong>Vaya!</strong> No se encontraron resultados...</div>');
+                    jQuery("#btnLeerMas").hide();
+                }
+
+            });
+        }
+    });
+
+</script>
+<header>
+    <div id="modalBusqueda" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Busqueda de contenido</h4>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <input type="hidden" id="actual" value="0"/>
+                    <input type="hidden" id="empezar" value="0"/>
+                    <input type="hidden" id="limite" value="15"/>
+                    <button id="btnLeerMas" type="button" class="btn btn-primary" style="background: #0071bc;border: #ff5d05;">Mas resultados</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <div class="panelinfo" style="z-index: 1000;">
+        <img class="triggerinfo" src="resources/css/images/minus.png" style="float: right; margin-top: -40px;margin-right: -30px;" />
+        <h3 id="popTitulo"></h3>
+        <p id="popContenido"></p>
+        <div style="clear:both;"></div>
+    </div>
+    <div class="access-top">
+        <div class="container text-right">
+            <ul class="list-inline list-top-i">                        
+                <li><a href="./Inicio" target="_blank" title="">Inicio</a></li>
+                <li class="hidden-xs"><a href="./MapaSitio" target="_blank" title="">Mapa de sitio</a></li>
+                <li><a href="./Intranet" target="_blank" title="">Intranet</a></li>
+                <li><a href="https://correo.peam.gob.pe/" target="_blank" title="">Correo</a></li>
+                <li><a href="./Servicios" target="_blank" title="">Servicios</a></li>
+                <li><a href="./Glosario" target="_blank" title="">Glosario</a></li>
+            </ul>
+        </div>  
+    </div>
+    <div class="menu-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-6 visible-xs" style="margin-top: 18px;">
+                    <img style="width: 100%;" src="resources/img/logo-peam-large.png" alt="logo-cfg" class="img-logo-sm">
+                </div>
+                <div class="col-xs-1" style="margin: 10px 20px;">
+                    <img style="max-height: 40px;" src="resources/img/logo-goresam.png" alt="logo-cfg" class="visible-xs">
+                    <img style="max-height: 60px;" src="resources/img/logo-goresam.png" alt="logo-cfg" class="hidden-xs img-logo-sm">
+                </div>
+                <div class="col-xs-6 hidden-xs" style="margin-top: 18px;">
+                    <img style="width: 100%;" src="resources/img/logo-peam-large.png" alt="logo-cfg" class="img-logo-sm">
+                </div>
+                <div class="col-xs-1 hidden-xs" style="margin-top: 0px;">
+                    <img style="max-height: 70px;" src="resources/img/logo-peam.png" alt="logo-cfg" class="img-logo-sm">
+                </div>
+                <div class="text-right">
+                    <div class="box-transp">
+                        <a target="_blank" href="./ParticipacionCiudadana?action=PortalTransparencia" class="btn btn-tranps btn-celeste"> <i><img src="resources/img/icons/search.png" alt=""></i> <span class="hidden-xs">Portal de </span> Transparencia </a>
+                        </i>
+                        <img src="resources/img/sello.png"  alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="navbar text-center" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Nav</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!-- <a class="navbar-brand" href="#">Menu</a> -->
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="scroll"><a href="./Inicio">Inicio</a></li>
+                    <li class="scroll"><a href="./LaInstitucion">La Institución</a></li>
+                    <li class="submenu"><a href="./GestionTransparente">Gestión Transparente</a></li>
+                    <li class="scroll"><a href="./Convocatorias"> Convocatorias</a></li>
+                    <li class="scroll"><a href="./Publicaciones">Publicaciones</a></li>
+                    <li class="scroll"><a href="./ParticipacionCiudadana?action=Consultas">Consultas</a></li>
+                </ul>
+
+                <form class="navbar-form navbar-right buscar-frm" role="search">
+                    <div class="input-group">
+                        <input id="busqueda" type="text" class="form-control i-search" placeholder="Buscar...">
+                        <input type="hidden" id="buscarPag" />
+                        <span class="input-group-btn">
+                            <button  class="btn btn-traparente" type="button"><i class="fa fa-search"></i></button>
+                        </span>
+                    </div><!-- /input-group -->
+                </form>
+            </div><!--/.navbar-collapse -->
+        </div>
+    </nav>
+</header>

@@ -1,0 +1,277 @@
+/*
+Document   : default
+Created on : 24-jul-2012, 22:13:43
+Author     : jpgprog84
+Description:
+Purpose of the stylesheet follows.
+*/
+
+/*
+TODO customize this sample style
+Syntax recommendation http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html
+*/
+@import "compass/reset";
+@import "compass/css3";
+$padding:5px;
+$width:1024px;
+$width-bg:920px;
+$bgCabecera:#1982A2;
+body{
+    min-width:$width-bg;
+    font-family: "Open Sans", "lucida grande", "Segoe UI", arial, verdana, "lucida sans unicode", tahoma, sans-serif;
+    // background:#f2f2f2; //url('../images/bg.png') repeat-x;
+    font-size:12px;
+}
+#cabecera{
+    background:#C23636;
+    @include box-shadow(rgba(black, 0.9) 0 0 100px, rgba(black, 0.5) 0 0 5px 0px inset);
+    @include background-image(linear-gradient(#67747B, #49525C, #49525C));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#67747B', endColorstr='#49525C');
+    border-bottom:0.4em #F6891E solid;
+    color:#fff;
+    #c-norte{
+        width:$width-bg;
+        min-width:$width-bg;
+        margin:0 5px;  
+        overflow:hidden;
+        padding:$padding;
+        
+        img{
+            float:left;
+        }
+        a{
+            float:left;
+            font-size:150%;
+            //font-weight:bold;
+            color:#fff;
+            padding:$padding;
+            font-family: "Open Sans";
+            @include text-shadow(rgba(198, 135, 90, 0.2) 0px 0px 0, rgba(198, 135, 90, 0.2) 2px 1px 0, rgba(198, 135, 90, 0.2) 3px 2px 0);
+            
+        }
+        //background:#C23636;
+        color:#fff;
+    }    
+}
+#menu{
+    margin: 5px auto;      
+    min-width:$width-bg;
+    padding:$padding;
+    overflow:hidden;
+    font-size:90%;
+    .menu-derecho{
+        padding:$padding;
+        float:left;
+        font-size:115%;
+        font-weight:bold;
+        color:#3869a0;
+        span{
+            a{
+                padding:$padding;
+                text-decoration:none;
+                cursor:pointer;
+                color:#3869a0;
+                @include opacity(0.7);
+            }
+            a.active{
+                color:#aec645;
+                @include opacity(1);
+            }
+        }
+    }
+    .menu-izquierdo{
+        padding:$padding;
+        float:right;        
+        font-weight:bold;        
+        #salir{
+            text-decoration:none;
+            color:#000;
+            text-transform:uppercase;
+            width:16px;
+            height:16px; 
+            padding-right:28px;
+            background:url('../images/logout.png') 90% 90% no-repeat;
+        }
+    }
+}
+#contenido{
+    margin: 2% auto;    
+    min-width:$width-bg;
+    padding:$padding;
+}
+/*#gadget{
+    //width: $width-bg; 
+    margin: 2% auto;      
+    min-width:$width-bg;
+    padding:$padding;
+    div.gadget{
+        margin:$padding;    
+        float:left;
+        width:23%;
+        height:80px;
+        padding:1px;
+        cursor:pointer;
+        @include box-shadow(#cccccc 2px 2px 4px);
+        &:hover{
+            @include box-shadow(#cccccc 5px 5px 10px);
+        }
+        h2{
+            margin:2px;
+            @include opacity(1);
+            //font-size:80%;
+            padding:6px;                       
+            font-weight:bold;
+        }
+        .gadget-content{
+            padding:$padding;
+            // font-size:78%;
+            overflow:hidden;
+            img{
+                float:left;
+                padding-right:$padding;
+            }
+            p{
+                padding: 0 $padding;
+                font-size:98%;
+            }
+        }
+    }
+}*/
+@mixin formulario(){
+    form{
+        @include border-bottom-radius($padding);
+        overflow:hidden;
+        div{
+            overflow:hidden; 
+            display:block;
+            padding:2px;
+            label{
+                color:#6f92b8;
+                float:left;
+                width:36%;                
+                text-align:left;
+                padding:$padding 0;    
+                vertical-align: middle;                      
+            }
+            input{
+                float:left;
+                text-align:left;
+                width:63%;
+                outline:none;
+                padding:3px;
+                border:0.1em #ccc solid;
+                @include border-radius($padding);
+            }
+            input[type="checkbox"]{
+                float:left;
+                text-align:left;
+                width:auto;
+                outline:none;
+                padding:3px;
+                border:0.1em #ccc solid;
+                @include border-radius($padding);
+            }
+            select{float:left;
+                text-align:left;
+                width:63%;
+                padding:3px;
+                vertical-align:middle;
+                border:0.1em #ccc solid;
+                background:#fff; outline:none;
+            }
+            button{
+                float:right;
+                text-align:left;
+            }
+        }   
+    } 
+}
+#cuerpo{
+    margin: 2% auto;
+    padding:$padding;
+    // width: $width-bg;    
+    min-width:$width-bg;
+    overflow:hidden;
+    #c-derecho{
+        float:left;
+        width:20%;
+        @import "menuLateral";
+    }
+    #c-izquierdo{
+        width:78%;
+        margin-bottom:$padding*3;   
+        float:right;
+        .marco{            
+            @include border-radius($padding);            
+            .message{
+                margin:$padding;   
+                padding:$padding*2;               
+                @include border-radius($padding);
+            }
+            h2{
+                @include opacity(1);                
+                padding:$padding;
+                @include border-top-radius($padding);
+                font-weight:bold;
+            }
+            #frmDependencia{
+                padding:$padding;                
+                overflow:hidden;
+            }
+            .content-marco{
+                padding:$padding;                
+                overflow:hidden;
+                .cm-i{
+                    float:left;
+                    width:66%;
+                    @include formulario();
+                    div{                        
+                        font-weight:bold;
+                        padding:$padding;
+                    }
+                    
+                }
+                .cm-d{
+                    float:right;
+                    width:30%;
+                    img{
+                        border:0.1em #3869a0 solid;
+                        width:100%;
+                    }
+                    #botones-d{
+                        overflow:hidden;
+                        button,a,input{
+                            float:right;
+                        }
+                    }
+                }
+                
+            }
+            div{
+                padding:$padding;
+                #dependencias{
+                    padding:0;
+                    margin:0px;
+                    height:200px;
+                    overflow:auto;                        
+                }
+            }
+        }       
+    }
+}
+
+/*.information{    
+border:0.1em #aec645 solid;
+color:#fff;
+font-size:75%;
+font-weight:bold;
+width:98%;
+@include border-radius($padding);
+display:block;                
+padding:$padding*2 $padding;
+background:#ccde78;
+}*/
+@import "JpTree";
+@import "notice";
+@import "ui/jGrid";
+@include formulario();

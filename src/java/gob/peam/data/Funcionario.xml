@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Funcionario">
+    <resultMap id="FuncionarioMap" type="Funcionario">
+        <result property="id" column="id" />
+        <result property="organigrama" column="organigrama" />
+        <result property="tratamiento" column="tratamiento" />
+        <result property="nombresApellidos" column="nombres_apellidos" />
+        <result property="cargo" column="cargo"  />
+        <result property="nivelRemunerativo" column="nivel_remunerativo" />
+        <result property="numeroDni" column="numero_dni" />
+        <result property="resolucion" column="resolucion" />
+        <result property="fechaDesignacion" column="fecha_designacion" />
+        <result property="telefono" column="telefono" />
+        <result property="fax" column="fax" />
+        <result property="eMail" column="e_mail" />
+        <result property="foto" column="foto" />
+        <result property="profesion" column="profesion" />
+        <result property="resumen" column="resumen" />
+        <result property="regimenLaboral" column="regimen_laboral"/>
+        <result property="retribucionMensual" column="retribucion_mensual"/>
+        <result property="hojaVida" column="hoja_vida"/>
+        <result property="estado" column="estado"/>
+        <result property="destacado" column="destacado"/>
+    </resultMap>
+    
+    <resultMap id="nombreGerenteMap" type="java.lang.String">
+        <result property="nombresApellidos" column="nombres_apellidos" />
+    </resultMap>
+    
+    <select id="getListForAdmin" parameterType="java.util.HashMap" resultMap ="FuncionarioMap" >
+        SELECT *
+        FROM web.f00013 where nombres_apellidos ILIKE #{query} ORDER BY id desc
+        limit  ${limit} offset ${start}
+    </select>
+        
+    <select id="getTotalForAdmin" parameterType="java.util.HashMap" resultMap ="FuncionarioMap" >
+        SELECT nombres_apellidos
+        FROM web.f00013 where nombres_apellidos ILIKE #{query} 
+    </select>
+
+    <select id="getListForWeb"   resultMap="FuncionarioMap">
+        select * from web.f00013 where estado=true and destacado=true order by id asc
+    </select>
+    
+    <select id="getListDirectorioForWeb"  parameterType="java.util.HashMap" resultMap="FuncionarioMap">
+        select * from web.f00013 where (nombres_apellidos ILIKE #{query} or cargo ILIKE #{query}) and estado=true order by id asc limit ${limit} offset ${start}
+    </select>
+    
+    <select id="getTotalDirectorioForWeb"  parameterType="java.util.HashMap"  resultMap="FuncionarioMap">
+        select * from web.f00013 where (nombres_apellidos ILIKE #{query} or cargo ILIKE #{query}) and estado=true order by id asc
+    </select>
+    
+    <select id="getFuncionarioForFlowchart" parameterType="String" resultMap="FuncionarioMap">
+        select * from web.f00013 where organigrama=#{organigrama} and estado = true
+    </select>
+    
+    <select id="getGerenteForWeb" resultMap="nombreGerenteMap">
+        select nombres_apellidos from web.f00013 order by id asc  limit 1 offset 0
+    </select>
+    
+    <insert id="insertFuncionario" parameterType="java.util.HashMap">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select case when max(id) is null then 1 else cast((max(id)+1) as integer) end id  from web.f00013
+        </selectKey>
+        INSERT INTO web.f00013(
+        id, organigrama, tratamiento, nombres_apellidos, cargo, nivel_remunerativo, 
+        numero_dni, resolucion, fecha_designacion, telefono, fax, e_mail, 
+        foto, profesion, resumen, regimen_laboral, retribucion_mensual, 
+        hoja_vida, estado, destacado)
+        VALUES (#{id}, #{organigrama}, #{tratamiento}, #{nombresApellidos}, #{cargo}, #{nivelRemunerativo}, 
+        #{numeroDni}, #{resolucion}, cast(#{fechaDesignacion} as date), #{telefono}, #{fax}, #{eMail}, 
+        #{foto}, #{profesion}, #{resumen}, #{regimenLaboral}, #{retribucionMensual}, 
+        #{hojaVida}, #{estado}, #{destacado});
+    </insert>
+    
+    <select id="buscarFuncionario" parameterType="Integer" resultMap ="FuncionarioMap" >
+        SELECT *
+        FROM web.f00013 where id = #{id}
+    </select>
+    
+    <update id="updateFuncionario" parameterType="java.util.HashMap" >
+        UPDATE web.f00013
+        SET organigrama=#{organigrama}, tratamiento=#{tratamiento}, nombres_apellidos=#{nombresApellidos}, cargo=#{cargo}, 
+        nivel_remunerativo=#{nivelRemunerativo}, numero_dni=#{numeroDni}, resolucion=#{resolucion}, fecha_designacion=cast(#{fechaDesignacion} as date), 
+        telefono=#{telefono}, fax=#{fax}, e_mail=#{eMail}, foto=#{foto}, profesion=#{profesion}, resumen=#{resumen}, 
+        regimen_laboral=#{regimenLaboral}, retribucion_mensual=#{retribucionMensual}, hoja_vida=#{hojaVida}, estado=#{estado}, destacado = #{destacado}
+        WHERE id = #{id}
+    </update>
+    
+    <delete id="deleteFuncionario" parameterType="Integer">
+        DELETE FROM web.f00013
+        WHERE id = #{id}
+    </delete>
+    
+    <update id="estadoFuncionario" parameterType="java.util.HashMap" >
+        UPDATE web.f00013
+        SET estado = #{estado}
+        where id = #{id}
+    </update>
+</mapper>

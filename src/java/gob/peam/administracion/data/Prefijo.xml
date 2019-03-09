@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Prefijo">
+    <resultMap id="PrefijoMap" type="Prefijo">
+        <id property="prefijo" column="fuen_prefijo" />
+        <result property="anio" column="tiem_anio" />
+        <result property="ordenCompra" column="corr_orden_compra" />
+        <result property="ordenServicio" column="corr_orden_servicio" />     
+    </resultMap> 
+    <select id="selectPrefijos" parameterType="String" resultMap="PrefijoMap">
+        select * from administracion.correlativo_orden where tiem_anio=#{anio}
+    </select> 
+    <insert id="insertPrefijo" parameterType="Prefijo">
+        INSERT INTO administracion.correlativo_orden(
+        tiem_anio, fuen_prefijo, corr_orden_compra, corr_orden_servicio)
+        VALUES (#{anio}, #{prefijo}, #{ordenCompra}, #{ordenServicio})
+    </insert>
+    <select id="buscarPrefijo" parameterType="HashMap" resultMap="PrefijoMap">
+        select * from administracion.correlativo_orden where tiem_anio=#{anio} and fuen_prefijo=#{prefijo}
+    </select>
+    <update id="updatePrefijo" parameterType="Prefijo">
+        UPDATE administracion.correlativo_orden
+        SET  corr_orden_compra=#{ordenCompra}, corr_orden_servicio=#{ordenServicio}
+        WHERE tiem_anio=#{anio} and fuen_prefijo=#{prefijo}
+    </update>
+</mapper>

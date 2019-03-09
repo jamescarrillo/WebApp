@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="noticia" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b509f2e4-a8cd-4797-99d5-967a3d85dde1">
+	<property name="ireport.zoom" value="1.2100000000000009"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#FFBFBF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<parameter name="p_id" class="java.lang.Integer"/>
+	<parameter name="ruta_logo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select *, case when forma = 1 then 'Copia Simple'  else
+	  case when forma = 2 then 'COPIA FEDATEADA'  else
+	  case when forma = 3 then 'CD'  else
+	  case when forma = 4 then 'CORREO ELECTRONICO' else
+	  case when forma = 5 then 'OTROS' end
+end end end end from web.solicitud where soli_id = $P{p_id}]]>
+	</queryString>
+	<field name="soli_id" class="java.lang.Integer"/>
+	<field name="anho" class="java.lang.String"/>
+	<field name="usuario" class="java.lang.String"/>
+	<field name="dni" class="java.lang.String"/>
+	<field name="correo" class="java.lang.String"/>
+	<field name="dependencia" class="java.lang.String"/>
+	<field name="descripcion" class="java.lang.String"/>
+	<field name="fecha_registro" class="java.lang.String"/>
+	<field name="fecha_atendido" class="java.lang.String"/>
+	<field name="estado" class="java.lang.Boolean"/>
+	<field name="telefono" class="java.lang.String"/>
+	<field name="domicilio" class="java.lang.String"/>
+	<field name="forma" class="java.lang.Integer"/>
+	<field name="case" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="172" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="0aeb0553-7bdc-4190-b856-1ef7b7a18767" x="30" y="97" width="431" height="56"/>
+			</rectangle>
+			<image>
+				<reportElement uuid="dd8dc68f-37c6-4724-a1b6-f2e946841a81" x="30" y="38" width="493" height="55"/>
+				<imageExpression><![CDATA[$P{ruta_logo}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="593af4e7-1333-4ea1-9714-9352bc5fa25c" x="30" y="119" width="431" height="34"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[(Texto Único Ordenado de la Ley N° 27806, Ley de Transparencia y Acceso a la Información Pública, aprobado por Decreto Supremo N° 072-2003-PCM)
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="424cf7a9-7d5e-4d71-94c3-0d1d6bad3956" style="table_TD" x="461" y="97" width="62" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[N° DE REGISTRO:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="21111f55-1aa0-4675-9f2e-61df9b569268" style="table_TD" x="461" y="130" width="62" height="23"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{soli_id}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="1d2ffe09-61fa-4eb9-86a7-84a86702671e" x="30" y="97" width="431" height="22"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SOLICITUD ELECTRÓNICA DE ACCESO A LA INFORMACIÓN PÚBLICA]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="b6dcf844-2b0e-4d12-a2d3-7dda31728db6" x="377" y="0" width="146" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fecha_registro}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="217">
+			<staticText>
+				<reportElement uuid="70edba03-d80a-40a3-8dbb-974829c3a3cc" style="table_TD" mode="Opaque" x="30" y="72" width="83" height="19"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[    NOMBRE:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5df2a34b-7cf4-41f2-9bbb-4c317a878a83" style="table_TD" mode="Opaque" x="30" y="91" width="83" height="19"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[    DNI:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d10b4083-2245-4ff9-abd3-efbc8b6b996c" style="table_TD" mode="Opaque" x="283" y="91" width="59" height="19"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[    Correo:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="48cafd66-4948-4296-a627-f641568407e5" style="table 1" x="30" y="1" width="492" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[ I. FUNCIONARIO RESPONSABLE DE ENTREGAR LA INFORMACIÓN:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f7354e66-f380-4981-bd20-3f6816c0dffb" style="table_TD" x="30" y="15" width="492" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[    ING. ORLANDO RAMIREZ CUESTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="48cafd66-4948-4296-a627-f641568407e5" style="table 1" x="30" y="58" width="492" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[ II. DATOS DEL SOLICITANTE:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="4b104c0d-5d0d-477a-9700-00090fe1ecb9" style="table_TD" mode="Opaque" x="113" y="72" width="409" height="19"/>
+				<textElement verticalAlignment="Middle" markup="html"/>
+				<textFieldExpression><![CDATA[$F{usuario}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="34f2964f-c36d-4c39-8943-1dc8d3597966" style="table_TD" mode="Opaque" x="113" y="91" width="170" height="19"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{dni}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="32d73f6e-d6fd-4df3-86af-48387f2fb979" style="table_TD" mode="Opaque" x="342" y="91" width="180" height="19"/>
+				<textElement verticalAlignment="Middle" markup="html"/>
+				<textFieldExpression><![CDATA[$F{correo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5df2a34b-7cf4-41f2-9bbb-4c317a878a83" style="table_TD" mode="Opaque" x="30" y="110" width="83" height="19"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[    DOMICILIO:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="9de44d1a-e8a0-4cdf-9f2d-c01f066c3691" style="table_TD" x="113" y="110" width="409" height="19"/>
+				<textElement verticalAlignment="Middle" markup="html"/>
+				<textFieldExpression><![CDATA[$F{domicilio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5df2a34b-7cf4-41f2-9bbb-4c317a878a83" style="table_TD" mode="Opaque" x="30" y="129" width="83" height="19"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[    TELEFONO:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="8e7029c0-0eef-4469-8131-15e3bf81cd7f" style="table_TD" x="113" y="129" width="409" height="19"/>
+				<textElement verticalAlignment="Middle" markup="html"/>
+				<textFieldExpression><![CDATA[$F{telefono}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="48cafd66-4948-4296-a627-f641568407e5" style="table 1" x="30" y="171" width="492" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[III. INFORMACIÓN SOLICITADA:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="86453e8a-35d2-4f43-9a7b-b3f0c1edb90a" style="table_TD" x="30" y="185" width="492" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<textElement markup="html"/>
+				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<lastPageFooter>
+		<band height="26">
+			<staticText>
+				<reportElement uuid="92debd8c-caae-4288-86a5-838ebf916fc3" x="30" y="4" width="108" height="20"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[www.peam.gob.pe]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="09d05788-2e5d-40e4-ac82-2a0473b34478" x="301" y="4" width="221" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Solicitud Electrónica]]></text>
+			</staticText>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band height="87">
+			<textField>
+				<reportElement uuid="f8203bc6-f242-4bc8-a061-75bb290a7c88" style="table_TD" x="30" y="20" width="492" height="19"/>
+				<textElement verticalAlignment="Middle" markup="html"/>
+				<textFieldExpression><![CDATA[$F{dependencia}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="48cafd66-4948-4296-a627-f641568407e5" style="table 1" x="30" y="49" width="492" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[V. FORMA DE ENTREGA DE LA INFORMACIÓN:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="2e200c9c-514b-4c1b-95d5-e74f3f82f46b" style="table_TD" x="30" y="63" width="492" height="17"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{case}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="48cafd66-4948-4296-a627-f641568407e5" style="table 1" x="30" y="6" width="492" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[IV. DEPENDENCIA DE LA CUAL SE REQUIERE LA INFORMACIÓN:]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="DocumentoGestion">
+    <resultMap id="DocumentoGestionMap" type="DocumentoGestion">
+        <result property="id" column="docu_id" />
+        <result property="titulo" column="docu_titulo" />
+        <result property="resumen" column="docu_resumen"  />
+        <result property="descripcion" column="docu_descripcion"  />
+        <result property="fecha" column="docu_fecha_docx" />
+        <result property="tidoId" column="tido_id" />
+        <result property="mimeTypes" column="docu_mime_types" />
+        <result property="origenArchivo" column="docu_origen_archivo" />
+        <result property="estado" column="docu_estado"/>
+        <result property="activo" column="docu_activo"/>
+        <result property="cateId" column="cate_id"/>
+    </resultMap>
+    <resultMap id="DocumentoMap" type="java.lang.Integer">
+        <result property="id" column="docu_id" />
+    </resultMap>
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="DocumentoGestionMap">
+        select * from web.documento where (docu_titulo ILIKE #{query} or docu_resumen ILIKE #{query} and docu_estado=true) and tido_id=11 and cate_id &lt; 100  ${filter} order by docu_titulo ${order} limit  ${limit} offset ${start}
+    </select>
+    
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="DocumentoGestionMap">
+        select * from web.documento where (docu_titulo ILIKE #{query} or docu_resumen ILIKE #{query} and docu_estado=true) and tido_id=11 and cate_id &lt; 100  ${filter}
+    </select>
+    
+    <select id="getForWeb" parameterType="Integer"  resultMap="DocumentoGestionMap">
+        select * from web.documento where docu_id=#{id} and cate_id &lt; 100 and docu_estado= true
+    </select>
+    
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="DocumentoGestionMap">
+        select * from documento where (docu_titulo ILIKE #{query} or docu_resumen ILIKE #{query}) and  tido_id=11 and cate_id &lt; 100 order by docu_titulo ${order} limit  ${limit} offset ${start}
+    </select>
+    
+    <select id="getTotalListForAdmin" parameterType="java.util.HashMap"  resultMap="DocumentoGestionMap">
+        select * from documento where (docu_titulo ILIKE #{query} or docu_resumen ILIKE #{query}) and  tido_id=11 and cate_id &lt; 100 order by docu_titulo ${order}
+    </select>
+    
+    <select id="getDataPublicado" parameterType="Integer"  resultMap="DocumentoGestionMap">
+        select trim('.PDF' from docu_titulo)  docu_titulo, initcap(docu_resumen) docu_resumen, * from documento where docu_id=#{id} and cate_id &lt; 100
+    </select>
+    
+    <insert id="updateDocumentoGestionPublico" parameterType="DocumentoGestion">
+        INSERT INTO web.documento
+        VALUES (#{id}, #{usuario.idUsuario}, #{descripcion}, #{titulo}, #{resumen}, #{origenArchivo}, #{tidoId}, #{estado}, #{activo}, #{fechaDocx}, #{cateId});
+    </insert>
+    
+    <update id="modiDocumentoGestionPublico" parameterType="DocumentoGestion">
+        UPDATE web.documento
+        SET docu_descripcion=#{descripcion}, docu_titulo=#{titulo}, 
+        docu_resumen=#{resumen}, docu_origen_archivo=#{origenArchivo}, docu_estado=#{estado}, 
+        docu_activo=#{activo},
+        cate_id = #{cateId},
+        docu_fecha_docx = #{fechaDocx}
+        WHERE docu_id=#{id} and cate_id &lt; 100
+    </update>
+    
+    <select id="getAllDataPublicado" resultMap="DocumentoMap">
+        select docu_id from web.documento where cate_id &lt; 100
+    </select>
+</mapper>

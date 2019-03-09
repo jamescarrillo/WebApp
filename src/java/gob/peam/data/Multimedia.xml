@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Multimedia">
+    <resultMap id="MultimediaMap" type="Multimedia">
+        <result property="id" column="id" />
+        <result property="titulo" column="titulo" />
+        <result property="fuente" column="fuente" />
+        <result property="fecha" column="fecha" />
+        <result property="estado" column="estado" />
+        <result property="defecto" column="default" />
+        <result property="usuario" column="usuario" />
+    </resultMap>
+    
+    <resultMap id="MultimediaAdminMap" type="Multimedia">
+        <result property="id" column="id" />
+        <result property="titulo" column="titulo" />
+        <result property="fuente" column="fuente" />
+        <result property="fecha" column="fecha"  />
+        <result property="estado" column="estado" />
+        <result property="defecto" column="default" />
+        <result property="usuario" column="usuario" />
+    </resultMap>
+    
+    <select id="getMultimediaForNotice" parameterType="java.util.HashMap"  resultMap="MultimediaMap">
+        select * from web.multimedia order by "default" ${order}, id desc  limit ${limit} offset ${start}
+    </select>
+    
+    <select id="getMultimediasForNotice" parameterType="java.util.HashMap"  resultMap="MultimediaMap">
+        select * from web.multimedia where estado=true order by "default" ${order}, id desc  limit ${limit} offset ${start}
+    </select>
+    
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="MultimediaMap">
+        select * from web.multimedia order by id ${order} limit ${limit} offset ${start}
+    </select>
+    
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="MultimediaMap">
+        select * from web.multimedia
+    </select>
+    
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="MultimediaAdminMap">
+        select * from web.multimedia where upper(multimedia.titulo) ILIKE #{filtro} or upper(multimedia.fuente) ILIKE #{filtro} order by fecha desc, id desc limit ${limit} offset ${start}
+    </select>
+    
+    <select id="getTotalListForAdmin" parameterType="String"  resultMap="MultimediaAdminMap">
+        select * from web.multimedia where upper(multimedia.titulo) ILIKE #{filtro} or upper(multimedia.fuente) ILIKE #{filtro}
+    </select>
+    
+    <select id="getMultimediaSingle" parameterType="int"  resultMap="MultimediaAdminMap">
+        select * from web.multimedia where id=#{id}
+    </select>
+    
+    <insert id="insertMultimedia" parameterType="Multimedia">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select cast((max(id)+1) as integer)  from web.multimedia
+        </selectKey>
+        INSERT INTO web.multimedia(
+        id, titulo, fuente, fecha, usuario, estado, "default")
+        VALUES (#{id}, #{titulo}, #{fuente}, cast (#{fecha} AS DATE), #{usuario}, ${estado}, #{estado});
+    </insert>
+    
+    <update id="updateMultimedia" parameterType="Multimedia">
+        UPDATE web.multimedia
+        SET  titulo=#{titulo}, fuente=#{fuente}, fecha= cast(#{fecha} as DATE), estado = #{estado}
+        WHERE id=#{id}
+    </update>
+    
+    <update id="predefinirMultimedia" parameterType="Multimedia">
+        UPDATE web.multimedia set "default" = false;
+        UPDATE web.multimedia set "default" = #{defecto}
+        WHERE id=#{id}
+    </update>
+    
+    <delete id="deleteMultimedia" parameterType="int">
+        delete from web.multimedia
+        where id=#{id}
+    </delete>
+    
+    <update id="publicarMultimedia" parameterType="int">
+        update web.multimedia
+        set estado = true
+        where id=#{id}
+    </update>
+</mapper>

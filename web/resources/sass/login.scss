@@ -1,0 +1,228 @@
+/*
+Document   : login
+Created on : 17-jul-2012, 21:55:52
+Author     : jpgprog84
+Description:
+Purpose of the stylesheet follows.
+*/
+
+/*
+TODO customize this sample style
+Syntax recommendation http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html
+*/
+@import "compass/reset";
+@import "compass/css3";
+$padding:5px;
+$width:1020px;
+$width-bg:940px;
+body{
+    min-width:$width;
+    font-family: 'Cantarell','Helvetica Neue',Arial,'Liberation Sans',FreeSans,sans-serif;
+    background:#fafafa;
+    font-size:12px;
+    
+}
+#cabecera{
+    background:#C23636;
+    @include box-shadow(rgba(black, 0.9) 0 0 100px, rgba(black, 0.5) 0 0 5px 0px inset);
+    @include background-image(linear-gradient(#67747B, #49525C, #49525C));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#67747B', endColorstr='#49525C');
+    border-bottom:0.4em #F6891E solid;
+    color:#fff;
+    #c-norte{
+        width:$width-bg;
+        min-width:$width-bg;
+        margin:0 5px;  
+        overflow:hidden;
+        padding:$padding;
+        img{
+            float:left;
+        }
+        a{
+            float:left;
+            font-size:150%;
+            //font-weight:bold;
+            color:#fff;
+            padding:$padding;
+            font-family: "Open Sans";
+            @include text-shadow(rgba(198, 135, 90, 0.2) 0px 0px 0, rgba(198, 135, 90, 0.2) 2px 1px 0, rgba(198, 135, 90, 0.2) 3px 2px 0);
+            
+        }
+        //background:#C23636;
+        color:#fff;
+    }    
+}
+.content{
+    margin: 2% auto;
+    width: $width;
+    min-width:$width;
+    #cuerpo{
+        @include opacity(0.7); 
+        //border: 3px solid #fff;
+        //background-color:#b5cbe3;
+        position: absolute;
+        width: $width;
+        min-width: $width;
+        margin: 40px auto;   
+        height: 330px;
+        z-index: 1;
+    }
+    #c-cuerpo{
+        @include opacity(0.9); 
+        position: relative;
+        z-index: 3;
+        height: 410px;
+        //   background-color:#dae5f1;
+        width:$width-bg;
+        min-width:$width-bg;
+        margin:0px auto;  
+        overflow:hidden;
+        #cl-der{
+            margin-top:50px;
+            float:right;
+            position:relative;
+            z-index: 2;
+            width:40%;
+            padding:$padding;
+            h2{
+                @include opacity(1); 
+                font-size:160%;
+                color:#c7494a;
+                font-weight:bold;
+                font-family: "Calibri";
+            }
+            form{    
+                @include opacity(1); 
+                margin-top:$padding*2;
+                border:0.1em #c3d9ed solid;
+                padding:$padding*2;
+                @include border-radius($padding);
+                background:#fff;
+                overflow:hidden;
+                width: 90%;
+                @include box-shadow(rgba(137, 140, 149, 0.4) 2px 2px 5px);
+                // font-size:100%;
+                div{
+                    overflow:hidden; 
+                    width:90%;
+                    display:block;
+                    padding:3px;
+                    label{
+                        float:left;
+                        width:50%;
+                        // font-size:85%;
+                        text-align:left;
+                        padding:$padding 0;
+                        font-weight:bold;     
+                        vertical-align: middle
+                        //padding: 3px 0;color:#142849;
+                    }
+                    input{
+                        float:left;
+                        text-align:left;
+                        width:47%;
+                        padding:3px;
+                        border:0.1em #ccc solid;
+                        @include border-radius($padding);
+                        @include box-shadow(rgba(137, 140, 149, 0.4) 1px 1px 2px);
+                    }
+                    img{
+                        float:left;
+                        padding: $padding 0;
+                        height: 40px;
+                        width: 100px;
+                    }  
+                    #btnConectar{
+                        background-repeat: no-repeat;
+                        background-position-x: 5%;
+                        background-position-y:50%; 
+                        float:right;
+                    }
+                }                 
+                
+                .mensaje {
+                    width:90%; 
+                    margin-top:$padding*3;
+                    padding: 10px;
+                    border: 1px solid #f9dd34;
+                    font-weight:bold;
+                    background: #ffef8f;
+                    span{
+                        color:#142849;
+                    }
+                }
+                .error {
+                    border: 1px solid #cd0a0a;
+                    font-weight:bold;
+                    background-color: #fef1ec;
+                    color: #cd0a0a;
+                }
+            }
+        }
+        #cl-izq{
+            margin-top:10px;
+            width:60%;
+            #video{
+                margin-left:$padding*20;
+                display:block;
+                width:250px;
+                height:270px;
+            }
+            #soportado{
+                margin-left:$padding*10;
+                width:70%; 
+                margin-top:$padding*3;
+                padding: 10px;
+                border: 1px solid #f9dd34;
+                font-weight:bold;
+                background: #ffef8f;
+                label{
+                    vertical-align: middle;
+                    border:solid;
+                    margin:0;
+                    padding:0;
+                }
+            }
+        }
+    }    
+    
+}
+#pie{
+    width:$width;
+    min-width:$width;
+    margin:0 auto;  
+    botton:0;
+    overflow:hidden;
+    background:#c7d8e8;
+    border:0.1em #fff solid;
+    padding:$padding;
+    @include border-radius($padding);
+}
+@mixin button($color){
+    margin-top:$padding;
+    display: inline-block;   
+    padding: ($padding) ($padding*2) ($padding) ($padding*5);   
+    color: #fff;        
+    text-decoration: none; 
+    @include border-radius(3px);  
+    box-shadow: 0 1px 3px rgba(0,0,0,0.6); 
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.6);  
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.6);  
+    border:$color;
+    border-bottom: 1px solid $color; 
+    position: relative;   
+    cursor:pointer;   
+    font-size: 13px; font-weight: bold; line-height: 1;
+    margin-right:10px;
+    background-color: $color;
+}
+.button{
+    @include button(#334E8C);
+    &:visited {   @include button(#334E8C);  }
+    &:hover {  @include button(#325E9D); }
+    &:active{  top: 0.1em;}
+    &.green, &.green:visited {   @include button(#59A91C); }
+    &.green:hover{ background-color: #72B53E; }
+    &.red, &.red:visited {@include button(#CB3D3C);}
+    &.red:hover{@include button(#D65B5C);  }
+}

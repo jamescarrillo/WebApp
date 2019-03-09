@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ResolucionObra">
+    <resultMap id="ResolucionObraMap" type="ResolucionGerencial">
+        <result property="id" column="docu_id" />        
+        <result property="titulo" column="docu_titulo" />
+        <result property="resumen" column="docu_resumen"  />
+        <result property="descripcion" column="docu_descripcion"  />
+        <result property="fecha" column="docu_fecha_docx" />   
+        <result property="tidoId" column="tido_id" />    
+        <result property="mimeTypes" column="docu_mime_types" />    
+        <result property="origenArchivo" column="docu_origen_archivo" />        
+        <result property="estado" column="docu_estado"/>
+        <result property="activo" column="docu_activo"/>
+        <result property="metaData" column="docu_metadata"/>
+    </resultMap>
+    
+    <resultMap id="CategoriaArcDigMap" type="CategoriaArcDig">
+        <id property="id" column="tido_id" /> 
+        <result property="charId" column="tido_id" />
+        <result property="nombre" column="tido_nombre" />
+    </resultMap >
+    
+    <resultMap id="AnhoMap" type="Anho">
+        <id property="anho" column="anho" />
+    </resultMap>
+    
+    <select id="getFiltro" parameterType="Integer" resultMap="ResolucionObraMap">
+        select * from web.documento 
+        where cate_id = #{cateId}
+    </select>
+    
+    <select id="getList" parameterType="HashMap" resultMap="ResolucionObraMap">
+        select * from web.documento 
+        where (docu_resumen ILIKE #{c} or docu_titulo ILIKE #{c} )  and cate_id = 100 ${anho}   order by docu_fecha_docx desc, docu_id desc
+    </select>
+    
+    <select id="getListA" parameterType="HashMap" resultMap="ResolucionObraMap">
+        select * from web.documento 
+        where (docu_resumen ILIKE #{c} or docu_titulo ILIKE #{c} ) and cate_id = 200 ${anho}   order by docu_fecha_docx desc, docu_id desc
+    </select>
+    
+    <select id="getListB" parameterType="HashMap" resultMap="ResolucionObraMap">
+        select * from web.documento 
+        where (docu_resumen ILIKE #{c} or docu_titulo ILIKE #{c} ) and  cate_id = 300 ${anho}   order by docu_fecha_docx desc, docu_id desc
+    </select>
+    
+    <select id="getListC" parameterType="HashMap" resultMap="ResolucionObraMap">
+        select * from web.documento 
+        where (docu_resumen ILIKE #{c} or docu_titulo ILIKE #{c} ) and  cate_id = 400 ${anho}   order by docu_fecha_docx desc, docu_id desc
+    </select>
+    
+    <select id="getListD" parameterType="HashMap" resultMap="ResolucionObraMap">
+        select * from web.documento 
+        where (docu_resumen ILIKE #{c} or docu_titulo ILIKE #{c} ) and  cate_id = 500 ${anho}   order by docu_fecha_docx desc, docu_id desc
+    </select>
+    
+    <select id="getListE" parameterType="HashMap" resultMap="ResolucionObraMap">
+        select * from web.documento 
+        where (docu_resumen ILIKE #{c} or docu_titulo ILIKE #{c} ) and  cate_id = 600 ${anho}   order by docu_fecha_docx desc, docu_id desc
+    </select>
+    <select id="getListF" parameterType="HashMap" resultMap="ResolucionObraMap">
+        select * from web.documento 
+        where (docu_resumen ILIKE #{c} or docu_titulo ILIKE #{c} ) and  cate_id = 700 ${anho}   order by docu_fecha_docx desc, docu_id desc
+    </select>
+    <select id="getListG" parameterType="HashMap" resultMap="ResolucionObraMap">
+        select * from web.documento 
+        where (docu_resumen ILIKE #{c} or docu_titulo ILIKE #{c} ) and  cate_id = 800 ${anho}   order by docu_fecha_docx desc, docu_id desc
+    </select>
+    <select id="getListH" parameterType="HashMap" resultMap="ResolucionObraMap">
+        select * from web.documento 
+        where (docu_resumen ILIKE #{c} or docu_titulo ILIKE #{c} ) and  cate_id = 900 ${anho}   order by docu_fecha_docx desc, docu_id desc
+    </select>
+    <select id="getListI" parameterType="HashMap" resultMap="ResolucionObraMap">
+        select * from web.documento 
+        where (docu_resumen ILIKE #{c} or docu_titulo ILIKE #{c} ) and  cate_id = 1000 ${anho}   order by docu_fecha_docx desc, docu_id desc
+    </select>  
+      
+    <select id="getListJ" parameterType="HashMap" resultMap="ResolucionObraMap">
+        select * from web.documento 
+        where (docu_resumen ILIKE #{c} or docu_titulo ILIKE #{c} ) and  cate_id = 1100 ${anho}   
+        order by  docu_titulo desc, cast(docu_fecha_docx as date) desc, docu_id desc
+    </select>  
+    
+    <select id="getListK" parameterType="HashMap" resultMap="ResolucionObraMap">
+        select * from web.documento
+        where (docu_resumen ILIKE #{c} or docu_titulo ILIKE #{c}) and  cate_id = 1200 ${anho}   order by docu_fecha_docx desc, docu_id desc
+    </select> 
+    
+    <select id="getListL" parameterType="HashMap" resultMap="ResolucionObraMap">
+        select * from web.documento 
+         where (docu_resumen ILIKE #{c} or docu_titulo ILIKE #{c} ) and  cate_id = 1300 ${anho}   order by cast(docu_fecha_docx as date) desc, docu_titulo desc ,docu_id desc
+
+    </select> 
+    
+    <select id="getListM" parameterType="HashMap" resultMap="ResolucionObraMap">
+        select * from web.documento 
+        where (docu_resumen ILIKE #{c} or docu_titulo ILIKE #{c} ) and  cate_id = 2800 ${anho}   order by docu_fecha_docx desc, docu_id desc
+    </select> 
+    
+    <select id="getAnho" resultMap="AnhoMap" >
+        select distinct(trim(substring(docu_fecha_docx from 7)))::character(4) anho  from web.documento  where cate_id = 100 and docu_fecha_docx !='' order by anho desc
+    </select>
+    
+    <select id="getAnhoA" resultMap="AnhoMap" >
+        select distinct(trim(substring(docu_fecha_docx from 7)))::character(4) anho  from web.documento  where   cate_id = 200 and docu_fecha_docx !='' order by anho desc
+    </select>
+    
+    <select id="getAnhoB" resultMap="AnhoMap" >
+        select distinct(trim(substring(docu_fecha_docx from 7)))::character(4) anho  from web.documento  where   cate_id = 300 and docu_fecha_docx !='' order by anho desc
+    </select>
+    
+    <select id="getAnhoC" resultMap="AnhoMap" >
+        select distinct(trim(substring(docu_fecha_docx from 7)))::character(4) anho  from web.documento  where   cate_id = 400 and docu_fecha_docx !='' order by anho desc
+    </select>
+    <select id="getAnhoD" resultMap="AnhoMap" >
+        select distinct(trim(substring(docu_fecha_docx from 7)))::character(4) anho  from web.documento  where   cate_id = 500 and docu_fecha_docx !='' order by anho desc
+    </select>
+    <select id="getAnhoE" resultMap="AnhoMap" >
+        select distinct(trim(substring(docu_fecha_docx from 7)))::character(4) anho  from web.documento  where   cate_id = 600 and docu_fecha_docx !='' order by anho desc
+    </select>
+    <select id="getAnhoF" resultMap="AnhoMap" >
+        select distinct(trim(substring(docu_fecha_docx from 7)))::character(4) anho  from web.documento  where   cate_id = 700 and docu_fecha_docx !='' order by anho desc
+    </select>
+    <select id="getAnhoG" resultMap="AnhoMap" >
+        select distinct(trim(substring(docu_fecha_docx from 7)))::character(4) anho  from web.documento  where   cate_id = 800 and docu_fecha_docx !='' order by anho desc
+    </select>
+    <select id="getAnhoH" resultMap="AnhoMap">
+        select distinct(trim(substring(docu_fecha_docx from 7)))::character(4) anho  from web.documento  where   cate_id = 900 and docu_fecha_docx !='' order by anho desc
+    </select>
+    <select id="getAnhoI" resultMap="AnhoMap">
+        select distinct(trim(substring(docu_fecha_docx from 7)))::character(4) anho  from web.documento  where   cate_id = 1000 and docu_fecha_docx !='' order by anho desc
+    </select>
+    <select id="getAnhoJ" resultMap="AnhoMap">
+        select distinct(trim(substring(docu_fecha_docx from 7)))::character(4) anho  from web.documento  where   cate_id = 1100 and docu_fecha_docx !='' order by anho desc
+    </select>
+    <select id="getAnhoK" resultMap="AnhoMap">
+        select distinct(trim(substring(docu_fecha_docx from 7)))::character(4) anho  from web.documento  where   cate_id=1200 and docu_fecha_docx !='' order by anho desc
+    </select>
+    <select id="getAnhoL" resultMap="AnhoMap">
+        select distinct(trim(substring(docu_fecha_docx from 7)))::character(4) anho  from web.documento  where   cate_id=1300 and docu_fecha_docx !='' order by anho desc
+    </select>
+    
+    <select id="getAnhoM" resultMap="AnhoMap">
+        select distinct(trim(substring(docu_fecha_docx from 7)))::character(4) anho  from web.documento  where   cate_id=2800 and docu_fecha_docx !='' order by anho desc
+    </select>
+    <select id="temporal" parameterType="HashMap" resultMap="ResolucionObraMap">
+        select * from documento 
+    </select>
+    <select id="getListArcDig" parameterType="HashMap" resultMap="ResolucionObraMap">
+        select t1.* from documento t1 
+        inner join documento_etiqueta t2 on t1.docu_id = t2.docu_id
+        where ( t1.docu_titulo ILIKE #{c} or  t1.docu_resumen ILIKE #{c}) 
+        ${tipo} and t1.docu_privado = false and t1.docu_publico = true
+        ${anho} order by t1.docu_fecha_docx desc, t1.docu_id desc
+    </select>
+    
+    <select id="getAnhoArcDig" parameterType="Integer" resultMap="AnhoMap" >
+        select distinct(trim(substring(t1.docu_fecha_docx from 7)))::character(4) anho  
+        from documento t1 
+        inner join documento_etiqueta t2 on t1.docu_id = t2.docu_id
+        where t2.etiq_id=#{tidoId} and  t1.docu_fecha_docx !='' and t1.docu_privado = false and t1.docu_publico = true order by anho desc
+    </select>
+    
+    <select id="getArcDig" parameterType="Integer" resultMap="ResolucionObraMap">
+        select * from documento where docu_id = #{id}
+    </select>
+    
+    <select id="getListCategoria" resultMap="CategoriaArcDigMap">
+        select distinct(etiq_nombre) tido_nombre, t1.etiq_id tido_id from documento_etiqueta t1
+        inner join etiqueta t2 on t1.etiq_id=t2.etiq_id
+        order by etiq_nombre asc
+    </select>
+    
+    <select id="get" parameterType="HashMap" resultMap="ResolucionObraMap">
+        select * from web.documento where docu_id = #{id} and cate_id = #{cateId}
+    </select>
+    
+    <insert id="insert" parameterType="ResolucionGerencial">
+        INSERT INTO web.documento
+        VALUES (#{id}, #{usuario.idUsuario}, #{descripcion}, #{titulo}, #{resumen}, #{origenArchivo}, #{tidoId}, #{estado}, #{activo}, #{fechaDocx}, #{cateId}, #{metaData});
+    </insert>
+    
+    <update id="update" parameterType="ResolucionGerencial">
+        UPDATE web.documento
+        SET  docu_titulo=#{titulo}, docu_resumen=#{resumen}
+        WHERE docu_id=#{id} and cate_id  = #{cateId}
+    </update>
+    
+    <update id="updateTemporal" parameterType="ResolucionGerencial">
+        UPDATE web.documento
+        SET  docu_metadata = #{metaData}
+        WHERE docu_id=#{id} 
+    </update>
+    
+    <delete id="delete"  parameterType="HashMap">
+        DELETE FROM  web.documento where docu_id = #{id} and cate_id = #{cateId}
+    </delete>
+    
+    <select id="getListAnioForWeb"  resultType="String">
+        select distinct(trim(substring(docu_fecha_docx from 7)))::character(4) docu_anho  from web.documento where cate_id= #{cateId} and docu_estado = true and docu_fecha_docx !='' order by docu_anho desc
+    </select>
+    
+    <select id="getListWeb" parameterType="HashMap" resultMap="ResolucionObraMap">
+        select * from web.documento 
+        where (docu_titulo ILIKE #{query} or docu_resumen ILIKE #{query} ) 
+        and cate_id = #{cateId} and docu_estado = true and  trim(substring(docu_fecha_docx from 7))=#{anho} 
+        order by cast(docu_fecha_docx as date) desc  limit  ${limit} offset ${start}
+    </select>
+    
+    <select id="getTotalListForWeb" parameterType="HashMap"  resultType="Integer">
+        select * from web.documento 
+        where (docu_titulo ILIKE #{query} or docu_resumen ILIKE #{query} ) 
+        and cate_id = #{cateId} and docu_estado = true and   trim(substring(docu_fecha_docx from 7))=#{anho} order by docu_titulo
+    </select>
+    
+    <update id="publicar" parameterType="HashMap">
+        update web.documento set docu_estado = #{estado}
+        where docu_id = #{id} and cate_id = #{cateId}
+    </update>
+</mapper>
+    

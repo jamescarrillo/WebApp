@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Estudio">
+    <resultMap id="EstudioMap" type="Estudio">
+        <result property="id" column="id" />
+        <result property="anho" column="anho" />
+        <result property="titulo" column="titulo" />
+        <result property="fecha" column="fecha"   />
+        <result property="foto" column="foto" />    
+        <result property="snip" column="snip"/>
+        <result property="objetivo" column="objetivo"/>
+        <result property="cantidadBeneficiarios" column="cantidad_beneficiarios"/>
+        <result property="caracteristicasBeneficiarios" column="caracteristicas_beneficiarios"/>
+        <result property="lugar" column="lugar"/>
+        <result property="mapa" column="mapa"/>
+        <result property="seguimiento" column="seguimiento"/>
+        <result property="estado" column="estado"/>
+        <result property="creadoPor" column="creado_por"/>
+        <result property="fechaCreado" column="fecha_creado" jdbcType="DATE" javaType="java.sql.Date" />   
+        <result property="editadoPor" column="editado_por"/>
+        <result property="fechaEditado" column="fecha_editado" jdbcType="DATE" javaType="java.sql.Date" />   
+    </resultMap>   
+    <resultMap id="AnhosMap" type="java.lang.String">
+        <result property="anho" column="anho" />  
+    </resultMap>    
+    
+    <insert id="insertNotice" parameterType="Estudio">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select coalesce(max(id),0)+1  from web.estudio
+        </selectKey>
+        INSERT INTO web.estudio(
+        id, anho, titulo,fecha, foto, estado, creado_por,fecha_creado,editado_por,fecha_editado,
+        snip,objetivo,cantidad_beneficiarios,caracteristicas_beneficiarios,lugar,mapa,seguimiento)
+        VALUES (#{id}, #{anho}, #{titulo}, cast (#{fecha} as DATE), #{foto}, false, #{creadoPor},#{fechaCreado},#{editadoPor},#{fechaEditado},
+        #{snip},#{objetivo},#{cantidadBeneficiarios},#{caracteristicasBeneficiarios},#{lugar},#{mapa},#{seguimiento});
+    </insert>
+    <update id="updateNotice" parameterType="Estudio">
+        UPDATE web.estudio
+        SET  anho=#{anho}, titulo=#{titulo}, fecha=cast(#{fecha} as DATE), foto=#{foto}, 
+        editado_por=#{editadoPor},fecha_editado=#{fechaEditado},
+        snip=#{snip},objetivo=#{objetivo},cantidad_beneficiarios=#{cantidadBeneficiarios},
+        caracteristicas_beneficiarios=#{caracteristicasBeneficiarios},lugar=#{lugar},mapa=#{mapa},seguimiento=#{seguimiento}
+        WHERE id=#{id}
+    </update>
+    <update id="publicarNotice" parameterType="int">
+        update web.estudio
+        set estado = true
+        where id=#{id}
+    </update>
+    <delete id="deleteNotice" parameterType="int">
+        delete from web.estudio
+        where id=#{id}
+    </delete>
+    
+    <select id="getEstudioSingle" parameterType="int"  resultMap="EstudioMap">
+        select * from web.estudio where id=#{id}
+    </select>        
+    
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="EstudioMap">
+        select * from web.estudio where upper(estudio.titulo) ILIKE #{filtro} order by estudio.fecha desc, estudio.id desc limit ${limit} offset ${start}
+    </select>
+    <select id="getTotalListForAdmin" parameterType="String"  resultMap="EstudioMap">
+        select anho from web.estudio where upper(estudio.titulo) ILIKE #{filtro}
+    </select>
+    
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="EstudioMap">
+        select * from web.estudio where anho=#{anho} and estado = true order by fecha desc, id ${order} limit ${limit} 
+    </select>
+    
+</mapper>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Actividad">
+    <resultMap id="ActividadMap" type="Actividad">
+        <id property="actiId" column="acti_id" />
+        <result property="descripcion" column="descripcion" />
+        <result property="estado" column="estado" />        
+    </resultMap>
+    
+    <select id="listarActividad" parameterType="java.util.HashMap" resultMap="ActividadMap">
+        select * from web.actividad 
+        where (acti_id not in (select acti_id from  web.calendario_conv where convo_id=#{convoId} ${filter}  ) and acti_tipo = 1)
+        ORDER BY acti_id asc
+    </select>
+    
+    <select id="buscarActividad" parameterType="Integer" resultMap="ActividadMap">
+        select * from web.actividad where acti_id=#{codigo} and acti_tipo = 1
+    </select>
+    
+    <insert id="insertActividad" parameterType="Actividad">
+        <selectKey keyProperty="actiId" resultType="int" order="BEFORE">
+            select cast((max(acti_id)+1) as integer) from web.actividad
+        </selectKey>
+        INSERT INTO web.actividad(
+        acti_id, descripcion, estado, acti_tipo)
+        VALUES (#{actiId}, #{descripcion}, true, #{actiTipo});
+    </insert>
+    
+    <update id="updateActividad" parameterType="Actividad">
+        UPDATE web.actividad
+        SET descripcion=#{descripcion}
+        WHERE acti_id = #{actiId};
+    </update>
+    
+    <delete id="deleteActividad" parameterType="Integer">
+        DELETE FROM web.actividad
+        WHERE acti_id = #{id};
+    </delete>
+    
+    <select id="childrenActividad" parameterType="java.util.HashMap"  resultMap="ActividadMap">
+        select id from web.calendario_conv where acti_id= #{id} 
+    </select>
+   
+    <select id="listarActividadPers" parameterType="java.util.HashMap" resultMap="ActividadMap">
+        select * from web.actividad 
+        where (acti_id not in (select acti_id from  web.calendario_conv where convo_id=#{coperId} ${filter}  ) and acti_tipo = 2)
+        ORDER BY acti_id asc
+    </select>
+    
+    <select id="buscarActividadPers" parameterType="Integer" resultMap="ActividadMap">
+        select * from web.actividad where acti_id=#{codigo} and acti_tipo = 2
+    </select>
+</mapper>

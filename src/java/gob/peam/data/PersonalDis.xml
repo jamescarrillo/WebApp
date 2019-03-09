@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PersonalDis">
+    <resultMap id="PersonalDisMap" type="PersonalDis">
+        <result property="id" column="id" />        
+        <result property="anho" column="anho" />
+        <result property="trimestre" column="trimestre" />
+        <result property="codigoFormato" column="codigo_formato"  />
+        <result property="apellidosNombres" column="apellidos_nombres" />    
+        <result property="codigoCivil" column="codigo_civil" />    
+        <result property="oficinaArea" column="oficina_area" /> 
+        <result property="renumeracionMensual" column="renumeracion_mensual" />      
+        <result property="estado" column="estado"/>     
+    </resultMap>
+    <resultMap id="AnhosMap" type="java.lang.String">
+        <result property="anho" column="anho" />  
+    </resultMap>
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="PersonalDisMap">
+        select * from web.f00033 where (upper(apellidos_nombres) ILIKE #{query} or upper(oficina_area) ILIKE #{query} ) and  anho=#{anio} order by trimestre desc,id ${order} limit ${limit} offset ${start} 
+    </select>
+    <select id="getListAnioForWeb"  resultMap="AnhosMap">
+        select distinct(anho) as anho from web.f00033 order by anho desc 
+    </select>
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="PersonalDisMap">
+        select * from web.f00033 where (upper(apellidos_nombres) ILIKE #{query} or upper(oficina_area) ILIKE #{query}) and  anho=#{anio} order by id,trimestre ${order}
+    </select>
+</mapper>

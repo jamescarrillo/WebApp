@@ -1,0 +1,91 @@
+/*
+Document   : _jCalendar
+Created on : 03/07/2012, 12:51:31 PM
+Author     : jprada
+Description:
+Purpose of the stylesheet follows.
+*/
+
+/*
+TODO customize this sample style
+Syntax recommendation http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html
+*/
+.calendar{
+    border:0.1em #DFD9C3 solid;
+    background:#FAFAF4;
+    font-size:100%;
+    padding:2px;
+    color:#fff;
+    .calendar-title{
+        padding:5px;
+        border:0.1em solid #B4D3A4;  
+        background:#59A91C url('../images/bg_gloss-wave.png') 50%;
+        overflow: hidden;
+        border-radius: 3px;
+        .aPrev{
+            float:left;
+            width:5%;
+            color:#fff;
+        }
+        .aNext{
+            float:right;
+            width:5%;
+            color:#fff;
+        }
+        .span-description{
+            float: left;
+            color:#fff;
+            text-align: center;
+            width:85%;
+            font-weight:bold;
+        }
+    }
+    .tbl-calendar{
+        width: 99%;
+        thead tr th{
+            text-align: center;
+            padding:5px;
+            color:#312E25;
+        }
+        tbody tr td.number{
+            text-align: center;
+            padding:5px;
+            color:#fff;
+            background-color:#63A029 ;
+            border:0.1em #fff solid;
+            margin:2px;
+            cursor: pointer;
+            &:hover{
+                background-color:#72B531 ;
+            }
+        }
+        tbody tr td.now{
+            text-align: center;
+            background-color: #FCF0BA;
+            color: #63A029;
+            &:hover{background-color:#FCF0BA ;}
+        }
+        tbody tr td.number.select{
+            text-align: center;
+            padding:5px;
+            color:#FCF0BA; 
+            background-color:#B4D3A4 ;
+            border:0.1em #f1f1f1 solid;
+            margin:2px;
+            cursor: pointer;            
+        }
+        tbody tr td.number.now.select{
+            text-align: center;
+            padding:5px;
+            color: #63A029;
+            background-color: #FCF0BA;
+            margin:2px;
+            cursor: pointer;            
+        }
+    }    
+}
+.date{
+    background:#c9c9c9 url('../images/date.png') 50% 50% no-repeat;
+    border:0.1em #f1f1f1 solid;
+    @include border-radius($padding);
+}

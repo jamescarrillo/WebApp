@@ -1,0 +1,316 @@
+/*
+Document   : admin
+Created on : 16/08/2012, 12:34:12 PM
+Author     : jpgprog84
+Description:
+Purpose of the stylesheet follows.
+*/
+@import  "compass/css3";
+@import  "compass/reset";
+$width:1040px;
+$padding:5px;
+body{
+    font-size:100%;
+    margin:0 auto;
+    min-width:1024px;
+    font-weight:normal;
+    font-family: Arial,'Liberation Sans',FreeSans,sans-serif,'Helvetica Neue';
+    // background:#f6f6f6;
+}
+.cabecera{    
+    //color:#fff;
+    background:#464646;
+    .marco{
+        margin:0 auto;
+        min-width:$width;
+        width:$width;
+        overflow:hidden;
+        .titulo{
+            float:left;
+            padding:$padding;
+            font-size:130%;
+            font-weight:bold;
+            a{
+                text-decoration:none;
+                color:#fff;
+            }
+        }
+    }
+}
+.control{
+    margin:1% auto;
+    min-width:$width;
+    width:$width;
+    overflow:hidden;
+    padding:$padding $padding*4;
+    .navegacion{
+        float:left;
+    }
+    .user{
+        float:right;
+        //color:#2B83BB;
+        font-size:75%;
+        font-weight:bold;
+        #salir{
+            text-decoration:none;
+            //  color:#fff;
+            width:16px;
+            height:16px;            
+            background:url('../images/logout.png') no-repeat;
+        }
+    }
+}
+@mixin formulario(){
+    form{        
+        @include border-bottom-radius($padding);
+        overflow:hidden;
+        font-size:100%;
+        div{
+            overflow:hidden; 
+            display:block;
+            //width:99%;                        
+            padding:2px;
+            label{
+                //color:#4FB1DB;
+                float:left;
+                width:29%;
+                font-size:14px;
+                text-align:left;
+                padding:$padding 0;
+                //font-weight:bold;     
+                vertical-align: middle;                      
+            }
+            input,textarea{
+                float:left;
+                text-align:left;
+                outline:none;
+                width:69%;
+                font-size:14px;
+                padding:3px;
+                border:0.1em #ccc solid;
+                @include border-radius($padding);
+            } 
+            select{
+                float:left;
+                text-align:left;
+                width:70%;
+                padding:3px;
+                vertical-align:middle;
+                border:0.1em #ccc solid;
+                background:#fff; outline:none;
+            }
+            button{
+                float:right;
+                text-align:left;
+            }                        
+        }                     
+    } 
+}
+.content{
+    margin: 2% auto;
+    width: $width;
+    padding:$padding $padding*4;
+    min-width:$width; 
+    #c-derecho{
+        float:left;
+        width:20%;
+        @import "menuLateral";
+    }
+    #c-izquierdo{
+        width:78%;
+        float:right;
+        overflow:hidden;
+        .marco{
+            padding:0;
+            margin-bottom:$padding*3;
+            margin-right:5px;
+            @include border-radius($padding);
+            @include box-shadow(#cccccc 2px 2px 4px);
+            h2{
+                @include opacity(1);
+                font-size:14px;  
+                border:none;
+                padding:$padding;
+                @include border-top-radius($padding);
+                font-weight:bold;
+            }
+            #message{
+                margin:$padding;
+                padding:$padding*2;
+                font-size:78%;
+                font-weight:bold;
+                @include border-radius($padding);
+            }            
+            
+            .busqueda-more{
+                margin:$padding 0px;
+                background:#fafafa;
+                padding:$padding;
+                border-top:0.1em #c9c9c9 dashed;
+                overflow:hidden;
+                .b-izq{
+                    float:right;
+                }
+            }
+            #noticias{                
+                margin:$padding;                
+                padding:$padding;
+                @import "notice";
+            }
+            #frmDependencia{
+                padding:$padding;                
+                overflow:hidden;
+            }
+            .content-marco{
+                padding:$padding;
+                //font-size:88%;
+                overflow:hidden;
+                
+                .cm-i{
+                    float:left;
+                    width:56%;
+                    @include formulario();
+                    div{                        
+                        font-weight:bold;
+                        padding:$padding;
+                    }
+                }
+                .cm-d{
+                    float:right;
+                    width:40%;
+                    img{
+                        border:0.1em #3869a0 solid;
+                    }
+                    #botones-d{
+                        overflow:hidden;
+                        button,a,input{
+                            float:right;
+                        }
+                    }
+                } 
+    
+            }
+            div{
+                padding:$padding;
+                font-size:12px;
+                #dependencias{
+                    padding:0;
+                    margin:0px;
+                    height:200px;
+                    overflow:auto;                        
+                }
+            }
+        }    
+    }
+}
+/*Grid*/
+.ui-jqgrid { font-size:11px;}
+
+
+/* the norm */
+#gritter-notice-wrapper {
+	position:fixed;
+	top:20px;
+	right:20px;
+	width:301px;
+	z-index:9999;
+}
+#gritter-notice-wrapper.top-left {
+    left: 20px;
+    right: auto;
+}
+#gritter-notice-wrapper.bottom-right {
+    top: auto;
+    left: auto;
+    bottom: 20px;
+    right: 20px;
+}
+#gritter-notice-wrapper.bottom-left {
+    top: auto;
+    right: auto;
+    bottom: 20px;
+    left: 20px;
+}
+.gritter-item-wrapper {
+	position:relative;
+	margin:0 0 10px 0;
+	background:url('../images/ie-spacer.gif'); /* ie7/8 fix */ 
+}
+.gritter-top {
+	background:url(../images/gritter.png) no-repeat left -30px;
+	height:10px;
+}
+.hover .gritter-top {
+	background-position:right -30px;
+}
+.gritter-bottom {
+	background:url(../images/gritter.png) no-repeat left bottom;
+	height:8px;
+	margin:0;
+}
+.hover .gritter-bottom {
+	background-position: bottom right;
+}
+.gritter-item {
+	display:block;
+	background:url(../images/gritter.png) no-repeat left -40px;
+	color:#eee;
+	padding:2px 11px 8px 11px;
+	font-size: 11px;
+	font-family:verdana;
+}
+.hover .gritter-item {
+	background-position:right -40px;
+}
+.gritter-item p {
+	padding:0;
+	margin:0;
+	word-wrap:break-word;
+}
+.gritter-close {
+	display:none;
+	position:absolute;
+	top:5px;
+	left:3px;
+	background:url(../images/gritter.png) no-repeat left top;
+	cursor:pointer;
+	width:30px;
+	height:30px;
+}
+.gritter-title {
+	font-size:14px;
+	font-weight:bold;
+	padding:0 0 7px 0;
+	display:block;
+	text-shadow:1px 1px 0 #000; /* Not supported by IE :( */
+}
+.gritter-image {
+	width:48px;
+	height:48px;
+	float:left;
+}
+.gritter-with-image,
+.gritter-without-image {
+	padding:0;
+}
+.gritter-with-image {
+	width:220px;
+	float:right;
+}
+/* for the light (white) version of the gritter notice */
+.gritter-light .gritter-item,
+.gritter-light .gritter-bottom,
+.gritter-light .gritter-top,
+.gritter-light .gritter-close {
+    background-image: url(../images/gritter-light.png);
+    color: #222;
+}
+.gritter-light .gritter-title {
+    text-shadow: none;
+}
+
+@import "button";
+@import "JpTree";
+@import "notice";
+@import "form/grid/jGrid";
+@include formulario();

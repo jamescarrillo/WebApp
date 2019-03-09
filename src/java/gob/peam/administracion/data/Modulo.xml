@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Modulo">
+    <resultMap id="ModuloMap" type="Modulo">
+        <id property="idModulo" column="modu_id" />
+        <result property="nombre" column="modu_nombre" />
+        <result property="estado" column="modu_estado" />
+        <result property="descripcion" column="modu_descripcion" />
+        <result property="url" column="modu_url" />        
+        <collection property="subModulos" column="modu_id" javaType="ArrayList" ofType="SubModulo">
+            <id property="idSubModulo" column="sumo_id" />
+            <result property="nombre" column="sumo_nombre" />
+            <result property="url" column="sumo_url" />
+            <result property="estado" column="sumo_estado" />
+            <association property="etiqueta" column="etiq_id" javaType="Etiqueta">
+                <id property="idEtiqueta" column="etiq_id" />
+                <result property="descripcion" column="etiq_descripcion" />
+                <result property="estado" column="etiq_estado" />
+            </association>
+        </collection>
+    </resultMap>
+    <resultMap id="SubModuloMap" type="SubModulo">
+        <id property="idSubModulo" column="sumo_id" />
+        <result property="nombre" column="sumo_nombre" />
+        <result property="url" column="sumo_url" />
+        <result property="estado" column="sumo_estado" />
+    </resultMap>
+    <resultMap id="ModuloOnlyMap" type="Modulo">
+        <id property="idModulo" column="modu_id" />
+        <result property="nombre" column="modu_nombre" />
+        <result property="estado" column="modu_estado" />
+        <result property="descripcion" column="modu_descripcion" />        
+        <result property="url" column="modu_url" />
+    </resultMap>    
+    <resultMap id="ModuloOnlyIdMap" type="java.lang.Integer">
+        <result property="idModulo" column="modu_id" />
+    </resultMap>
+    <select id="selectModulosForMenu" resultMap="ModuloMap">SELECT modulo.modu_id,modulo.modu_nombre,
+        modulo.modu_estado,modulo.modu_descripcion,modulo.modu_url,sub_modulo.sumo_id,sub_modulo.sumo_nombre,sub_modulo.sumo_url,sub_modulo.sumo_estado
+        FROM administracion.sub_modulo inner join administracion.modulo
+        on modulo.modu_id = sub_modulo.modu_id  order by sub_modulo.sumo_nombre asc
+    </select>
+    <select id="selectModulosForGadget" resultMap="ModuloOnlyMap">
+        SELECT *
+        FROM administracion.modulo 
+    </select>
+    <select id="listarModulos" parameterType="java.util.HashMap" resultMap="ModuloOnlyMap">
+        select * from administracion.modulo
+        where upper(modu_nombre) like #{query} ORDER BY modu_nombre asc
+        limit ${limit} offset ${start}
+    </select>
+    <select id="listarModulosForPermisos" resultMap="ModuloOnlyMap">
+        select * from administracion.modulo where modu_id in (select modu_id from administracion.sub_modulo) ORDER BY modu_nombre asc      
+    </select>
+    <select id="listarTotalModulos" parameterType="java.util.HashMap" resultMap="ModuloOnlyMap">
+        select * from administracion.modulo
+        where upper(modu_nombre) like #{query} ORDER BY modu_nombre asc        
+    </select>
+    <insert id="insertModulo" parameterType="Modulo">
+        <selectKey keyProperty="idModulo" resultType="int" order="BEFORE">
+            select cast(((case  when max(modu_id) is null then 0 else max(modu_id) end) +1) as int) from administracion.modulo
+        </selectKey>
+        INSERT INTO administracion.modulo(
+        modu_id, modu_nombre, modu_estado, modu_descripcion, modu_url)
+        VALUES (#{idModulo}, #{nombre}, #{estado}, #{descripcion}, #{url})
+    </insert>
+    <select id="existeModulo" parameterType="String" resultMap="ModuloOnlyMap">
+        select * from administracion.modulo where upper(modu_nombre)=#{nombre}
+    </select>
+    <select id="buscarModulo" parameterType="Integer" resultMap="ModuloOnlyMap">
+        select * from administracion.modulo where modu_id=#{idModulo}
+    </select>
+    <select id="buscarModuloForNombre" parameterType="String" resultMap="ModuloOnlyMap">
+        select * from administracion.modulo where modu_nombre=#{nombre}
+    </select>
+    <update id="updateModulo" parameterType="Modulo">
+        UPDATE administracion.modulo
+        SET modu_nombre=#{nombre}, modu_estado=#{estado}, modu_descripcion=#{descripcion}, 
+        modu_url=#{url}
+        WHERE modu_id=#{idModulo}
+    </update>
+    <delete id="deleteModulo" parameterType="Integer">
+        DELETE FROM administracion.modulo
+        WHERE modu_id=#{idModulo}
+    </delete>
+    <select id="listarChildrenForModulo" parameterType="Integer" resultMap="SubModuloMap">
+        SELECT sub_modulo.sumo_id,sub_modulo.sumo_nombre,sub_modulo.sumo_url,sub_modulo.sumo_estado
+        FROM administracion.sub_modulo where modu_id=#{idModulo} order by sub_modulo.sumo_nombre asc
+    </select>
+    <select id="listarModulosPorUsuario" parameterType="Integer" resultMap="ModuloOnlyMap">
+        select distinct modulo.modu_id,modulo.modu_nombre,modulo.modu_descripcion,modulo.modu_url,modulo.modu_estado
+        from administracion.permisos
+        inner join administracion.sub_modulo on sub_modulo.sumo_id=administracion.permisos.sumo_id
+        inner join administracion.modulo on modulo.modu_id=sub_modulo.modu_id
+        inner join administracion.roles on roles.role_id=permisos.role_id
+        inner join administracion.grupo_rol on grupo_rol.role_id=roles.role_id
+        inner join administracion.grupo on grupo.grup_id=grupo_rol.grup_id
+        inner join administracion.usuario on usuario.grup_id=grupo.grup_id
+        where administracion.usuario.usua_id=#{idUsuario} and administracion.modulo.modu_estado=true and administracion.sub_modulo.sumo_estado=true  and modulo.modu_abreviatura = 'CONTWEB'
+        
+    </select>
+    
+    <select id="getIdModulo" parameterType="Integer" resultMap="ModuloOnlyIdMap">
+        select *
+        from administracion.sub_modulo
+        where administracion.sub_modulo.sumo_id = #{idSubModulo}
+    </select>
+</mapper>

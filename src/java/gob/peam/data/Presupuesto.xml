@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Presupuesto">
+    <resultMap id="PresupuestoMap" type="Presupuesto">
+        <id property="id" column="id" />
+        <result property="anho" column="anho" />
+        <result property="titulo" column="titulo" />
+        <result property="descripcion" column="descripcion" />
+        <result property="resolucionAprobacion" column="resolucion_aprobacion" />
+        <result property="fechaAprobacion" column="fecha_aprobacion" />
+        <result property="ubicacion" column="ubicacion" />
+        <result property="estado" column="estado" />
+        <result property="docuId" column="docu_id" />
+    </resultMap>
+    <resultMap id="AnhosMap" type="java.lang.String">
+        <result property="anho" column="anho" />
+    </resultMap>
+    <resultMap id="MesMap" type="java.lang.String">
+        <result property="mes" column="mes" />
+    </resultMap>
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="PresupuestoMap">
+        select * from web.f00015 where (descripcion ILIKE #{query} or resolucion_aprobacion ILIKE #{query} ) and 
+        tipo = #{tipo} ${anho} ${mes} 
+        order by docu_id desc limit ${limit} offset ${start}
+    </select>
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="PresupuestoMap">
+        select (id) from web.f00015 where (descripcion ILIKE #{query} or resolucion_aprobacion ILIKE #{query}) and
+        tipo = #{tipo} ${anho} ${mes} 
+    </select>
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="PresupuestoMap">
+        select * from web.f00015 where 
+        tipo = #{tipo} ${anho} ${mes} and (descripcion ILIKE #{query} or resolucion_aprobacion ILIKE #{query} )
+        order by docu_id desc limit ${limit} offset ${start}
+    </select>
+    <select id="getTotalListForAdmin" parameterType="String"  resultMap="PresupuestoMap">
+        select * from web.f00015 where 
+        tipo = #{tipo} ${anho} ${mes} and (descripcion ILIKE #{query} or resolucion_aprobacion ILIKE #{query} )
+    </select>
+   
+    <select id="getListAnioForWeb"  resultMap="AnhosMap">
+        select distinct(anho)  from web.f00015 where tipo = 2  order by anho desc
+    </select>
+    <select id="getListMesForWeb" parameterType="String"  resultMap="MesMap">
+        select distinct(substring(cast(fecha_aprobacion as character(10)) from 6)::character(2)) mes from web.f00015 where  tipo=2 and anho=#{anho} order by mes desc
+    </select>
+    
+    <select id="getRepetidoPresupuesto" parameterType="Presupuesto"  resultMap="PresupuestoMap">
+        select id from web.f00015 where (docu_id=#{docuId})
+    </select>
+    <insert id="insertPresupuesto" parameterType="Presupuesto">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select cast((max(id)+1) as integer)  from web.f00015
+        </selectKey>
+        INSERT INTO web.f00015(
+        id, anho, titulo_formato, descripcion, resolucion_aprobacion, 
+        fecha_aprobacion, ubicacion, tipo, estado, docu_id )
+        VALUES (#{id}, #{anho}, #{titulo}, #{descripcion}, #{resolucionAprobacion}, 
+        cast(#{fechaAprobacion} as date), #{ubicacion}, #{tipo}, #{estado}, #{docuId});
+    </insert>
+    
+    <update id="updatePresupuesto" parameterType="Presupuesto">
+        UPDATE web.f00015
+        SET id=#{id}, anho=#{anho}, titulo_formato=#{titulo}, descripcion=#{descripcion}, resolucion_aprobacion=#{resolucionAprobacion}, 
+        fecha_aprobacion=cast(#{fechaAprobacion} as date), ubicacion=#{ubicacion}, tipo=#{tipo}, estado=#{estado}, docu_id=#{docuId}
+        WHERE id = #{id}
+    </update>
+    <delete id="deletePresupuesto" parameterType="int">
+        delete from web.f00015
+        where id=#{id}
+    </delete>
+    
+    <update id="activarPresupuesto"  parameterType="java.util.HashMap">
+        UPDATE web.f00015
+        SET  estado = #{act}
+        WHERE id = #{codigo}
+    </update>
+</mapper>

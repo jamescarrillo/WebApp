@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Thema">
+    <resultMap id="estiloPorUsuarioyModuloMap" type="Thema">
+        <result property="theId" column="the_id" />
+        <result property="theNombre" column="the_nombre" />
+        <result property="theImg" column="the_img" />
+        <result property="thePath" column="the_path" />
+    </resultMap>  
+    
+    <select id="buscarEstiloPorUsuarioyModulo" parameterType="java.util.HashMap" resultMap="estiloPorUsuarioyModuloMap">
+        select
+        case when t2.the_id is null then 1 else t2.the_id end as the_id,
+        case when t2.the_nombre is null then 'UI Lightness' else t2.the_nombre end as the_nombre,
+        case when t2.the_img is null then 'theme_90_ui_light.png' else t2.the_img end as the_img,
+        case when t2.the_path is null then 'ui-lightness' else t2.the_path end as the_path
+        from administracion.thema_usuario t1
+        inner join administracion.thema t2 on t1.the_id = t2.the_id
+        WHERE t1.usua_id = #{usuaId} and t1.modu_id = #{moduId}
+    </select>
+    
+    <select id="listarEstilos" resultMap="estiloPorUsuarioyModuloMap">
+        select
+        case when t1.the_id is null then 1 else t1.the_id end as the_id,
+        case when t1.the_nombre is null then 'UI Lightness' else t1.the_nombre end as the_nombre,
+        case when t1.the_img is null then 'theme_90_ui_light.png' else t1.the_img end as the_img,
+        case when t1.the_path is null then 'ui-lightness' else t1.the_path end as the_path
+        from administracion.thema t1
+    </select>
+    
+    <insert id="insertEstilo" parameterType="java.util.HashMap" >
+        <selectKey keyProperty="thusId" resultType="int" order="BEFORE">
+            select cast(((case  when max(thus_id) is null then 0 else max(thus_id) end) +1) as int) from administracion.thema_usuario
+        </selectKey>
+        INSERT INTO administracion.thema_usuario(
+        thus_id, modu_id, the_id, usua_id)
+        VALUES (#{thusId}, #{moduId}, #{theId}, #{usuaId});
+    </insert>
+    
+    <update id="updateEstilo" parameterType="java.util.HashMap">
+        UPDATE administracion.thema_usuario
+        SET the_id = #{theId}
+        WHERE usua_id = #{usuaId} and modu_id = #{moduId}
+    </update>
+    
+</mapper>

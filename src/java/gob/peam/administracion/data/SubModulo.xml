@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SubModulo">
+    <resultMap id="SubModuloMap" type="SubModulo">
+        <id property="idSubModulo" column="sumo_id" />
+        <result property="nombre" column="sumo_nombre" />
+        <result property="url" column="sumo_url" />
+        <result property="estado" column="sumo_estado" />
+        <association property="etiqueta" column="etiq_id" javaType="Etiqueta">
+            <id property="idEtiqueta" column="etiq_id" />
+            <result property="descripcion" column="etiq_descripcion" />
+            <result property="estado" column="etiq_estado" />
+        </association>
+    </resultMap>  
+    <resultMap id="SubModuloOnlyMap" type="SubModulo">
+        <id property="idSubModulo" column="sumo_id" />
+        <result property="nombre" column="sumo_nombre" />
+        <result property="url" column="sumo_url" />
+        <result property="estado" column="sumo_estado" />        
+    </resultMap>    
+    <select id="listarSubModuloPorModulo" parameterType="java.util.HashMap" resultMap="SubModuloOnlyMap">
+        select * from administracion.sub_modulo where modu_id=#{idModulo} and 
+        upper(sumo_nombre) like #{query} ORDER BY sumo_nombre asc
+        limit ${limit} offset ${start}
+    </select>
+    <select id="listarTotalSubModuloPorModulo" parameterType="java.util.HashMap" resultMap="SubModuloOnlyMap">
+        select * from administracion.sub_modulo where modu_id=#{idModulo} and 
+        upper(sumo_nombre) like #{query} ORDER BY sumo_nombre asc       
+    </select>
+    <insert id="insertSubModulo" parameterType="SubModulo">
+        <selectKey keyProperty="idSubModulo" resultType="int" order="BEFORE">
+            select cast(((case  when max(sumo_id) is null then 0 else max(sumo_id) end) +1) as int) from administracion.sub_modulo
+        </selectKey>
+        INSERT INTO administracion.sub_modulo(0
+        sumo_id, sumo_nombre, sumo_url, modu_id, sumo_estado, etiq_id)
+        VALUES (#{idSubModulo}, #{nombre}, #{url}, #{modulo.idModulo}, #{estado}, #{etiqueta.idEtiqueta});
+    </insert>
+    <select id="existeSubModulo" parameterType="String" resultMap="SubModuloOnlyMap">
+        select * from administracion.sub_modulo where upper(sumo_nombre)=#{nombre}
+    </select>
+    <select id="buscarSubModulo" parameterType="Integer" resultMap="SubModuloMap">
+        select sub_modulo.*,etiqueta.etiq_descripcion,etiqueta.etiq_estado from administracion.sub_modulo
+        inner join administracion.etiqueta on etiqueta.etiq_id=sub_modulo.etiq_id where sub_modulo.sumo_id=#{idSubModulo}
+    </select>
+    <select id="buscarSubModuloForNombre" parameterType="String" resultMap="SubModuloOnlyMap">
+        select * from administracion.sub_modulo where sumo_nombre=#{nombre}
+    </select>
+    <update id="updateSubModulo" parameterType="SubModulo">
+        UPDATE administracion.sub_modulo
+        SET sumo_nombre=#{nombre}, sumo_url=#{url}, modu_id=#{modulo.idModulo}, sumo_estado=#{estado}, 
+        etiq_id=#{etiqueta.idEtiqueta}
+        WHERE 
+        sumo_id=#{idSubModulo}
+    </update>
+    <delete id="deleteSubModulo" parameterType="Integer">
+        DELETE FROM administracion.sub_modulo
+        WHERE sumo_id=#{idSubModulo}
+    </delete>
+    <select id="listarChildrenForSubModulo" parameterType="Integer" resultMap="SubModuloOnlyMap">
+        select * from administracion.sub_modulo
+        where sumo_id in (select sumo_id from  administracion.permisos where sumo_id=#{idSubModulo})
+        order by sumo_nombre asc
+    </select>
+</mapper>

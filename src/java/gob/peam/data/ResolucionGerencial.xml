@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ResolucionGerencial">
+    <resultMap id="ResolucionGerencialMap" type="ResolucionGerencial">
+        <result property="id" column="docu_id" />        
+        <result property="titulo" column="docu_titulo" />
+        <result property="resumen" column="docu_resumen"  />
+        <result property="descripcion" column="docu_descripcion"  />
+        <result property="fecha" column="docu_fecha_docx" />   
+        <result property="tidoId" column="tido_id" />    
+        <result property="mimeTypes" column="docu_mime_types" />    
+        <result property="origenArchivo" column="docu_origen_archivo" />        
+        <result property="estado" column="docu_estado"/>
+        <result property="activo" column="docu_activo"/>
+    </resultMap>
+    
+    <resultMap id="AnhosMap" type="java.lang.String">
+        <result property="anho" column="docu_anho" />
+    </resultMap>
+    
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="ResolucionGerencialMap">
+        select * from web.documento where tido_id=10 and cate_id &lt; 100 and  (docu_titulo ILIKE #{query} or docu_resumen ILIKE #{query} )    and  trim(substring(docu_fecha_docx from 7))=#{anio} order by docu_titulo ${order} limit  ${limit} offset ${start}
+    </select>
+    
+    <select id="getForWeb" parameterType="Integer"  resultMap="ResolucionGerencialMap">
+        select * from documento where docu_id=#{id} and cate_id &lt; 100
+    </select>
+    
+    <select id="getListAnioForWeb"  resultMap="AnhosMap">
+        select distinct(trim(substring(docu_fecha_docx from 7)))::character(4) docu_anho  from documento where tido_id=10  and docu_fecha_docx !='' and cate_id &lt; 100 order by docu_anho desc
+    </select>
+    
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="ResolucionGerencialMap">
+        select * from web.documento where tido_id=10 and cate_id &lt; 100  and  (docu_titulo ILIKE #{query} or docu_resumen ILIKE #{query} )    and  trim(substring(docu_fecha_docx from 7))=#{anio} order by docu_titulo ${order}
+    </select>
+    
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="ResolucionGerencialMap">
+        select * from documento where tido_id=10 and cate_id &lt; 100  and (docu_titulo ILIKE #{query} or  docu_resumen ILIKE #{query}) and  trim(substring(docu_fecha_docx from 7))=#{anio} order by docu_titulo ${order} limit  ${limit} offset ${start}
+    </select>
+    
+    <select id="getTotalListForAdmin" parameterType="java.util.HashMap"  resultMap="ResolucionGerencialMap">
+        select * from documento where tido_id=10 and cate_id &lt; 100  and (docu_titulo ILIKE #{query} or  docu_resumen ILIKE #{query}) and  trim(substring(docu_fecha_docx from 7))=#{anio} order by docu_titulo ${order}
+    </select>
+    
+    <select id="getPFList" parameterType="java.util.HashMap"  resultMap="ResolucionGerencialMap">
+        select * from documento where tido_id=#{tipo} and cate_id &lt; 100 and (docu_titulo ILIKE #{query} or  docu_resumen ILIKE #{query})  ${filter} order by docu_titulo ${order} limit  ${limit} offset ${start}
+    </select>
+    
+    <select id="getPFTotalList" parameterType="java.util.HashMap"  resultMap="ResolucionGerencialMap">
+        select * from documento where tido_id=#{tipo} and cate_id &lt; 100  and (docu_titulo ILIKE #{query} or  docu_resumen ILIKE #{query})    ${filter}  order by docu_titulo ${order}
+    </select>
+    
+    <select id="getTodoFinanzasList" parameterType="java.util.HashMap"  resultMap="ResolucionGerencialMap">
+        select * from documento where tido_id=#{tipo} and cate_id &lt; 100  order by docu_id desc
+    </select>
+    
+    <delete id="deleteResolucion" parameterType="int">
+        delete from web.documento
+        where docu_id=#{id} and cate_id &lt; 100
+    </delete>
+    
+</mapper>

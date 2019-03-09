@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Destacado">
+    <resultMap id="DestacadoMap" type="Destacado">
+        <result property="id" column="id" />
+        <result property="anho" column="anho" />
+        <result property="titulo" column="titulo" />
+        <result property="contenido" column="contenido" />        
+        <result property="fecha" column="fecha"   />
+        <result property="foto" column="foto" />    
+        <result property="estado" column="estado"/>
+        <result property="url" column="url" />
+        <result property="creadoPor" column="creado_por"/>
+        <result property="fechaCreado" column="fecha_creado" jdbcType="DATE" javaType="java.sql.Date" />   
+        <result property="editadoPor" column="editado_por"/>
+        <result property="fechaEditado" column="fecha_editado" jdbcType="DATE" javaType="java.sql.Date" />   
+    </resultMap>   
+    <resultMap id="AnhosMap" type="java.lang.String">
+        <result property="anho" column="anho" />  
+    </resultMap>    
+    
+    <insert id="insertNotice" parameterType="Destacado">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select coalesce(max(id),0)+1  from web.destacado
+        </selectKey>
+        INSERT INTO web.destacado(
+        id, anho, titulo, contenido, url, fecha, foto, estado, creado_por,fecha_creado,editado_por,fecha_editado)
+        VALUES (#{id}, #{anho}, upper(#{titulo}), #{contenido}, #{url}, cast (#{fecha} as DATE), #{foto}, false, #{creadoPor},#{fechaCreado},#{editadoPor},#{fechaEditado});
+    </insert>
+    <update id="updateNotice" parameterType="Destacado">
+        UPDATE web.destacado
+        SET  anho=#{anho}, titulo=upper(#{titulo}), contenido=#{contenido}, url=#{url}, fecha=cast(#{fecha} as DATE), foto=#{foto}, 
+        editado_por=#{editadoPor},fecha_editado=#{fechaEditado}
+        WHERE id=#{id}
+    </update>
+    <update id="publicarNotice" parameterType="int">
+        update web.destacado
+        set estado = true
+        where id=#{id}
+    </update>
+    <delete id="deleteNotice" parameterType="int">
+        delete from web.destacado
+        where id=#{id}
+    </delete>
+    
+    <select id="getDestacadoSingle" parameterType="int"  resultMap="DestacadoMap">
+        select * from web.destacado where id=#{id}
+    </select>
+    
+    
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="DestacadoMap">
+        select * from web.destacado where upper(destacado.titulo) ILIKE #{filtro} or upper(destacado.contenido) ILIKE #{filtro} order by destacado.fecha desc, destacado.id desc limit ${limit} offset ${start}
+    </select>
+    <select id="getTotalListForAdmin" parameterType="String"  resultMap="DestacadoMap">
+        select anho from web.destacado where upper(destacado.titulo) ILIKE #{filtro} or upper(destacado.contenido) ILIKE #{filtro}
+    </select>
+    
+     <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="DestacadoMap">
+        select * from web.destacado where anho=#{anho} and estado = true order by fecha desc, id ${order} limit ${limit} 
+    </select>
+    
+</mapper>

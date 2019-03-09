@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="NormaDirectiva">
+    <resultMap id="NormaDirectivaMap" type="NormaDirectiva">
+        <result property="id" column="docu_id" />        
+        <result property="titulo" column="docu_titulo" />
+        <result property="resumen" column="docu_resumen"  />
+        <result property="descripcion" column="docu_descripcion"  />
+        <result property="fecha" column="docu_fecha_docx" />   
+        <result property="tidoId" column="tido_id" />    
+        <result property="mimeTypes" column="docu_mime_types" />    
+        <result property="origenArchivo" column="docu_origen_archivo" />        
+        <result property="estado" column="docu_estado"/>     
+        <result property="activo" column="docu_activo"/>
+    </resultMap>
+
+    <select id="getListForWeb" parameterType="java.util.HashMap"  resultMap="NormaDirectivaMap">
+        select *, SUBSTR((docu_titulo),7) anho from web.documento where tido_id=12 and cate_id &lt; 100  and  (docu_titulo ILIKE #{query} or docu_resumen ILIKE #{query} ) order by anho  desc, docu_titulo desc limit  ${limit} offset ${start}
+    </select>
+    <select id="getForWeb" parameterType="Integer"  resultMap="NormaDirectivaMap">
+        select * from web.documento where docu_id=#{id} and cate_id &lt; 100 o
+    </select>
+    <select id="getTotalListForWeb" parameterType="java.util.HashMap"  resultMap="NormaDirectivaMap">
+        select * from web.documento where tido_id=12 and cate_id &lt; 100  and   (docu_titulo ILIKE #{query} or docu_resumen ILIKE #{query} )    order by docu_titulo ${order}
+    </select>
+    
+    <select id="getListForAdmin" parameterType="java.util.HashMap"  resultMap="NormaDirectivaMap">
+        select *, SUBSTR((docu_titulo),7) anho from documento where tido_id=12 and cate_id &lt; 100  and (docu_titulo ILIKE #{query} or docu_resumen ILIKE #{query} ) order by anho desc limit  ${limit} offset ${start}
+    </select>
+    <select id="getTotalListForAdmin" parameterType="java.util.HashMap"  resultMap="NormaDirectivaMap">
+        select * from documento where tido_id=12 and cate_id &lt; 100  and  (docu_titulo ILIKE #{query} or docu_resumen ILIKE #{query} )   order by docu_titulo ${order}
+    </select>
+</mapper>
